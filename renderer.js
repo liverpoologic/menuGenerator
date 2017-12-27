@@ -278,11 +278,8 @@
             Dict[1].addFood(thing,unit,shop,foodType)
         }
         writeDict(1)
-        ID("foodThing").value = ""
-        ID("foodUnit").value = ""   
-        ID("selectFoodShop").value = ""   
-        ID("selectFoodType").value = ""
-        
+        setValues([["foodThing",""],["foodUnit",""],["selectFoodShop","Shop"],["selectFoodType","Food Type"]])
+
         for (let i=0; i+1 < ID("ingredientTable").rows.length; i++){
             if(ID(`selectIngredientFood${i}`).value==="Food"){
             ClearDropdown(`selectIngredientFood${i}`,"Food")
@@ -328,16 +325,11 @@
                 ID("ingredientTable").deleteRow(i-1);     
                 }
             writeDict(2)
-            ID("recipeTitle").value = ""
-            ID("selectRecipeMealType").value = "Meal Type"
-            ID("selectRecipeType").value = "Recipe Type"       
-            ID("recipeMorv").value = "Morv" 
-            ID("recipeServes").value = ""   
-            ID("recipeMethod").value = ""   
-    }
+            setValues([["recipeTitle",""],["selectRecipeMealType","Meal Type"],["selectRecipeType","Recipe Type"],["recipeMorv","morv"],["recipeServes",""],["recipeMethod",""]])
+        }
     //
     function createIngredientTable(){
-        createRow("ingredientTable","th",["Food","Quantity","","Morv","-","+"],[40,18,12,12,6,6])
+        createRow("ingredientTable","th",["Food","Quantity","","Morv","-","+"],[40,18,12,12,6,6],"%")
         addIngredientsRow()
     }
     // create row in ingredients table - currently doesn't work if you start deleting random (non-end). Need to block user from removing past lines.    
@@ -352,7 +344,7 @@
             colhtml.push("<input type='button' id='-ingbtn" + j + "' value='-' >")
             colhtml.push("<input type='button' id='+ingbtn" + j + "' value='+' >")
 
-            createRow("ingredientTable","td",colhtml,[40,18,12,12,6,6])
+            createRow("ingredientTable","td",colhtml,[40,18,12,12,6,6],"%")
             CreateDropdown(`selectIngredientFood${j}`,Dict[1],true) // recipe > add ingredients
             CreateDropdown(`selectIngredientMorv${j}`,morvEnum,false) // recipe > morv            
 
@@ -383,11 +375,8 @@
         let endDate = new Date(ID("menuEndDate").value)
         Dict[3].addMenu(title,startDate,endDate)
         writeDict(3)
-        ID("menuTitle").value = ""
-        ID("menuEndDate").value = ""   
-        ID("menuStartDate").value = ""   
+        setValues([["menuTitle",""],["menuEndDate",""],["menuStartDate",""]])
     }
-
 
     // add meals to a menu (weekend - default)
         ID("add_weekend_menu").addEventListener("click", function(){
@@ -491,20 +480,20 @@
             let table = ID(`t${tableID}Table`)
             table.innerHTML=""
             if(tableID===1){
-                createRow("t1Table","th",["Food Name","Unit","Shop","Type","-"],[40,15,15,15,5])
+                createRow("t1Table","th",["Food Name","Unit","Shop","Type","-"],[40,15,15,15,5],"%")
                 createFilterRow("1",["longText","longText","select","select",null],[true])
                 CreateDropdown("t1TableFilter2input",shopEnum,false)
                 CreateDropdown("t1TableFilter3input",foodTypeEnum,false) 
             }
             else if(tableID===2){
-                createRow("t2Table","th",["Recipe Title","Meal","Type","Serves","Morv","-"],[55,15,15,10,10,5])
+                createRow("t2Table","th",["Recipe Title","Meal","Type","Serves","Morv","-"],[55,15,15,10,10,5],"%")
                 createFilterRow("2",["longText","select","select",null,"select",null])
                 CreateDropdown("t2TableFilter1input",mealTypeEnum,false)
                 CreateDropdown("t2TableFilter2input",recipeTypeEnum,false) 
                 CreateDropdown("t2TableFilter4input",morvEnum,false) 
             }
             else if(tableID===3){
-                createRow("t3Table","th",["Menu Title","Start Date","End Date","-"],[40,30,30,10])
+                createRow("t3Table","th",["Menu Title","Start Date","End Date","-"],[40,30,30,10],"%")
                 createFilterRow("3",["text",null,null,null])
             }
             createAdminTableContents(tableID)                            
@@ -674,8 +663,8 @@
                                     }
 
                                 // open the AddRecipe tab and show 'save changes' button = editRecipe_btn
-                                    ID("addRecipe_btn").style = "display:none"
-                                    ID("editRecipe_btn").style = "display:inline"
+                                    hideElement("addRecipe_btn")
+                                    showElement("editRecipe_btn","inline")
                                     openHTab("AddRecipe")
                             })  
                         //
@@ -882,8 +871,7 @@
         }      
 //
 // TAB: Edit Menu
-    // add recipe to menu function
-        
+    // add recipe to menu function   
         //create filter dropdowns
             // function to create list of checkboxes
                 function CreateFilterList(oldEnum,newEnum,checkboxID,divID){
@@ -921,6 +909,7 @@
                             }
                         })
                 }
+            //
             // call function to create checkboxes
                 var morvEnum2 = ["b","v","m"]
                 var mealTypeFilter = []
@@ -981,8 +970,6 @@
                         CreateDropdown("selectRecipeForMenu",newRecipeKeys,false)
                     })
                 //
-                // display recipe list
-                //
             //
             // Clear filters button
                 ID("addRecipeClearFilters").addEventListener("click",function(){
@@ -998,6 +985,7 @@
                 }
             
             //
+        //
         // add recipe to menu button + create modal
             ID("addRecipeToMenu_btn").addEventListener("click", function(){
                 ID("addRecipeToMenu").style = "display: block"
@@ -1037,9 +1025,7 @@
                 Dict[3].addRecipe(menuTitle,mealID,recipeTitle,morv)
                 writeDict(3) 
                 SelectEditMenu()
-                ID("selectMealForMenu").value = ""   
-                ID("selectRecipeForMenu").value = ""   
-                ID("selectMorvForMenu").value = ""   
+                setValues([["selectMealForMenu","Choose Meal"],["selectRecipeForMenu","Choose Recipe"],["selectMorvForMenu","Choose Morv"]])
             })
     //
     // create select meal dropdown from menu (in edit menu > add recipe)
@@ -1081,11 +1067,8 @@
 
             Dict[3].multiplyUp(menuTitle,meateaters,vegetarians)
             writeDict(3)
-            ID("selectMenuForMultiplyUp").value = "Choose Menu"   
-            ID("multiplyUpMeateaters").value = ""   
-            ID("multiplyUpVegetarians").value = ""   
+            setValues([["selectMenuForMultiplyUp","Choose Menu"],["multiplyUpMeateaters",""],["multiplyUpVegetarians",""],["selectViewMenu",menuTitle]])
             ID('multiplyUp').style = "display=:none" 
-            ID("selectViewMenu").value=menuTitle
             SelectEditMenu()
         })
     //
@@ -1280,23 +1263,17 @@
                             if (ingredient.food.shop === shopEnum[i]){
                                 let numberOfRows = ID(`shoppingtable${shopEnum[i]}`).rows.length
                                 if (numberOfRows === 0){
-                                    let shoppingTableRow = ID(`shoppingtable${shopEnum[i]}`).insertRow(rowNumber);           
+                                  //  let shoppingTableRow = ID(`shoppingtable${shopEnum[i]}`).insertRow(rowNumber);           
                                     
-                                    let col = AddRow(shoppingTableRow,3)
-
-                                    for (let x=0; x<col.length; x++){
-                                        col[x].id = `${menuTitle}${shopEnum[i]}row${rowNumber}col${x}`
+                                  //  let col = AddRow(shoppingTableRow,3)
+                                    let cellIDs =[]
+                                    for (let x=0; x<3; x++){
+                                         cellIDs[x] = `${menuTitle}${shopEnum[i]}row${rowNumber}col${x}`
                                     }
-                                    col[0].style.width="50%"
-                                    col[1].style.width="30%"
-                                    col[2].style.width="20%"
+                                    createRow(`shoppingtable${shopEnum[i]}`,"td",[ingredientKey[l],ingredient.quantityLarge,ingredient.food.unit],[50,30,20],"%",cellIDs)                                    
                                             
                                     rowNumber++;
-                                    
-                                    col[0].innerHTML=ingredientKey[l];
-                                    col[1].innerHTML=ingredient.quantityLarge;  
-                                    col[2].innerHTML=ingredient.food.unit;
-                                }
+                                    }
                                 else {
                                     for (let m = 0; m < numberOfRows; m++){
                                         if (ID(`${menuTitle}${shopEnum[i]}row${m}col0`).innerText === ingredientKey[l] ){
@@ -1305,22 +1282,12 @@
                                                 ID(`${menuTitle}${shopEnum[i]}row${m}col1`).innerText = newValue
                                                 break;
                                             }
-                                        else if (m === numberOfRows-1){
-
-                                            let shoppingTableRow = ID(`shoppingtable${shopEnum[i]}`).insertRow(rowNumber);           
-                                            
-                                            let col = AddRow(shoppingTableRow,3)
-                                            
-                                            for (let x=0; x<col.length; x++){
-                                                col[x].id = `${menuTitle}${shopEnum[i]}row${rowNumber}col${x}`
+                                        else if (m === numberOfRows-1){                                         
+                                            let cellIDs =[]
+                                            for (let x=0; x<3; x++){
+                                                 cellIDs[x] = `${menuTitle}${shopEnum[i]}row${rowNumber}col${x}`
                                             }
-                                            col[0].style.width="50%"
-                                            col[1].style.width="30%"
-                                            col[2].style.width="20%"
-                                                                                                                                                                                                
-                                            col[0].innerHTML=ingredientKey[l];
-                                            col[1].innerHTML=ingredient.quantityLarge;  
-                                            col[2].innerHTML=ingredient.food.unit;
+                                            createRow(`shoppingtable${shopEnum[i]}`,"td",[ingredientKey[l],ingredient.quantityLarge,ingredient.food.unit],[50,30,20],"%",cellIDs)                                                                               
                                             rowNumber++; 
                                         }
                                         else { continue }  
@@ -1353,10 +1320,10 @@
         function ShowShoppingDiv(i){
             for (let j=0; j < shopEnum.length; j++){
                 if (i===j){
-                    ID(`shoppingdiv${shopEnum[j]}`).style = "display:block"  
+                    showElement(`shoppingdiv${shopEnum[j]}`,"block")
                 }
                 else{
-                    ID(`shoppingdiv${shopEnum[j]}`).style =  "display:none"                   
+                    hideElement(`shoppingdiv${shopEnum[j]}`)
                 }
             }
         }
@@ -1374,9 +1341,9 @@
 // CREATE Printable Menu
     // event listener for the print menu button
         ID("printMenubtn").addEventListener('click', function (event) {
-            ID("PrintMenu").style="display:block"
+            showElement("PrintMenu","block")
             GeneratePrintMenu()
-            ID("mainApp").style="display:none"
+            hideElement("mainApp")
             let menuTitle = ID("selectViewMenu").value.replace("/","-")
             let rand = (Math.random()*1000).toFixed(0)
             ipc.send('print-to-pdf',`${menuTitle}_menu_${rand}.pdf`)
@@ -1454,6 +1421,7 @@
                             for (let x =0; x < col.length; x++){
                                 col[x].id = `print${i}${j}${k}${x}`
                             }
+                            // CAN WE USE CREATEROW FUNCTION HERE??
                             ID(`print${i}${j}${k}0`).style.width="50%"
                             ID(`print${i}${j}${k}1`).style.width="10%"
                             ID(`print${i}${j}${k}2`).style.width="10%"
@@ -1474,9 +1442,9 @@
 // CREATE Printable Shopping Lists
     // event listener for the print menu button
         ID("printShoppingbtn").addEventListener('click', function (event) {
-            ID("PrintShopping").style="display:block"
+            showElement("PrintShopping","block")
             GeneratePrintShopping()
-            ID("mainApp").style="display:none"
+            hideElement("mainApp")
             let menuTitle = ID("selectMenuForShopping").value.replace("/","-")
             let rand = (Math.random()*1000).toFixed(0)            
             ipc.send('print-to-pdf',`${menuTitle}_shopping_${rand}.pdf`)
@@ -1496,52 +1464,43 @@
                 html(printShoppingListTitle,`printShoppingTitle${i}`,"printShoppingList","","",`${menuTitle} - ${shop}`)
 
                 // create array with list of foods from shopping table with row number as a property
-                let foodList = []                
-                for(let j=0; j<shoppingTable.rows.length; j++){
-                    let foodName = ID(`${menuTitle}${shop}row${j}col0`).innerText
-                    foodList[foodName]={foodName:foodName, rowNumber:j}                      
-                }
-                let foodListKeys = Object.keys(foodList)
-                foodListKeys.sort()
-                if(foodListKeys.length>10){
-                    foodListKeys.sort(compareFoodType)                    
-                }          
+                    let foodList = []                
+                    for(let j=0; j<shoppingTable.rows.length; j++){
+                        let foodName = ID(`${menuTitle}${shop}row${j}col0`).innerText
+                        foodList[foodName]={foodName:foodName, rowNumber:j}                      
+                    }
+                    let foodListKeys = Object.keys(foodList)
+                    foodListKeys.sort()
+                    if(foodListKeys.length>10){
+                        foodListKeys.sort(compareFoodType)                    
+                    }          
 
                 // print shopping list
-                let printShoppingTable = document.createElement("table")
-                shoppingDiv.appendChild(printShoppingTable)
-                html(printShoppingTable,`printshoppingtable${shop}`,"printShoppingTable")
-                let rowNumber = 0
-                for (let k=0; k<foodListKeys.length; k++){
-                    let foodName = foodListKeys[k]                    
-                    if(foodListKeys.length>10 && k>0 && Dict[1][foodName].foodType !== Dict[1][foodListKeys[k-1]].foodType)
-                    {
-                        let printShoppingTableRow = ID(`printshoppingtable${shop}`).insertRow(rowNumber);                                             
-                        printShoppingTableRow.innerHTML="<td colspan=3 style='background-color:grey'></td>"
-                        rowNumber++;                        
+                    let printShoppingTable = document.createElement("table")
+                    shoppingDiv.appendChild(printShoppingTable)
+                    html(printShoppingTable,`printshoppingtable${shop}`,"printShoppingTable")
+                    let rowNumber = 0
+                    for (let k=0; k<foodListKeys.length; k++){
+                        let foodName = foodListKeys[k]                    
+                        if(foodListKeys.length>10 && k>0 && Dict[1][foodName].foodType !== Dict[1][foodListKeys[k-1]].foodType)
+                        {
+                            let printShoppingTableRow = ID(`printshoppingtable${shop}`).insertRow(rowNumber);                                             
+                            printShoppingTableRow.innerHTML="<td colspan=3 style='background-color:grey'></td>"
+                            rowNumber++;                        
+                        }
+                        let HTML=[]
+                        let tableRowNumber = foodList[foodName].rowNumber                    
+                        for (let x=0; x<3; x++){
+                            HTML[x]=ID(`${menuTitle}${shop}row${tableRowNumber}col${x}`).innerText;
+                        }
+                        createRow(`printshoppingtable${shop}`,"td",HTML,[200,50,50],"px")
+                        rowNumber++;
                     }
-                    let printShoppingTableRow = ID(`printshoppingtable${shop}`).insertRow(rowNumber);                     
-                    let col = AddRow(printShoppingTableRow,3)
-                    for (let x=0; x<col.length; x++){
-                        col[x].id = `print${menuTitle}${shop}row${rowNumber}col${x}`
+                    if(i===1){
+                        let essentialsNote = document.createElement("p")
+                        shoppingDiv.appendChild(essentialsNote)
+                        html(essentialsNote,"","essentialsNote","","","Don't forget to buy essentials: olive oil, milton, tea/coffee, tupperware, cocoa, biscuits")
                     }
-                    col[0].style.width="200px"
-                    col[1].style.width="50px"
-                    col[2].style.width="50px"
-                            
-                    rowNumber++;
-                    
-                    let tableRowNumber = foodList[foodName].rowNumber
-
-                    for (let x=0; x<3; x++){
-                        col[x].innerHTML=ID(`${menuTitle}${shop}row${tableRowNumber}col${x}`).innerText;
-                    }
-                }
-                if(i===1){
-                    let essentialsNote = document.createElement("p")
-                    shoppingDiv.appendChild(essentialsNote)
-                    html(essentialsNote,"","essentialsNote","","","Don't forget to buy essentials: olive oil, milton, tea/coffee, tupperware, cocoa, biscuits")
-                }
             }
         }
     
@@ -1587,7 +1546,6 @@
                     multiplyModal.style = "display: none"
                 } 
             }
-
     //
     // function to change quantities into sensible sizes
         function DisplayIngredient(quantitySmall,quantityLarge,unit){
@@ -1631,13 +1589,14 @@
         }
     //
     // create table row
-        function createRow(tableID,cellType,cellText,cellWidth){
+        function createRow(tableID,cellType,cellInnerHtml,cellWidth,widthUnit,cellIDs){
             let Table = ID(tableID)
             let newRow = Table.insertRow()
 
-            for (var i = 0; i < cellText.length; i++) {
+            for (var i = 0; i < cellInnerHtml.length; i++) {
                 let newCell = document.createElement(cellType);
-                html(newCell,"","",`width:${cellWidth[i]}%`,cellText[i])
+                html(newCell,"","",`width:${cellWidth[i]}${widthUnit}`,cellInnerHtml[i])
+                if(typeof cellIDs === "object"){newCell.id=cellIDs[i]}
                 newRow.appendChild(newCell);
             }
         }
@@ -1796,9 +1755,9 @@
     // function to return to normal once pdf has printed
         const ipc = require('electron').ipcRenderer
         ipc.on('wrote-pdf', function (event, path) {
-        ID("PrintMenu").style="display:none"
-        ID("PrintShopping").style="display:none"        
-        ID("mainApp").style="display:block"
+        hideElement("PrintMenu")
+        hideElement("PrintShopping")
+        showElement("mainApp","block")
         console.log(`Wrote PDF to: ${path}`)
         })
     //
@@ -1830,8 +1789,8 @@
             ID("t2Table").innerHTML=""
             createAdminTable(2)   
             ID("AddRecipePageTitle").innerText = "Add Recipe" 
-            ID("addRecipe_btn").style = "display:inline"
-            ID("editRecipe_btn").style = "display:none"
+            showElement("addRecipe_btn","inline")
+            hideElement("editRecipe_btn")
             openHTab("Admin")                            
             openVTab("t2RecipeDict")
         })  
@@ -1841,7 +1800,22 @@
             if (oldKeyName !== newKeyName) {
                 Object.defineProperty(location, newKeyName,Object.getOwnPropertyDescriptor(location, oldKeyName));
                 delete location[oldKeyName];
-            }
-            
+            }      
         }
+    //
+    // function to set values for a given list of IDs
+        function setValues(input){
+            for(let i=0; i<input.length; i++){
+                ID(input[i][0]).value=input[i][1]
+            }
+        }
+    //
+    // show and hide functions
+        function showElement(id,display){
+            ID(id).style=`display:${display}`
+        }
+        function hideElement (id){
+            ID(id).style="display:none"
+        }
+    //
 //

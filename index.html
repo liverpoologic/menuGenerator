@@ -24,14 +24,9 @@
     </div>
     <div id="AddFood" class="htabcontent">
       <h2> Add Food </h2>
-      <br> Name of Food:
+      <input type="text" id="foodThing" placeholder="name of food">
       <br>
-      <input type="text" id="foodThing">
-      <br>
-      <br> Unit:
-      <br>
-      <input type="text" id="foodUnit">
-      <br>
+      <input type="text" id="foodUnit" placeholder="unit">
       <br>
       <select id="selectFoodShop">
         <option>Shop</option>
@@ -47,33 +42,23 @@
       <h2 id="AddRecipePageTitle"> Add Recipe </h2>
       <div class="flex-container">
         <div id="addRecipe_left" style="width:50%; margin:0 20px 0 0">
-          Title:
-          <br>
-          <input type="text" id="recipeTitle">
-          <br>
+          <input type="text" id="recipeTitle" placeholder="Recipe Title">
           <br>
           <select id="selectRecipeMealType">
             <option>Meal Type</option>
           </select>
           <br>
-          <br>
           <select id="selectRecipeType">
             <option>Recipe Type</option>
           </select>
           <br>
-          <br>
-          <select id="recipeMorv">
+          <select id="recipeMorv"  placeholder="morv">
             <option>Morv</option>
           </select>
           <br>
-          <br> Serves:
+          <input type="number" id="recipeServes" placeholder="serves">
           <br>
-          <input type="number" id="recipeServes">
-          <br>
-          <br> Method:
-          <br>
-          <textarea class="taclass" id="recipeMethod" rows="15" cols="50"></textarea>
-          <br>
+          <textarea class="taclass" id="recipeMethod" rows="15" cols="45"  placeholder="method"></textarea>
           <br>
           <button id="addRecipe_btn">Add Recipe</button>
         </div>
@@ -88,9 +73,7 @@
     </div>
     <div id="AddMenu" class="htabcontent">
       <h2> Add Menu </h2>
-      <br> Title:
-      <br>
-      <input type="text" id="menuTitle">
+      <input type="text" id="menuTitle" placeholder="Menu Title">
       <br>
       <br> Start Date:
       <br>
@@ -127,37 +110,18 @@
       <div id="addRecipeToMenu" class="modal">
         <div class="modal-content animate">
           <div class="flex-container" style="width:97%">
-            <div style="width:500px">
-              <label>
-                <b>Menu</b>
-              </label>
-              <br>
+            <div style="width:400px">
               <select id="selectMenuForNewRecipe">
                 <option>Choose Menu</option>
               </select>
-              <br>
-              <br>
-              <label>
-                <b>Meal</b>
-              </label>
               <br>
               <select id="selectMealForMenu">
                 <option>Choose Meal</option>
               </select>
               <br>
-              <br>
-              <label>
-                <b>Recipe</b>
-              </label>
-              <br>
               <select id="selectRecipeForMenu">
                 <option>Choose Recipe</option>
               </select>
-              <br>
-              <br>
-              <label>
-                <b>Morv</b>
-              </label>
               <br>
               <select id="selectMorvForMenu">
                 <option>Choose Morv</option>
@@ -166,7 +130,7 @@
               <button id="addRecipeToMenu_submit">Add Recipe</button>
             </div>
             <div style="width:20px"></div>
-            <div>
+            <div style="width:250px">
               <label>
                 <b>Filters</b>
               </label>
@@ -194,27 +158,13 @@
       <div id="multiplyUp" class="modal">
         <div class="modal-content animate">
           <div class="container">
-            <label>
-              <b>Menu</b>
-            </label>
-            <br>
             <select id="selectMenuForMultiplyUp">
               <option>Choose Menu</option>
             </select>
             <br>
+            <input id="multiplyUpMeateaters" type="number" placeholder="meateaters"></input>
             <br>
-            <label>
-              <b>Meateaters</b>
-            </label>
-            <br>
-            <input id="multiplyUpMeateaters" type="number"></input>
-            <br>
-            <br>
-            <label>
-              <b>Vegetarians</b>
-            </label>
-            <br>
-            <input id="multiplyUpVegetarians" type="number"></input>
+            <input id="multiplyUpVegetarians" type="number" placeholder="vegetarians"></input>
             <br>
             <button id="multiplyUp_submit">Multiply Up</button>
           </div>
