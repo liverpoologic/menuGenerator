@@ -338,7 +338,7 @@
     }
     //
     function createIngredientTable(){
-        createRow("ingredientTable","td",["Food","Quantity","","Morv","-","+"],[40,18,12,12,6,6])
+        createRow("ingredientTable","th",["Food","Quantity","","Morv","-","+"],[40,18,12,12,6,6])
         addIngredientsRow()
     }
     // create row in ingredients table - currently doesn't work if you start deleting random (non-end). Need to block user from removing past lines.    
@@ -1338,7 +1338,9 @@
             ID("PrintMenu").style="display:block"
             GeneratePrintMenu()
             ID("mainApp").style="display:none"
-            ipc.send('print-to-pdf') 
+            let menuTitle = ID("selectViewMenu").value.replace("/","-")
+            let rand = (Math.random()*1000).toFixed(0)
+            ipc.send('print-to-pdf',`${menuTitle}_menu_${rand}.pdf`)
         })
     //
     //function GeneratePrintMenu
@@ -1436,7 +1438,9 @@
             ID("PrintShopping").style="display:block"
             GeneratePrintShopping()
             ID("mainApp").style="display:none"
-            ipc.send('print-to-pdf') 
+            let menuTitle = ID("selectMenuForShopping").value.replace("/","-")
+            let rand = (Math.random()*1000).toFixed(0)            
+            ipc.send('print-to-pdf',`${menuTitle}_shopping_${rand}.pdf`)
         })
     //
     // function GeneratePrintShopping

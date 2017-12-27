@@ -64,8 +64,8 @@ const os = require('os')
 const ipc = electron.ipcMain
 const shell = electron.shell
 
-ipc.on("print-to-pdf", function (event) {
-  const pdfPath = path.join(__dirname, "PDFs","output.pdf")
+ipc.on("print-to-pdf", function (event,arg) {
+  const pdfPath = path.join(__dirname, "PDFs",arg)
   const win = BrowserWindow.fromWebContents(event.sender)
   // Use default printing options
   win.webContents.printToPDF({}, function (error, data) {
