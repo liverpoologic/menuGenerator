@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Menu Input</title>
+  <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+  <div id="mainApp">
+
+    <div class="title">
+      <b>Pigotts menu generator</b>
+    </div>
+    <div class="htab">
+      <button id="AddFoodTabBtn" class="htablinks">Add Food</button>
+      <button id="AddRecipeTabBtn" class="htablinks">Add Recipe</button>
+      <button id="AddMenuTabBtn" class="htablinks">Add Menu</button>
+      <button id="ViewMenuTabBtn" class="htablinks">View Menu</button>
+      <button id="EditMenuTabBtn" class="htablinks">Edit Menu</button>
+      <button id="ShoppingTabBtn" class="htablinks">Shopping</button>
+      <button id="AdminTabBtn" class="htablinks">Admin</button>
+
+    </div>
+    <div id="AddFood" class="htabcontent">
+      <h2> Add Food </h2>
+      <br> Name of Food:
+      <br>
+      <input type="text" id="foodThing">
+      <br>
+      <br> Unit:
+      <br>
+      <input type="text" id="foodUnit">
+      <br>
+      <br>
+      <select id="selectFoodShop">
+        <option>Shop</option>
+      </select>
+      <select id="selectFoodType">
+        <option>Food Type</option>
+      </select>
+      <br>
+      <br>
+      <button id="addfood_btn">Add Food</button>
+    </div>
+    <div id="AddRecipe" class="htabcontent">
+      <h2 id="AddRecipePageTitle"> Add Recipe </h2>
+      <div class="flex-container">
+        <div id="addRecipe_left" style="width:50%; margin:0 20px 0 0">
+          Title:
+          <br>
+          <input type="text" id="recipeTitle">
+          <br>
+          <br>
+          <select id="selectRecipeMealType">
+            <option>Meal Type</option>
+          </select>
+          <br>
+          <br>
+          <select id="selectRecipeType">
+            <option>Recipe Type</option>
+          </select>
+          <br>
+          <br>
+          <select id="recipeMorv">
+            <option>Morv</option>
+          </select>
+          <br>
+          <br> Serves:
+          <br>
+          <input type="number" id="recipeServes">
+          <br>
+          <br> Method:
+          <br>
+          <textarea class="taclass" id="recipeMethod" rows="15" cols="50"></textarea>
+          <br>
+          <br>
+          <button id="addRecipe_btn">Add Recipe</button>
+        </div>
+        <div id="addRecipe_right" style="width:50%">
+          <table id="ingredientTable">
+          </table>
+          <br>
+          <br>
+          <button id="editRecipe_btn" style="display:none">Save Changes</button>
+        </div>
+      </div>
+    </div>
+    <div id="AddMenu" class="htabcontent">
+      <h2> Add Menu </h2>
+      <br> Title:
+      <br>
+      <input type="text" id="menuTitle">
+      <br>
+      <br> Start Date:
+      <br>
+      <input type="date" id="menuStartDate">
+      <br>
+      <br> End Date:
+      <br>
+      <input type="date" id="menuEndDate">
+      <br>
+      <br>
+      <button id="addmenu_btn">Add Empty Menu</button>
+      <br>
+      <br>
+      <button id="add_weekend_menu">Add Standard Weekend Menu</button>
+    </div>
+    <div id="ViewMenu" class="htabcontent">
+      <h2> View Menu </h2>
+      <select id="selectViewMenu">
+        <option>Menu</option>
+      </select>
+      <button id="printMenubtn" style="margin:4px 40px">Print to PDF</button>
+      <div id="viewMenuDiv" class="menu">
+      </div>
+      <br>
+      <br>
+    </div>
+    <div id="EditMenu" class="htabcontent">
+      <h2>Edit Menu</h2>
+      <select id="selectEditMenu">
+        <option>Menu</option>
+      </select>
+      <br>
+      <button id="addRecipeToMenu_btn" style="width:200px;">Add Recipe</button>
+      <div id="addRecipeToMenu" class="modal">
+        <div class="modal-content animate">
+          <div class="flex-container" style="width:97%">
+            <div style="width:500px">
+              <label>
+                <b>Menu</b>
+              </label>
+              <br>
+              <select id="selectMenuForNewRecipe">
+                <option>Choose Menu</option>
+              </select>
+              <br>
+              <br>
+              <label>
+                <b>Meal</b>
+              </label>
+              <br>
+              <select id="selectMealForMenu">
+                <option>Choose Meal</option>
+              </select>
+              <br>
+              <br>
+              <label>
+                <b>Recipe</b>
+              </label>
+              <br>
+              <select id="selectRecipeForMenu">
+                <option>Choose Recipe</option>
+              </select>
+              <br>
+              <br>
+              <label>
+                <b>Morv</b>
+              </label>
+              <br>
+              <select id="selectMorvForMenu">
+                <option>Choose Morv</option>
+              </select>
+              <br>
+              <button id="addRecipeToMenu_submit">Add Recipe</button>
+            </div>
+            <div style="width:20px"></div>
+            <div>
+              <label>
+                <b>Filters</b>
+              </label>
+              <br>
+              <div class="flex-container" style="padding:5px">
+                <div class="filter-container" id="mealTypeFilters"></div>
+                <div class="filter-container" id="recipeTypeFilters"></div>
+                <div class="filter-container" id="morvFilters"></div>
+              </div>
+              <br>
+              <button id="addRecipeApplyFilters" padding="6px">Apply Filters</button>
+              <button id="addRecipeClearFilters">Clear Filters</button>
+              <br>
+
+            </div>
+          </div>
+          <div class="container" style="background-color:#f1f1f1">
+            <button type="button" id="addRecipeCancel_btn" class="cancelbtn">Cancel</button>
+          </div>
+        </div>
+      </div>
+
+      <button id="multiplyUp_btn" style="width:200px;">Multiply Up</button>
+
+      <div id="multiplyUp" class="modal">
+        <div class="modal-content animate">
+          <div class="container">
+            <label>
+              <b>Menu</b>
+            </label>
+            <br>
+            <select id="selectMenuForMultiplyUp">
+              <option>Choose Menu</option>
+            </select>
+            <br>
+            <br>
+            <label>
+              <b>Meateaters</b>
+            </label>
+            <br>
+            <input id="multiplyUpMeateaters" type="number"></input>
+            <br>
+            <br>
+            <label>
+              <b>Vegetarians</b>
+            </label>
+            <br>
+            <input id="multiplyUpVegetarians" type="number"></input>
+            <br>
+            <button id="multiplyUp_submit">Multiply Up</button>
+          </div>
+          <div class="container" style="background-color:#f1f1f1">
+            <button type="button" id="multiplyUpCancel_btn" class="cancelbtn">Cancel</button>
+          </div>
+        </div>
+      </div>
+      <br>
+      <div id="editMenuDiv" class="menu">
+      </div>
+    </div>
+    <div id="Shopping" class="htabcontent">
+      <h2> Shopping Lists </h2>
+      <select id="selectMenuForShopping">
+        <option>Menu</option>
+      </select>
+      <button id="printShoppingbtn" style="margin:4px 40px">Print to PDF</button>
+      <br>
+      <br>
+    </div>
+    <div id="Admin" class="htabcontent" style="padding=0px">
+      <div class="vtab">
+        <button id="t1FoodDictTabBtn" class="vtablinks">Food</button>
+        <button id="t2RecipeDictTabBtn" class="vtablinks">Recipes</button>
+        <button id="t3MenuDictTabBtn" class="vtablinks">Menus</button>
+      </div>
+      <div id="t1FoodDict" class="vtabcontent" style="display:none">
+        <h2> All Food </h2>
+        <table id="t1Table">
+        </table>
+      </div>
+      <div id="t2RecipeDict" class="vtabcontent" style="display: none;">
+        <h2> All Recipes<button id="clearIngredientSearch" class="insideCellBtn" style='float:right'>x</button><input type="text" id="ingredientSearchInput" placeholder="ingredient" style="margin:4px 10px; float:right;"></input></h2>
+        <table id="t2Table">
+        </table>
+      </div>
+      <div id="t3MenuDict" class="vtabcontent" style="display: none;">
+        <h2> All Menus </h2>
+        <table id="t3Table">
+        </table>
+        <br>
+        <br>
+        <br>
+      </div>
+    </div>
+  </div>
+  <div id="PrintMenu" class="printMenu" style="display:none"></div>
+  <div id="PrintShopping" class="printShopping" style="display:none"></div>
+  <script> 
+    // require renderer.js
+    require('./renderer.js')
+  </script>
+</body>
+
+</html>
