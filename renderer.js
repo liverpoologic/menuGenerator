@@ -159,7 +159,6 @@
 
             }
             if(typeof this[menuTitle].meateaters==="number"){
-                console.log("multiplyingup")
             this.multiplyUp(menuTitle,this[menuTitle].meateaters,this[menuTitle].vegetarians)
             }
         },  
@@ -421,7 +420,6 @@
     //
 //
 // TAB: Admin
-
     // create filter row
         function createFilterRow(dictID,filterType){
             let tableID = `t${dictID}Table`
@@ -550,14 +548,55 @@
                             cell.innerHTML = `<input type='text' id='t1TableFoodNameInput${j}' value='${oldValue}'><button id='t1TableFoodNameSave${j}' class='insideCellBtn'>✔</button>`
                             cell.className="tableInput"
                             ID(`t1TableKey${j}`).removeEventListener("click",editCell)
-                            ID(`t1TableFoodNameSave${j}`).addEventListener("click", function editFood()
-                            { //note that this wil only change Dict[1], not anything that's in t2 or t3 (at the moment)
-                                let oldFood = Dict[1][oldValue]
-                                Dict[1].deleteFood(oldValue)
-                                Dict[1].addFood(ID(`t1TableFoodNameInput${j}`).value,oldFood.unit,oldFood.shop)                                
-                                writeDict(1)
-                                ID(`t1TableKey${j}`).innerHTML=ID(`t1TableFoodNameInput${j}`).value
-                                createAdminTableContents(1)                        
+                            ID(`t1TableFoodNameSave${j}`).addEventListener("click", function editFood(){
+                                let newValue = ID(`t1TableFoodNameInput${j}`).value
+                                renameKey(oldValue,newValue,Dict[1])
+                                // check whether food is present in any recipes
+                                    let recipeKeys = Object.keys(Dict[2])  
+                                    var impactedRecipes = []                   
+                                    for (let k=0; k<recipeKeys.length; k++){
+                                        let recipe = Dict[2][recipeKeys[k]]                                                    
+                                        if(typeof recipe==="function"){
+                                            continue
+                                        }
+                                        let ingredientKeys = Object.keys(recipe.ingredients)
+                                        for (let x=0; x<ingredientKeys.length; x++){
+                                            if(oldValue === ingredientKeys[x]){
+                                                renameKey(oldValue,newValue,recipe.ingredients)
+                                                impactedRecipes.push(recipeKeys[k])
+                                            }
+                                        }
+                                    }
+                                //
+                                // check whether food is present in any menus (t3)
+                                    let menuKeys = Object.keys(Dict[3]).sort()
+                                    for (let k=0; k<menuKeys.length; k++){
+                                        let menuTitle = menuKeys[k]
+                                        if(typeof Dict[3][menuTitle]==="function"){
+                                            continue
+                                        }
+                                        let mealKeys = Object.keys(Dict[3][menuTitle].meals)                                        
+                                        for (let x=0; x<mealKeys.length; x++){
+                                            let mealNo = parseInt(mealKeys[x])
+                                            let recipeKeys = Object.keys(Dict[3][menuTitle].meals[mealNo].recipes)
+                                            for (let y=0; y<recipeKeys.length; y++){
+                                                let recipeNo = parseInt(recipeKeys[y])
+                                                let recipe = Dict[3].getRecipe(menuTitle,mealNo,recipeNo)
+                                                let recipeTitle = recipe.recipeTitle
+                                                if(impactedRecipes.indexOf(recipeTitle) >-1 ){
+                                                    let morv = recipe.morv
+                                                    Dict[3].deleteRecipe(menuTitle,mealNo,recipeNo)
+                                                    Dict[3].addRecipe(menuTitle,mealNo,recipeTitle,morv)
+                                                }
+                                            }
+                                        }
+                                    }
+                                //
+                                createAdminTableContents(1)  
+                                writeDict(1)                                
+                                writeDict(2)  
+                                writeDict(3)   
+                              
                             })
                         }) 
                     // 
@@ -1795,5 +1834,14 @@
             ID("editRecipe_btn").style = "display:none"
             openHTab("Admin")                            
             openVTab("t2RecipeDict")
-        })   
+        })  
+    //
+    // rename key function
+        function renameKey(oldKeyName,newKeyName,location){
+            if (oldKeyName !== newKeyName) {
+                Object.defineProperty(location, newKeyName,Object.getOwnPropertyDescriptor(location, oldKeyName));
+                delete location[oldKeyName];
+            }
+            
+        }
 //
