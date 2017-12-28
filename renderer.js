@@ -12,6 +12,11 @@
 
     "use strict"
     var fs = require ("fs");
+    var timespan = require("timespan");    
+
+    var ts = new timespan.TimeSpan();
+    console.log(ts)
+    
 //
 // create data structures (dictionaries and enums)
     /* 3 dictionaries:
@@ -107,14 +112,33 @@
                 else {
                 this[menuTitle] = {startDate:startDate,endDate:endDate,meateaters:null,vegetarians:null,meals:[]};
                 }
-            },
+        },
         addMeal (menuTitle,mealType,date) {
             if (typeof menuTitle != "string") {console.log(`invalid input: ${menuTitle} not a string`)}
             else if (mealTypeEnum.indexOf(mealType)<0){console.log(`invalid input: ${mealType} not in the mealType enum`)}
             else if (typeof date != "object") {console.log(`invalid input: ${date} not an object`)}
             else {
-            let i = this[menuTitle].meals.length;
-            this[menuTitle].meals[i] = {mealType:mealType, date:date, recipes:[]};
+                let newMeal = {mealType:mealType, date:date, recipes:[]};
+                if(this[menuTitle].meals.length === 0){
+                    this[menuTitle].meals[0] = newMeal
+                }
+                else{
+                    for (let i=0; i<this[menuTitle].meals.length; i++){
+                        console.log(`i i ${i}`)
+                        console.log(compareMeal(newMeal,this[menuTitle].meals[i]))
+                        let compare = compareMeal(newMeal,this[menuTitle].meals[i])
+                        if (compare ===0){
+                            console.log("tried to add repeated meal. Meal not added.")
+                            break
+                        }
+                        else if(compare===1 && i===this[menuTitle].meals.length-1){ // check if the meal needs to go at the end of the array
+                                this[menuTitle].meals[i+1] = newMeal; break
+                        }    
+                        else if (compare === -1){
+                            this[menuTitle].meals.splice(i, 0, newMeal); break                            
+                        }
+                    }                
+                }
             }
         },
         addRecipe (menuTitle,mealID,recipeTitle,morv) {
@@ -207,23 +231,27 @@
             }
         },
         getMenu(x) {
-        return Dict[3][x]
+        return this[x]
         },
         getMeal(x,y) {
-            return Dict[3][x].meals[y]
+            return this[x].meals[y]
         },
         getRecipe(x,y,z) {
-            return Dict[3][x].meals[y].recipes[z]
+            return this[x].meals[y].recipes[z]
         },
         getIngredient(x,y,z,a) {
-            return Dict[3][x].meals[y].recipes[z].ingredients[a]
+            return this[x].meals[y].recipes[z].ingredients[a]
         },
         getFood(x,y,z,a) {
-            return Dict[3][x].meals[y].recipes[z].ingredients[a].food
+            return this[x].meals[y].recipes[z].ingredients[a].food
         },
         deleteMenu(x) {
             delete this[x]
             console.log(`deleting ${x} from Dict[3]`)
+        },
+        // need to add deleteMeal function
+        deleteMeal(menuTitle,mealID){
+            this[menuTitle].meals.splice(mealID,1)
         },
         deleteRecipe(menuTitle,mealID,recipeID){
             console.log(`deleting ${this[menuTitle].meals[mealID].recipes[recipeID].recipeTitle} from Dict[3]`)                        
@@ -249,8 +277,8 @@
         }; 
     //    
     // create enums
-        const mealTypeEnum = ["breakfast","snack","lunch","dinner","dessert"]      
-        const recipeTypeEnum = ["core","veg","starch","sauce","other"] 
+        const mealTypeEnum = ["breakfast","snack","lunch","dinner"]      
+        const recipeTypeEnum = ["core","dessert core","veg","starch","sauce","other"] 
         const morvEnum = ["b","v","m",null]  
         const morvOpts = ["b","v","m","v / b"]   
         const shopEnum = ["Bakers","Bookers","Peterlee","Pigotts","Tesco","Troutts","Wrenns","Other"] 
@@ -258,12 +286,9 @@
         const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
     //
 //
-// Listeners for the 'add' buttons
-    ID("addfood_btn").addEventListener("click", AddFoodBtn)
-    ID("addRecipe_btn").addEventListener("click", AddRecipeBtn)
-    ID("addmenu_btn").addEventListener("click", AddMenuBtn)
-//
 // TAB: Add Food
+    ID("addfood_btn").addEventListener("click", AddFoodBtn)
+
     function AddFoodBtn ()
     {
         let thing = ID("foodThing").value.toLowerCase()
@@ -290,6 +315,7 @@
 //
 // TAB: Add Recipe
     //
+    ID("addRecipe_btn").addEventListener("click", AddRecipeBtn)    
     function AddRecipeBtn ()
     {
         let title = ID("recipeTitle").value
@@ -375,7 +401,8 @@
         let endDate = new Date(ID("menuEndDate").value)
         Dict[3].addMenu(title,startDate,endDate)
         writeDict(3)
-        setValues([["menuTitle",""],["menuEndDate",""],["menuStartDate",""]])
+        createAddMealModal(title)                    
+        setValues([["menuTitle",""],["menuEndDate",""],["menuStartDate",""]])        
     }
 
     // add meals to a menu (weekend - default)
@@ -401,11 +428,90 @@
                     Dict[3].addRecipe(title,5,"Standard Breakfast","b")
 
                     writeDict(3) 
-                    ID("menuTitle").value = ""
-                    ID("menuEndDate").value = ""   
-                    ID("menuStartDate").value = ""      
+                    setValues([["menuTitle",""],["menuEndDate",""]["menuStartDate",""]])
                 }
             })
+    //
+    // add meals to a custom menu
+        CreateDropdown("selectMealTypeForAddMeals",mealTypeEnum,false)
+        ID("addmenu_btn").addEventListener("click", AddMenuBtn)
+        
+        function createAddMealModal(menuTitle){
+            let startDate = new Date(Dict[3][menuTitle].startDate)
+            let endDate = new Date (Dict[3][menuTitle].endDate)
+            console.log(startDate)
+            console.log(endDate)
+            if(endDate<startDate){console.log("End Date is after Start Date"); return null}
+            ID("menuTitleForAddMeals").innerHTML = menuTitle
+            // create list of dates
+                let end = false
+                let i = 0
+                let dateList = []
+                while (end===false){
+                    dateList[i] = new Date (Dict[3][menuTitle].startDate)                 
+                    dateList[i].setDate(startDate.getDate() + i);
+                    if (dateList[i].getDate()===endDate.getDate()){end=true}
+                    if(i===20){end=true; console.log("date range too large")}
+                    i++                    
+                }
+                let dateEnum = []
+                for (let j=0; j<dateList.length; j++){
+                    let d = dateList[j]
+                    dateEnum[j]=`${weekday[d.getDay()]} (${getFormalDate(d)})`
+                }
+                ClearDropdown("selectDayForAddMeals","Select Day")
+                CreateDropdown("selectDayForAddMeals",dateEnum,false,dateList)
+                CreateMealList()
+                ID("addMealsToMenu").style = "display: block"                
+            //
+            // create list of meals
+            }
+        function CreateMealList(){
+            let menuTitle = ID("menuTitleForAddMeals").innerHTML            
+            setValues([["selectMealTypeForAddMeals","Select Meal"]])
+            let mealDiv = ID("currentMealList")
+            mealDiv.innerHTML=""
+            let menu = Dict[3][menuTitle]
+            for (let i = 0; i < menu.meals.length; i++) {
+                let meal = Dict[3].getMeal(menuTitle,i) 
+                let day = weekday[new Date (meal.date).getDay()]
+                let mealTitleDiv = document.createElement("div")
+                let mealTitle = document.createElement("text");
+                html(mealTitleDiv,"","recipeTitleDiv","background-color:#cccccc")
+                html(mealTitle,"","recipeTitle","","",`${day} ${meal.mealType}`)
+                mealDiv.appendChild(mealTitleDiv);
+                mealTitleDiv.appendChild(mealTitle);
+
+                let deleteMealFromMenu = document.createElement("button")
+                html(deleteMealFromMenu,"","removeRecipe","","","x")
+                mealTitleDiv.appendChild(deleteMealFromMenu)
+
+                deleteMealFromMenu.addEventListener("click",function(){
+                    Dict[3].deleteMeal(menuTitle,i)
+                    writeDict(3)
+                    CreateMealList()            
+                })
+            }      
+        }
+        ID("addMeals_btn").addEventListener("click",AddMealBtn) 
+        
+        function AddMealBtn (){
+            let menuTitle = ID("menuTitleForAddMeals").innerHTML
+            Dict[3].addMeal(menuTitle,ID("selectMealTypeForAddMeals").value,new Date (ID("selectDayForAddMeals").value))
+            CreateMealList()            
+        }
+        //
+        // function to get date into 'th' format
+            function getFormalDate(date){
+                let d = date.getDate()
+                let st = [1,21,31]
+                let nd = [2,22]
+                let rd = [3,23]
+                if (st.indexOf(d)>-1){return `${d}st`}
+                else if (nd.indexOf(d)>-1){return `${d}nd`}
+                else if (rd.indexOf(d)>-1){return `${d}rd`}
+                else {return `${d}th`}
+            }
     //
 //
 // TAB: Admin
@@ -581,7 +687,6 @@
                                         }
                                     }
                                 //
-                                createAdminTableContents(1)  
                                 writeDict(1)                                
                                 writeDict(2)  
                                 writeDict(3)   
@@ -629,7 +734,6 @@
                                 else{Dict[2][key]["morv"] = [newValue]}
 
                                 writeDict(2)
-                                createAdminTableContents(2)
                             })
                         })   
                     //
@@ -709,7 +813,6 @@
                         {
                             Dict[tableID][deleteRowContents[tableID]](ID(`t${tableID}TableKey${j}`).innerText)                          
                             writeDict(tableID) 
-                            table.deleteRow(j+1);             
                         })
                 //
             } 
@@ -825,42 +928,38 @@
                         mealDiv.appendChild(document.createElement("br"))
                     //
                     // adds ingredients table
-                        let ingredientTableDiv = document.createElement("div");       // Create a <div> element
-                        ingredientTableDiv.id = `ingredientTableDiv${i}${j}`              // give the node an id
-                        let ingredientTable = document.createElement("table");          // Create a <table> element
-                        ingredientTable.id = `ingredientTable${i}${j}`              // give the table an id
+                        let ingredientTableDiv = document.createElement("div");      
+                        ingredientTableDiv.id = `ingredientTableDiv${i}${j}`         
+                        let ingredientTable = document.createElement("table");       
+                        ingredientTable.id = `ingredientTable${i}${j}`              
                         
                         ID(`recipeDiv${i}${j}`).appendChild(ingredientTableDiv);   // Add the div to 'menuDiv'
                         ID(`ingredientTableDiv${i}${j}`).appendChild(ingredientTable);   // Add the table to the div                
 
                         let ingredientKey = Object.keys(recipe.ingredients)                
                         for (let k = 0; k < ingredientKey.length; k++) {
-                            let ingredientTableRow = ingredientTable.insertRow(k);           
                             let ingredient = Dict[3].getIngredient(menuTitle,i,j,ingredientKey[k])
-                            let col = AddRow(ingredientTableRow,4)
-                            col[0].innerHTML=ingredientKey[k];
+                            let html = []
+                            let ids = []
+                            html.push(ingredientKey[k])
 
                             if (ingredient.quantityLarge===null){
-                                col[1].innerHTML=`(${ingredient.quantitySmall})`; 
-                                col[2].innerHTML=ingredient.quantityLarge;  
-                                col[3].innerHTML=ingredient.food.unit;    
+                                html.push(`(${ingredient.quantitySmall})`); 
+                                html.push(ingredient.quantityLarge);  
+                                html.push(ingredient.food.unit);    
                             }
                             else {
-                            let display = DisplayIngredient(ingredient.quantitySmall,ingredient.quantityLarge,ingredient.food.unit)
-                            col[1].innerHTML = display[0]
-                            col[2].innerHTML = display[1]
-                            col[3].innerHTML = display[2]
+                                let display = DisplayIngredient(ingredient.quantitySmall,ingredient.quantityLarge,ingredient.food.unit)
+                                for (let x=0; x<3; x++){
+                                    html.push(display[x])
+                                }
                             }
-                            for (let x =0; x < col.length; x++){
-                                col[x].id = `${i}${j}${k}${x}`
+                            for (let x=0; x<4; x++){
+                                ids.push(`${i}${j}${k}${x}`)
                             }
-                            ID(`${i}${j}${k}0`).style.width="50%"
-                            ID(`${i}${j}${k}1`).style.width="10%"
-                            ID(`${i}${j}${k}2`).style.width="10%"
-                            ID(`${i}${j}${k}3`).style.width="30%"
-                            ID(`${i}${j}${k}1`).style.fontSize="11px"
-                            
-                        }
+                            createRow(`ingredientTable${i}${j}`,"td",html,[50,10,10,30],"%",ids)
+                            ID(`${i}${j}${k}1`).style.fontSize="11px" 
+                        }                     
                         let method = document.createElement("p"); 
                         var methodHTML = recipe.method.replace(/(?:\r\n|\r|\n)/g, '<br><br>');                        
                         ID(`ingredientTableDiv${i}${j}`).appendChild(method);
@@ -1001,15 +1100,10 @@
                         let day = weekday[new Date (menu.meals[i].date).getDay()]
                         mealEnum.push(`${day} ${menu.meals[i].mealType}`)
                     }   
-                    // creating my own dropdown as needs different displays and values
-                    var select = ID("selectMealForMenu");
-                    for(let i = 0; i < mealEnum.length; i++) {
-                        let opt = mealEnum[i];
-                        let el = document.createElement("option");
-                        el.textContent = opt;
-                        el.value = i;
-                        select.appendChild(el);
-                        }
+                    let values =[]
+                    for(let i = 0; i < mealEnum.length; i++) {values[i]=i}
+                    CreateDropdown("selectMealForMenu",mealEnum,false,values)
+                            
             })
 
             ID("addRecipeCancel_btn").addEventListener("click",function(){
@@ -1041,15 +1135,9 @@
                 mealEnum.push(`${day} ${menu.meals[i].mealType}`)
             }   
             // creating my own dropdown as needs different displays and values
-            var select = ID("selectMealForMenu");
-            for(let i = 0; i < mealEnum.length; i++) {
-                let opt = mealEnum[i];
-                let el = document.createElement("option");
-                el.textContent = opt;
-                el.value = i;
-                select.appendChild(el);
-                }
-            
+            let values =[]
+            for(let i = 0; i < mealEnum.length; i++) {values[i]=i}
+            CreateDropdown("selectMealForMenu",mealEnum,false,values)            
         })
     //
     // multiply up a menu
@@ -1115,7 +1203,7 @@
                                 else{
                                     html(recipeTitle,`recipeTitle${i}${j}`,"recipeTitle","","",`${recipe.recipeTitle} - ${recipe.morv} `)                                             
                                 }
-                                if (recipe.mealType==="dessert"){recipeTitleDiv.style="background-color:#F28D18"}
+                                if (recipe.recipeType==="dessert core"){recipeTitleDiv.style="background-color:#F28D18"}
                                 else if (recipe.recipeType==="core"){recipeTitleDiv.style="background-color:#23D08A"}
                                 
                                 mealDiv.appendChild(recipeTitleDiv);
@@ -1221,6 +1309,13 @@
             }
         }   
 
+    //
+    // add a meal (note full function is in add menu tab)
+        ID("editMealsEditMenu_btn").addEventListener("click",function(){
+            ID("addMealsToMenu").style = "display: block"
+            createAddMealModal(ID("selectEditMenu").value)
+        })
+    
     //
 //
 // TAB: Shopping
@@ -1373,7 +1468,7 @@
                             let recipe = Dict[3].getRecipe(menuTitle,i,j)                        
                             let recipeTitle = document.createElement("h4"); 
                             if(recipe.morv === "b"){
-                                if(recipe.mealType === "dessert" && recipe.recipeType === "core"){
+                                if(recipe.recipeType === "dessert core"){
                                     html(recipeTitle,`printRecipeTitle${i}${j}`,"printDessertRecipeTitle","display: block","",`${recipe.recipeTitle} (${recipe.serves})`)             
                                 }
                                 else {
@@ -1383,58 +1478,53 @@
                             else{
                                 html(recipeTitle,`printRecipeTitle${i}${j}`,"","display: block","",`${recipe.recipeTitle} (${recipe.serves}) - ${recipe.morv} `)                                             
                             }
-                    //
-                    // add recipe Div
-                        let recipeDiv = document.createElement("div")
-                        html(recipeDiv,`printRecipeDiv${i}${j}`,"printRecipeDiv","display:block")
-                        mealDiv.appendChild(recipeDiv);
-                        recipeDiv.appendChild(recipeTitle);                     
-                        mealDiv.appendChild(document.createElement("br"))
-                    //
-                    // adds ingredients table
-                        let ingredientTableDiv = document.createElement("div");       // Create a <div> element
-                        ingredientTableDiv.id = `printIngredientTableDiv${i}${j}`              // give the node an id
-                        let ingredientTable = document.createElement("table");          // Create a <table> element
-                        html(ingredientTable,`printIngredientTable${i}${j}`,"printIngredientTable","display:block")
-                        
-                        ID(`printRecipeDiv${i}${j}`).appendChild(ingredientTableDiv);   // Add the div to 'menuDiv'
-                        ID(`printIngredientTableDiv${i}${j}`).appendChild(ingredientTable);   // Add the table to the div                
+                            //
+                            // add recipe Div
+                                let recipeDiv = document.createElement("div")
+                                html(recipeDiv,`printRecipeDiv${i}${j}`,"printRecipeDiv","display:block")
+                                mealDiv.appendChild(recipeDiv);
+                                recipeDiv.appendChild(recipeTitle);                     
+                                mealDiv.appendChild(document.createElement("br"))
+                            //
+                            // adds ingredients table
+                                let ingredientTableDiv = document.createElement("div");       // Create a <div> element
+                                ingredientTableDiv.id = `printIngredientTableDiv${i}${j}`              // give the node an id
+                                let ingredientTable = document.createElement("table");          // Create a <table> element
+                                html(ingredientTable,`printIngredientTable${i}${j}`,"printIngredientTable","display:block")
+                                
+                                ID(`printRecipeDiv${i}${j}`).appendChild(ingredientTableDiv);   // Add the div to 'menuDiv'
+                                ID(`printIngredientTableDiv${i}${j}`).appendChild(ingredientTable);   // Add the table to the div                
 
-                        let ingredientKey = Object.keys(recipe.ingredients)                
-                        for (let k = 0; k < ingredientKey.length; k++) {
-                            let ingredientTableRow = ingredientTable.insertRow(k);           
-                            let ingredient = Dict[3].getIngredient(menuTitle,i,j,ingredientKey[k])
-                            let col = AddRow(ingredientTableRow,4)
-                            col[0].innerHTML=ingredientKey[k];
-
-                            if (ingredient.quantityLarge===null){
-                                col[1].innerHTML=`(${ingredient.quantitySmall})`; 
-                                col[2].innerHTML=ingredient.quantityLarge;  
-                                col[3].innerHTML=ingredient.food.unit;    
-                            }
-                            else {
-                            let display = DisplayIngredient(ingredient.quantitySmall,ingredient.quantityLarge,ingredient.food.unit)
-                            col[1].innerHTML = display[0]
-                            col[2].innerHTML = display[1]
-                            col[3].innerHTML = display[2]
-                            }
-                            for (let x =0; x < col.length; x++){
-                                col[x].id = `print${i}${j}${k}${x}`
-                            }
-                            // CAN WE USE CREATEROW FUNCTION HERE??
-                            ID(`print${i}${j}${k}0`).style.width="50%"
-                            ID(`print${i}${j}${k}1`).style.width="10%"
-                            ID(`print${i}${j}${k}2`).style.width="10%"
-                            ID(`print${i}${j}${k}3`).style.width="30%"
-                            ID(`print${i}${j}${k}1`).style.fontSize="11px"                        
-                            
+                                let ingredientKey = Object.keys(recipe.ingredients)                
+                                for (let k = 0; k < ingredientKey.length; k++) {
+                                //  let ingredientTableRow = ingredientTable.insertRow(k);           
+                                    let ingredient = Dict[3].getIngredient(menuTitle,i,j,ingredientKey[k])
+                                    let html = []
+                                    let ids = []
+                                    html.push(ingredientKey[k])
+                                    
+                                    if (ingredient.quantityLarge===null){
+                                        html.push(`(${ingredient.quantitySmall})`); 
+                                        html.push(ingredient.quantityLarge);  
+                                        html.push(ingredient.food.unit);    
+                                    }
+                                    else {
+                                        let display = DisplayIngredient(ingredient.quantitySmall,ingredient.quantityLarge,ingredient.food.unit)
+                                        for (let x=0; x<3; x++){
+                                            html.push(display[x])
+                                        }
+                                    }
+                                    for (let x=0; x<4; x++){
+                                        ids.push(`print${i}${j}${k}${x}`)
+                                    }
+                                    createRow(`printIngredientTable${i}${j}`,"td",html,[50,10,10,30],"%",ids)
+                                    ID(`print${i}${j}${k}1`).style.fontSize="11px"                        
+                                }
+                                let method = document.createElement("p"); 
+                                var methodHTML = recipe.method.replace(/(?:\r\n|\r|\n)/g, '<br><br>');                        
+                                ID(`printIngredientTableDiv${i}${j}`).appendChild(method);
+                                html(method,`printMethod${i}${j}`,"printMethod","display:block",methodHTML)
                         }
-                        let method = document.createElement("p"); 
-                        var methodHTML = recipe.method.replace(/(?:\r\n|\r|\n)/g, '<br><br>');                        
-                        ID(`printIngredientTableDiv${i}${j}`).appendChild(method);
-                        html(method,`printMethod${i}${j}`,"printMethod","display:block",methodHTML)
-                    
-                }
             }
         }   
     //
@@ -1537,13 +1627,20 @@
     // when user clicks elsewhere, modals close
             var multiplyModal = ID("multiplyUp");
             var addRecipeModal = ID("addRecipeToMenu");
+            var addMealModal = ID("addMealsToMenu")
             
             window.onclick = function(closeModals) {
                 if (closeModals.target == addRecipeModal) {
                     addRecipeModal.style = "display none";
+                    SelectEditMenu()                    
                 }
                 else if (closeModals.target == multiplyModal) {
                     multiplyModal.style = "display: none"
+                    SelectEditMenu()                    
+                }
+                else if (closeModals.target == addMealModal) {
+                    addMealModal.style = "display: none"
+                    SelectEditMenu()                    
                 } 
             }
     //
@@ -1628,7 +1725,6 @@
                 let newValue = ID(`Input_${cellID}`).value
                 Dict[dictID][key][property] = newValue
                 writeDict(dictID)
-                createAdminTableContents(dictID)
             })
         })   
         }   
@@ -1688,7 +1784,8 @@
     //
     // function 'writeDict' to write to dictionaries
         function writeDict(dictID){
-            fs.writeFileSync(`Dict[${dictID}].json`,JSON.stringify(Dict[dictID]),{encoding:"utf8"})                
+            fs.writeFileSync(`Dict[${dictID}].json`,JSON.stringify(Dict[dictID]),{encoding:"utf8"}) 
+            createAdminTableContents(dictID)            
         }
     //
     // function to shorten 'document.getElementById' to 'ID'
@@ -1712,7 +1809,7 @@
         }
     //
     // function to create dropdowns
-        function CreateDropdown(elementID,source,keys) {
+        function CreateDropdown(elementID,source,keys,valueOpts) {
             var select = ID(elementID);
             if (keys === true){
                 var options = Object.keys(source).sort()              
@@ -1720,16 +1817,23 @@
             else {
                 var options = source
             }
+            if (typeof valueOpts !== "object"){
+                valueOpts = []
+                for (let x=0; x<options.length; x++){
+                    valueOpts[x] = options[x]
+                }
+            }
             for(let i = 0; i < options.length; i++) {
-                let opt = options[i];
+                let displayOpt = options[i];
+                let valueOpt = valueOpts[i]
                 if (keys === true){
-                    if(typeof source[opt]==="function"){
+                    if(typeof source[displayOpt]==="function"){
                         continue
                     }
                 }
                 let el = document.createElement("option");
-                el.textContent = opt;
-                el.value = opt;
+                el.textContent = displayOpt;
+                el.value = valueOpt;
                 select.appendChild(el);
             }
         }
@@ -1781,13 +1885,31 @@
             return comparison;
         }
     //
+    // function to compare food types of two foods: 1 means a is after b, -1 means a should be before b
+        function compareMeal(a, b) {
+            let aDate = new Date(a.date)
+            let bDate = new Date(b.date)
+            let comparison = 0;
+            if (aDate > bDate) {
+            comparison = 1;
+            } else if (aDate < bDate) {
+            comparison = -1;
+            }
+            else if (mealTypeEnum.indexOf(a.mealType) > mealTypeEnum.indexOf(b.mealType)){
+                comparison = 1
+            }
+            else if (mealTypeEnum.indexOf(a.mealType) < mealTypeEnum.indexOf(b.mealType)){
+                comparison = -1
+            }
+            return comparison;
+        }
+    //
     // create event listener for 'save changes' button to support t2 > 'edit recipe' functionality
         ID("editRecipe_btn").addEventListener("click", function(){
             Dict[2].deleteRecipe(ID("recipeTitle"))
             AddRecipeBtn()
             writeDict(2)
             ID("t2Table").innerHTML=""
-            createAdminTable(2)   
             ID("AddRecipePageTitle").innerText = "Add Recipe" 
             showElement("addRecipe_btn","inline")
             hideElement("editRecipe_btn")

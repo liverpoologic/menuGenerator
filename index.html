@@ -6,6 +6,7 @@
   <title>Pigotts Menu Manager</title>
   <link rel="stylesheet" href="./style.css">
 </head>
+
 <body>
   <div id="mainApp">
 
@@ -52,13 +53,13 @@
             <option>Recipe Type</option>
           </select>
           <br>
-          <select id="recipeMorv"  placeholder="morv">
+          <select id="recipeMorv" placeholder="morv">
             <option>Morv</option>
           </select>
           <br>
           <input type="number" id="recipeServes" placeholder="serves">
           <br>
-          <textarea class="taclass" id="recipeMethod" rows="15" cols="45"  placeholder="method"></textarea>
+          <textarea class="taclass" id="recipeMethod" rows="15" cols="45" placeholder="method"></textarea>
           <br>
           <button id="addRecipe_btn">Add Recipe</button>
         </div>
@@ -75,20 +76,32 @@
       <h2> Add Menu </h2>
       <input type="text" id="menuTitle" placeholder="Menu Title">
       <br>
-      <br> Start Date:
+      <br> Start Date:  <input type="date" id="menuStartDate">
       <br>
-      <input type="date" id="menuStartDate">
-      <br>
-      <br> End Date:
-      <br>
-      <input type="date" id="menuEndDate">
-      <br>
-      <br>
+      <br> End Date:  <input type="date" id="menuEndDate">
+      <br> <br>
       <button id="addmenu_btn">Add Empty Menu</button>
       <br>
       <br>
       <button id="add_weekend_menu">Add Standard Weekend Menu</button>
     </div>
+    <div id="addMealsToMenu" class="modal">
+        <div class="modal-content animate">
+          <div class="flex-container" style="width:97%">
+            <div class="container" style="width:50%">
+              <text>Add meals to </text> <text id="menuTitleForAddMeals" display="block"></text><br>
+              <select id="selectDayForAddMeals"><option>Select Day</option></select>
+              <br>
+              <select id="selectMealTypeForAddMeals"><option>Select Meal</option></select>
+              <br><br>
+              <button id="addMeals_btn">Add Meal</button>
+            </div>
+            <div id="currentMealList"class="container" style="width:50%">
+            </div>
+          </div>
+        </div>
+      </div>
+
     <div id="ViewMenu" class="htabcontent">
       <h2> View Menu </h2>
       <select id="selectViewMenu">
@@ -154,7 +167,8 @@
       </div>
 
       <button id="multiplyUp_btn" style="width:200px;">Multiply Up</button>
-
+      <button id="editMealsEditMenu_btn" style="width:200px;">Edit Meals</button>
+      
       <div id="multiplyUp" class="modal">
         <div class="modal-content animate">
           <div class="container">
@@ -198,7 +212,10 @@
         </table>
       </div>
       <div id="t2RecipeDict" class="vtabcontent" style="display: none;">
-        <h2> All Recipes<button id="clearIngredientSearch" class="insideCellBtn" style='float:right'>x</button><input type="text" id="ingredientSearchInput" placeholder="ingredient" style="margin:4px 10px; float:right;"></input></h2>
+        <h2> All Recipes
+          <button id="clearIngredientSearch" class="insideCellBtn" style='float:right'>x</button>
+          <input type="text" id="ingredientSearchInput" placeholder="ingredient" style="margin:4px 10px; float:right;"></input>
+        </h2>
         <table id="t2Table">
         </table>
       </div>
