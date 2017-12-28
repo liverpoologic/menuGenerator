@@ -124,20 +124,18 @@
                 }
                 else{
                     for (let i=0; i<this[menuTitle].meals.length; i++){
-                        console.log(`i i ${i}`)
-                        console.log(compareMeal(newMeal,this[menuTitle].meals[i]))
                         let compare = compareMeal(newMeal,this[menuTitle].meals[i])
                         if (compare ===0){
                             console.log("tried to add repeated meal. Meal not added.")
                             break
                         }
                         else if(compare===1 && i===this[menuTitle].meals.length-1){ // check if the meal needs to go at the end of the array
-                                this[menuTitle].meals[i+1] = newMeal; break
+                                this[menuTitle].meals[i+1] = newMeal; return i+1
                         }    
                         else if (compare === -1){
-                            this[menuTitle].meals.splice(i, 0, newMeal); break                            
+                            this[menuTitle].meals.splice(i, 0, newMeal); return i                            
                         }
-                    }                
+                    }  
                 }
             }
         },
@@ -407,30 +405,28 @@
 
     // add meals to a menu (weekend - default)
         ID("add_weekend_menu").addEventListener("click", function(){
-                {
-                    let title = ID("menuTitle").value
-                    let startDate = new Date(ID("menuStartDate").value)
-                    let endDate = new Date(ID("menuEndDate").value)
-                    let midDate =  new Date(ID("menuStartDate").value);
-                    midDate.setDate(startDate.getDate() + 1);
-                    
-                    Dict[3].addMenu(title,startDate,endDate)
+            let title = ID("menuTitle").value
+            let startDate = new Date(ID("menuStartDate").value)
+            let endDate = new Date(ID("menuEndDate").value)
+            let midDate =  new Date(ID("menuStartDate").value);
+            midDate.setDate(startDate.getDate() + 1);
+            
+            Dict[3].addMenu(title,startDate,endDate)
 
-                    Dict[3].addMeal(title,"dinner",startDate)
-                    Dict[3].addMeal(title,"breakfast",midDate)
-                    Dict[3].addMeal(title,"snack",midDate)
-                    Dict[3].addMeal(title,"lunch",midDate)
-                    Dict[3].addMeal(title,"dinner",midDate)
-                    Dict[3].addMeal(title,"breakfast",endDate)
-                    Dict[3].addMeal(title,"lunch",endDate)
-                    
-                    Dict[3].addRecipe(title,1,"Standard Breakfast","b")
-                    Dict[3].addRecipe(title,5,"Standard Breakfast","b")
+            Dict[3].addMeal(title,"dinner",startDate)
+            Dict[3].addMeal(title,"breakfast",midDate)
+            Dict[3].addMeal(title,"snack",midDate)
+            Dict[3].addMeal(title,"lunch",midDate)
+            Dict[3].addMeal(title,"dinner",midDate)
+            Dict[3].addMeal(title,"breakfast",endDate)
+            Dict[3].addMeal(title,"lunch",endDate)
+            
+            Dict[3].addRecipe(title,1,"Standard Breakfast","b")
+            Dict[3].addRecipe(title,5,"Standard Breakfast","b")
 
-                    writeDict(3) 
-                    setValues([["menuTitle",""],["menuEndDate",""]["menuStartDate",""]])
-                }
-            })
+            writeDict(3) 
+            setValues([["menuTitle",""],["menuEndDate",""],["menuStartDate",""]])
+        })
     //
     // add meals to a custom menu
         CreateDropdown("selectMealTypeForAddMeals",mealTypeEnum,false)
@@ -497,7 +493,10 @@
         
         function AddMealBtn (){
             let menuTitle = ID("menuTitleForAddMeals").innerHTML
-            Dict[3].addMeal(menuTitle,ID("selectMealTypeForAddMeals").value,new Date (ID("selectDayForAddMeals").value))
+            let mealID = Dict[3].addMeal(menuTitle,ID("selectMealTypeForAddMeals").value,new Date (ID("selectDayForAddMeals").value))
+            if(ID("selectMealTypeForAddMeals").value === "breakfast"){
+                Dict[3].addRecipe(menuTitle,mealID,"Standard Breakfast","b")
+            }
             CreateMealList()            
         }
         //
@@ -1315,7 +1314,6 @@
             ID("addMealsToMenu").style = "display: block"
             createAddMealModal(ID("selectEditMenu").value)
         })
-    
     //
 //
 // TAB: Shopping
@@ -1785,8 +1783,20 @@
     // function 'writeDict' to write to dictionaries
         function writeDict(dictID){
             fs.writeFileSync(`Dict[${dictID}].json`,JSON.stringify(Dict[dictID]),{encoding:"utf8"}) 
-            createAdminTableContents(dictID)            
+            createAdminTableContents(dictID)  
+            RefreshDropdowns(dictID)
         }
+    //
+    // function to refresh dropdowns
+        function RefreshDropdowns(dictID){
+            let dropdownIDs=[[],[],["selectRecipeForMenu"],["selectEditMenu","selectViewMenu","selectMenuForNewRecipe","selectMenuForMultiplyUp","selectMenuForShopping"]]
+            for (let i=0; i<dropdownIDs[dictID].length; i++){
+                let id = dropdownIDs[dictID][i]
+                ClearDropdown(id,ID(id).value)
+                CreateDropdown(id,Dict[dictID],true)
+            }
+        }
+
     //
     // function to shorten 'document.getElementById' to 'ID'
         function ID(elementID){
