@@ -4,6 +4,7 @@
 <head>
   <meta charset="UTF-8">
   <title>Pigotts Menu Manager</title>
+  <button id="test_btn">test</button>
   <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -101,7 +102,6 @@
           </div>
         </div>
       </div>
-
     <div id="ViewMenu" class="htabcontent">
       <h2> View Menu </h2>
       <select id="selectViewMenu">
@@ -119,7 +119,9 @@
         <option>Menu</option>
       </select>
       <br>
-      <button id="addRecipeToMenu_btn" style="width:200px;">Add Recipe</button>
+      <button id="addRecipeToMenu_btn" style="width:200px; display:none">Add Recipe</button>
+      <button id="multiplyUp_btn" style="width:200px; display:none">Multiply Up</button>
+      <button id="editMealsEditMenu_btn" style="width:200px; display:none">Edit Meals</button>
       <div id="addRecipeToMenu" class="modal">
         <div class="modal-content animate">
           <div class="flex-container" style="width:97%">
@@ -166,8 +168,6 @@
         </div>
       </div>
 
-      <button id="multiplyUp_btn" style="width:200px;">Multiply Up</button>
-      <button id="editMealsEditMenu_btn" style="width:200px;">Edit Meals</button>
       
       <div id="multiplyUp" class="modal">
         <div class="modal-content animate">
