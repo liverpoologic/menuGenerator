@@ -1,13 +1,15 @@
 var u = require("./UtilityFunctions.js")
 var d = require("./Dicts.js")
 var Dict = d.Dict
+var e = Dict[4]
 
-//onLoad
-u.ID("addmenu_btn").addEventListener("click", AddMenuBtn)
-u.ID("add_weekend_menu").addEventListener("click", AddWeekendMenuBtn)
-u.ID("addMeals_btn").addEventListener("click", AddMealBtn)
+function onLoad() {
+    u.ID("addmenu_btn").addEventListener("click", AddMenuBtn)
+    u.ID("add_weekend_menu").addEventListener("click", AddWeekendMenuBtn)
+    u.ID("addMeals_btn").addEventListener("click", AddMealBtn)
+}
 
-function AddMenuBtn() { //adds event listener for the 'add weekend menu' button on the add menu screen
+function AddMenuBtn() { //when you press 'add empty menu' button on the add menu screen
     let title = u.ID("menuTitle").value
     let startDate = new Date(u.ID("menuStartDate").value)
     let endDate = new Date(u.ID("menuEndDate").value)
@@ -16,7 +18,7 @@ function AddMenuBtn() { //adds event listener for the 'add weekend menu' button 
     CreateAddMealModal(title)
     u.SetValues([["menuTitle", ""], ["menuEndDate", ""], ["menuStartDate", ""]])
 }
-function AddWeekendMenuBtn() { //adds event listener for the 'add weekend menu' button on the add menu screen
+function AddWeekendMenuBtn() { //when you press 'add weekend menu' button on the add menu screen
     let title = u.ID("menuTitle").value
     let startDate = new Date(u.ID("menuStartDate").value)
     let endDate = new Date(u.ID("menuEndDate").value)
@@ -45,9 +47,9 @@ function CreateAddMealModal(menuTitle) { // creates and shows the modal 'add mea
     if (endDate < startDate) { console.log("End Date is after Start Date"); return null }
     u.ID("menuTitleForAddMeals").innerHTML = menuTitle
     // create list of dates
+    let dateList = []
     let end = false
     let i = 0
-    let dateList = []
     while (end === false) {
         dateList[i] = new Date(Dict[3][menuTitle].startDate)
         dateList[i].setDate(startDate.getDate() + i);
@@ -58,7 +60,7 @@ function CreateAddMealModal(menuTitle) { // creates and shows the modal 'add mea
     let dateEnum = []
     for (let j = 0; j < dateList.length; j++) {
         let x = dateList[j]
-        dateEnum[j] = `${d.weekday[x.getDay()]} (${u.GetFormalDate(x)})`
+        dateEnum[j] = `${e.weekday[x.getDay()]} (${u.GetFormalDate(x)})`
     }
     u.ClearDropdown("selectDayForAddMeals", "Select Day")
     u.CreateDropdown("selectDayForAddMeals", dateEnum, false, dateList)
@@ -73,18 +75,11 @@ function CreateMealList() { // creates the meal list on the right of the add mea
     let menu = Dict[3][menuTitle]
     for (let i = 0; i < menu.meals.length; i++) {
         let meal = Dict[3].getMeal(menuTitle, i)
-        let day = d.weekday[new Date(meal.date).getDay()]
-        let mealTitleDiv = document.createElement("div")
-        let mealTitle = document.createElement("text");
-        u.Html(mealTitleDiv, "", "recipeTitleDiv", "background-color:#cccccc")
-        u.Html(mealTitle, "", "recipeTitle", "", "", `${day} ${meal.mealType}`)
-        mealDiv.appendChild(mealTitleDiv);
-        mealTitleDiv.appendChild(mealTitle);
+        let day = e.weekday[new Date(meal.date).getDay()]
+        let mealTitleDiv = u.CreateElement("div", mealDiv, "", "listItem")
+        let mealTitle = u.CreateElement("text", mealTitleDiv, "", "recipeTitle", `${day} ${meal.mealType}`);
 
-        let deleteMealFromMenu = document.createElement("button")
-        u.Html(deleteMealFromMenu, "", "removeRecipe", "", "", "x")
-        mealTitleDiv.appendChild(deleteMealFromMenu)
-
+        let deleteMealFromMenu = u.CreateElement("button", mealTitleDiv, "", "removeRecipe", "x")
         deleteMealFromMenu.addEventListener("click", function () {
             Dict[3].deleteMeal(menuTitle, i)
             u.WriteDict(3)
@@ -103,6 +98,7 @@ function AddMealBtn() {// adds event listener for the 'add meal' button in the a
 }
 
 module.exports = {
-    AddMeal:AddMealBtn, // add meal to menu
-    CreateAddMealModal:CreateAddMealModal, // create (and show) the add meal modal
+    AddMeal: AddMealBtn, // add meal to menu
+    CreateAddMealModal: CreateAddMealModal, // create (and show) the add meal modal
+    onLoad: onLoad
 }

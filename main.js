@@ -23,7 +23,7 @@ function createWindow () {
   }))
 
   // Open the DevTools.
-  // mainWindow.webContents.openDevTools()
+ // mainWindow.webContents.openDevTools()
 
   // Emitted when the window is closed.
   mainWindow.on('closed', function () {
@@ -65,17 +65,16 @@ const ipc = electron.ipcMain
 const shell = electron.shell
 
 ipc.on("print-to-pdf", function (event,arg) {
-  const pdfPath = path.join(__dirname, "PDFs",arg)
   const win = BrowserWindow.fromWebContents(event.sender)
   // Use default printing options
   win.webContents.printToPDF({}, function (error, data) {
     if (error) throw error
-    fs.writeFile(pdfPath, data, function (error) {
+    fs.writeFile(arg, data, function (error) {
       if (error) {
         throw error
       }
-      shell.openExternal('file://' + pdfPath)
-      event.sender.send('wrote-pdf', pdfPath)
+      shell.openExternal('file://' + arg)
+      event.sender.send('wrote-pdf', arg)
     })
   })
 })

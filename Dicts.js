@@ -4,7 +4,8 @@ var fs = require("fs");
 /* 3 dictionaries:
 Dict[1] - food
 Dict[2] - recipes > ingredients > food
-Dict[3] - menus > meals > recipes > ingredients > food */
+Dict[3] - menus > meals > recipes > ingredients > food
+Dict[4] - enum of enums */
 
 const Dict = []
 
@@ -13,7 +14,7 @@ Dict[1] = {
     {
         if (typeof thing != "string") { console.log(`invalid input: ${thing} not a string`) }
         else if (typeof unit != "string" && unit != null) { console.log(`invalid input: ${unit} not a string or null`) }
-        else if (shopEnum.indexOf(shop) < 0) { console.log(`invalid input: ${shop} not in the shop enum`) }
+        else if (Dict[4].shopEnum.indexOf(shop) < 0) { console.log(`invalid input: ${shop} not in the shop enum`) }
         else { this[thing] = { unit: unit, shop: shop, foodType: foodType }; }
     },
     getFood(x) {
@@ -23,7 +24,7 @@ Dict[1] = {
         delete this[x]
     },
     importJSON() {
-        let input = JSON.parse(fs.readFileSync("Dict[1].json", { encoding: "utf8" }))
+        let input = JSON.parse(fs.readFileSync("./resources/Dict[1].json", { encoding: "utf8" }))
         for (var thing in input) {
             if (input.hasOwnProperty(thing)) {
                 this[thing] = input[thing]
@@ -34,8 +35,8 @@ Dict[1] = {
 Dict[2] = {
     addRecipe(recipeTitle, mealType, morv, serves, method, recipeType) {
         if (typeof recipeTitle != "string") { console.log(`invalid input: ${recipeTitle} not a string`) }
-        else if (mealTypeEnum.indexOf(mealType) < 0) { console.log(`invalid input: ${mealType} not in the mealType enum`) }
-        else if (recipeTypeEnum.indexOf(recipeType) < 0) { console.log(`invalid input: ${recipeType} not in the recipeType enum`) }
+        else if (Dict[4].mealTypeEnum.indexOf(mealType) < 0) { console.log(`invalid input: ${mealType} not in the mealType enum`) }
+        else if (Dict[4].recipeTypeEnum.indexOf(recipeType) < 0) { console.log(`invalid input: ${recipeType} not in the recipeType enum`) }
         else if (typeof morv != "object") { console.log(`invalid input: ${morv} not an object`) }
         else if (typeof method != "string") { console.log(`invalid input: ${method} not a string`) }
         else if (typeof serves != "number") { console.log(`invalid input: ${serves} not a number`) }
@@ -45,7 +46,7 @@ Dict[2] = {
         if (typeof foodName != "string") { console.log(`invalid input: ${foodName} not a string`) }
         //    else if (!(foodName in obj)) {console.log(`invalid input: ${foodName} isn't in Dict[1]`)}
         else if (typeof quantitySmall != "number") { console.log(`invalid input: ${quantitySmall} not a number`) }
-        else if (morvEnum.indexOf(morv) < 0) { console.log(`invalid input: ${morv} not in the morv enum`) }
+        else if (Dict[4].morvEnum.indexOf(morv) < 0) { console.log(`invalid input: ${morv} not in the morv enum`) }
         else {
             let t1Food = Dict[1][foodName]
             this[recipeTitle].ingredients[foodName] = { food: [], morv: morv, quantitySmall: quantitySmall, quantityLarge: null };
@@ -65,7 +66,7 @@ Dict[2] = {
         delete this[x]
     },
     importJSON() {
-        let input = JSON.parse(fs.readFileSync("Dict[2].json", { encoding: "utf8" }))
+        let input = JSON.parse(fs.readFileSync("./resources/Dict[2].json", { encoding: "utf8" }))
         for (var recipeTitle in input) {
             if (input.hasOwnProperty(recipeTitle)) {
                 this[recipeTitle] = input[recipeTitle]
@@ -76,15 +77,13 @@ Dict[2] = {
 Dict[3] = {
     addMenu(menuTitle, startDate, endDate) {
         if (typeof menuTitle != "string") { console.log(`invalid input: ${menuTitle} not a string`) }
-        //   else if (typeof startDate != "object") {console.log(`invalid input: ${startDate} not an object`)}
-        //   else if (typeof endDate != "object") {console.log(`invalid input: ${endDate} not an object`)}
         else {
             this[menuTitle] = { startDate: startDate, endDate: endDate, meateaters: null, vegetarians: null, meals: [] };
         }
     },
     addMeal(menuTitle, mealType, date) {
         if (typeof menuTitle != "string") { console.log(`invalid input: ${menuTitle} not a string`) }
-        else if (mealTypeEnum.indexOf(mealType) < 0) { console.log(`invalid input: ${mealType} not in the mealType enum`) }
+        else if (Dict[4].mealTypeEnum.indexOf(mealType) < 0) { console.log(`invalid input: ${mealType} not in the mealType enum`) }
         else if (typeof date != "object") { console.log(`invalid input: ${date} not an object`) }
         else {
             let newMeal = { mealType: mealType, date: date, recipes: [] };
@@ -114,20 +113,20 @@ Dict[3] = {
         if (typeof menuTitle != "string") { console.log(`invalid input: ${menuTitle} not a string`) }
         else if (typeof mealID != "number") { console.log(`invalid input: ${mealID} not a number`) }
         else if (typeof recipeTitle != "string") { console.log(`invalid input: ${recipeTitle} not a string`) }
-        else if (morvEnum.indexOf(morv) < 0) { console.log(`invalid input: ${morv} not in the morv enum`) }
+        else if (Dict[4].morvEnum.indexOf(morv) < 0) { console.log(`invalid input: ${morv} not in the morv enum`) }
         else {
-            let newRecipeid            
+            let newRecipeid
             let meal = this[menuTitle].meals[mealID]
-            let newRecipe = 
-            {
-                recipeTitle: recipeTitle,
-                mealType: t2Recipe.mealType,
-                morv: morv, // inherits morv from input (user chooses morv for this instance of the recipe)
-                serves: t2Recipe.serves,
-                method: t2Recipe.method,
-                recipeType: t2Recipe.recipeType,
-                ingredients: {}
-            }
+            let newRecipe =
+                {
+                    recipeTitle: recipeTitle,
+                    mealType: t2Recipe.mealType,
+                    morv: morv, // inherits morv from input (user chooses morv for this instance of the recipe)
+                    serves: t2Recipe.serves,
+                    method: t2Recipe.method,
+                    recipeType: t2Recipe.recipeType,
+                    ingredients: {}
+                }
             if (meal.recipes.length === 0) { // if there are no existing recipes. newRecipe is recipe[0]
                 meal.recipes[0] = newRecipe
                 newRecipeid = 0
@@ -147,7 +146,7 @@ Dict[3] = {
                         meal.recipes.splice(i, 0, newRecipe); newRecipeid = i; break
                     }
                 }
-            }  
+            }
             if (morv === "v" && t2Recipe.morv.indexOf("b") === 0) {
                 let ingredientsKey = Object.keys(t2Recipe.ingredients)
                 for (let j = 0; j < ingredientsKey.length - 1; j++) {
@@ -240,7 +239,7 @@ Dict[3] = {
     },
     importJSON() {
         var input = null;
-        try { input = JSON.parse(fs.readFileSync("Dict[3].json", { encoding: "utf8" })) }
+        try { input = JSON.parse(fs.readFileSync("./resources/Dict[3].json", { encoding: "utf8" })) }
         catch (e) {
             if (e) { console.log("Exception captured during json parsing " + e) }
         }
@@ -255,22 +254,30 @@ Dict[3] = {
         }
     },
 };
+Dict[4] = {
+    addItem(itemName,enumName) //add an item to an enum
+    {
+        let enumEnum = Object.keys(Dict[4])
+        if (typeof itemName != "string") { console.log(`invalid input: ${itemName} not a string`) }
+        else if (enumEnum.indexOf(enumName) < 0) { console.log(`invalid input: ${enumName} not in the enum enum`) }
+        else{
+            this[enumName].push(itemName)
+        }
+    },
+    deleteItem(itemName,enumName) {
+        delete this[enumName][itemName]
+    },
+    importJSON() {
+        let input = JSON.parse(fs.readFileSync("./resources/Dict[4].json", { encoding: "utf8" }))
+        for (var thing in input) {
+            if (input.hasOwnProperty(thing)) {
+                this[thing] = input[thing]
+            }
+        }
+    },
+};
+Dict[5] = {};
 
-const mealTypeEnum = ["breakfast","snack","lunch","dinner"]      
-const recipeTypeEnum = ["core","veg","starch","sauce","other","dessert core","dessert other"] 
-const morvEnum = ["b","v","m",null]  
-const morvOpts = ["b","v","m","v / b"]   
-const shopEnum = ["Bakers","Bookers","Peterlee","Pigotts","Tesco","Troutts","Wrenns","Other"] 
-const foodTypeEnum = ["alcohol","alium","citrus","dairy","fish","fruit","green veg","herb","meat","nut","seed","spice","staple","starch","sweet","veg","other"]    
-const weekday = ["Sunday","Monday","Tuesday","Wednesday","Thursday","Friday","Saturday"]
-    
 module.exports = {
-    Dict:Dict,    
-    mealTypeEnum:mealTypeEnum,
-    recipeTypeEnum:recipeTypeEnum,
-    morvEnum:morvEnum,
-    morvOpts:morvOpts,
-    shopEnum:shopEnum,
-    foodTypeEnum:foodTypeEnum,
-    weekday:weekday
+    Dict: Dict,
 }

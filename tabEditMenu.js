@@ -2,42 +2,53 @@ var u = require("./UtilityFunctions.js")
 var d = require("./Dicts.js")
 var addMenu = require("./tabAddMenu.js")
 var Dict = d.Dict
+var e = d.Dict[4]
+
+var mealTypeFilter, recipeTypeFilter, morvFilter
 
 module.exports = {
     RefreshEditMenu: RefreshEditMenu, // refresh edit menu screen in response to selected menu
+    onLoad:onLoad
 }
 
-// onLoad
-u.ID("addRecipeApplyFilters").addEventListener("click", ApplyFilters) // apply filters button in add recipe modal
-u.ID("addRecipeClearFilters").addEventListener("click", ClearFiltersBtn) // clear filters button in add recipe modal
-u.ID("addRecipeToMenu_submit").addEventListener("click", AddRecipeToMenu) // add recipes to menu (submit button)
-u.ID("selectEditMenu").addEventListener("change", RefreshEditMenu) // reload menu when new menuTitle is selected
-u.ID("selectMenuForNewRecipe").addEventListener("change", RefreshAddRecipeModal) // reload add recipe modal with details from new menuTitle
-u.ID("multiplyUp_submit").addEventListener("click", MultiplyUp) // multiply up a given menu when you press the 'submit' button in the multiply up modal
+function onLoad() {
+    u.ID("addRecipeApplyFilters").addEventListener("click", ApplyFilters) // apply filters button in add recipe modal
+    u.ID("addRecipeClearFilters").addEventListener("click", ClearFiltersBtn) // clear filters button in add recipe modal
+    u.ID("addRecipeToMenu_submit").addEventListener("click", AddRecipeToMenu) // add recipes to menu (submit button)
+    u.ID("selectEditMenu").addEventListener("change", RefreshEditMenu) // reload menu when new menuTitle is selected
+    u.ID("selectMenuForNewRecipe").addEventListener("change", RefreshAddRecipeModal) // reload add recipe modal with details from new menuTitle
+    u.ID("multiplyUp_submit").addEventListener("click", MultiplyUp) // multiply up a given menu when you press the 'submit' button in the multiply up modal
+
+    u.ID("addRecipeToMenu_btn").addEventListener("click", function () { // show add recipe modal and refresh contents when button is clicked
+        RefreshAddRecipeModal()
+        u.ShowElements("addRecipeToMenu", "block")
+    })
+    u.ID("multiplyUp_btn").addEventListener("click", function () { // show multiple up modal when button is clicked
+        u.ShowElements("multiplyUp", "block")
+    })
+    u.ID("editMealsEditMenu_btn").addEventListener("click", function () { // show 'edit meals' modal by calling addRecipe code when button is clicked
+        addMenu.CreateAddMealModal(u.ID("selectEditMenu").value)
+        u.ShowElements("addMealsToMenu", "block")
+    })
+    u.ID("addRecipeCancel_btn").addEventListener("click", function () { // hide add recipe modal when cancel button is pressed
+        u.HideElements('addRecipeToMenu')
+    })
+    u.ID("multiplyUpCancel_btn").addEventListener("click", function () { // hide multiply up modal when cancel button is pressed
+        u.HideElements("multiplyUp")
+    })
+    u.ID("selectRecipeForMenu").addEventListener("change", function () { // auto-select 'morv=b' for desserts
+        let recipeValue = u.ID("selectRecipeForMenu").value
+        if (recipeValue === "Choose Recipe") { return "no recipe selected" }
+        if (Dict[2][recipeValue].recipeType === "dessert core") { u.ID("selectMorvForMenu").value = "b" }
+    })
 
 
-u.ID("addRecipeToMenu_btn").addEventListener("click", function () { // show add recipe modal and refresh contents when button is clicked
-    RefreshAddRecipeModal()
-    u.ShowElements("addRecipeToMenu", "block")
-})
-u.ID("multiplyUp_btn").addEventListener("click", function () { // show multiple up modal when button is clicked
-    u.ShowElements("multiplyUp", "block")
-})
-u.ID("editMealsEditMenu_btn").addEventListener("click", function () { // show 'edit meals' modal by calling addRecipe code when button is clicked
-    addMenu.CreateAddMealModal(u.ID("selectEditMenu").value)
-    u.ShowElements("addMealsToMenu", "block")
-})
-u.ID("addRecipeCancel_btn").addEventListener("click", function () { // hide add recipe modal when cancel button is pressed
-    u.HideElements('addRecipeToMenu')
-})
-u.ID("multiplyUpCancel_btn").addEventListener("click", function () { // hide multiply up modal when cancel button is pressed
-    u.HideElements("multiplyUp")
-})
+    // call function to create filter checkboxes in the 'add recipe' modal
+    mealTypeFilter = CreateFilterList(e.mealTypeEnum, "mealTypeCheckbox", "mealTypeFilters")
+    recipeTypeFilter = CreateFilterList(e.recipeTypeEnum, "recipeTypeCheckbox", "recipeTypeFilters")
+    morvFilter = CreateFilterList(["b", "v", "m"], "morvCheckbox", "morvFilters")
 
-// call function to create filter checkboxes in the 'add recipe' modal
-let mealTypeFilter = CreateFilterList(d.mealTypeEnum, "mealTypeCheckbox", "mealTypeFilters")
-let recipeTypeFilter = CreateFilterList(d.recipeTypeEnum, "recipeTypeCheckbox", "recipeTypeFilters")
-let morvFilter = CreateFilterList(["b", "v", "m"], "morvCheckbox", "morvFilters")
+}
 
 /** function to create list of checkboxes - returns 'newEnum' which is the list of filter options including 'all'
  * @param {array} sourceEnum the enum which you want to generate the filter list from
@@ -54,18 +65,12 @@ function CreateFilterList(sourceEnum, checkboxID, divID) {
     // create checkboxes
     for (let i = 0; i < newEnum.length; i++) {
         let checklist = u.ID(divID)
-        let checkbox = document.createElement("input")
-        let checkboxLabel = document.createElement("label")
-        u.Html(checkbox, `${checkboxID}${i}`)
-        u.Html(checkboxLabel, "", "filterLabel", "", "", newEnum[i])
-        checkbox.setAttribute("checked", "true")
-
+        let checkbox = u.CreateElement("input", checklist, `${checkboxID}${i}`)
+        let checkboxLabel = u.CreateElement("label", checklist, "", "filterLabel", newEnum[i])
         checkbox.setAttribute("type", "checkbox");
-        checklist.appendChild(checkbox);
-        checklist.appendChild(checkboxLabel);
-        checklist.appendChild(document.createElement("br"));
+        checkbox.setAttribute("checked", "true")
+        u.CreateElement("br", checklist)
     }
-
     // check everything on an 'all' box
     u.ID(`${checkboxID}0`).addEventListener("change", function () {
         if (this.checked) {
@@ -126,6 +131,7 @@ function ApplyFilters() {
             filteredRecipeKeys.push(oldRecipeKeys[i])
         }
     }
+    filteredRecipeKeys.sort()
     u.ClearDropdown("selectRecipeForMenu", "Choose Recipe")
     u.CreateDropdown("selectRecipeForMenu", filteredRecipeKeys, false)
 }
@@ -156,7 +162,6 @@ function AddRecipeToMenu() {
     RefreshEditMenu()
     u.SetValues([["selectMealForMenu", "Choose Meal"], ["selectRecipeForMenu", "Choose Recipe"], ["selectMorvForMenu", "Choose Morv"]])
 }
-
 /** create select meal dropdown from menu (in edit menu > add recipe) */
 function RefreshAddRecipeModal() {
     u.ClearDropdown("selectMealForMenu", "Choose Meal")
@@ -164,7 +169,7 @@ function RefreshAddRecipeModal() {
     let menu = Dict[3][u.ID("selectMenuForNewRecipe").value]
     let mealEnum = []
     for (let i = 0; i < menu.meals.length; i++) {
-        let day = d.weekday[new Date(menu.meals[i].date).getDay()]
+        let day = e.weekday[new Date(menu.meals[i].date).getDay()]
         mealEnum.push(`${day} ${menu.meals[i].mealType}`)
     }
     // creating my own dropdown as needs different displays and values
@@ -183,8 +188,7 @@ function MultiplyUp() {
     u.SetValues([["selectMenuForMultiplyUp", "Choose Menu"], ["multiplyUpMeateaters", ""], ["multiplyUpVegetarians", ""], ["selectViewMenu", menuTitle]])
     u.HideElements("multiplyUp")
 }
-
-/** generates a list of meals and recipes which can be dragged and dropped */
+/** generates a list of meals and recipes */
 function RefreshEditMenu() {
     let menuTitle = u.ID("selectEditMenu").value
     let menuDiv = u.ID("editMenuDiv")
@@ -195,38 +199,35 @@ function RefreshEditMenu() {
         return "menuTitle not selected"
     }
     u.ShowElements(editBtnIDs, "inline") // dislay the three edit buttons
-    u.SetValues([["selectMenuForMultiplyUp",menuTitle],["selectMenuForNewRecipe",menuTitle]]) // set menu titles in add recipe modal and multiply up modal
+    u.SetValues([["selectMenuForMultiplyUp", menuTitle], ["selectMenuForNewRecipe", menuTitle]]) // set menu titles in add recipe modal and multiply up modal
 
     let menu = Dict[3].getMenu(menuTitle)
     for (let i = 0; i < menu.meals.length; i++) {
         // generate and display meal title e.g. Friday Dinner
         let meal = Dict[3].getMeal(menuTitle, i)
-        let day = d.weekday[new Date(meal.date).getDay()]
-        let mealTitle = u.CreateElement("text",menuDiv)
+        let day = e.weekday[new Date(meal.date).getDay()]
+        let mealTitle = u.CreateElement("text", menuDiv)
         u.Html(mealTitle, `mealTitle${i}`, "mealTitle", "display:inline-block", "", `${day} ${meal.mealType}`)
 
         // generate and display the mealDiv where the recipes for that meal will go
-        let mealDiv = u.CreateElement("div",menuDiv,`mealDiv${i}`)
+        let mealDiv = u.CreateElement("div", menuDiv, `mealDiv${i}`)
 
-        let recipeTitlePlaceholder = u.CreateElement("div",mealDiv,`recipeTitlePlaceholder${i}0`,"recipeTitlePlaceholder")
-        RecipeDragDrop(null, recipeTitlePlaceholder)
-
-        // generate list of recipes and placeholders to enable drag drop
         for (let j = 0; j < meal.recipes.length; j++) {
             let recipe = Dict[3].getRecipe(menuTitle, i, j)
-            let recipeTitleDiv = u.CreateElement("div",mealDiv,`recipeTitleDiv${i}${j}`,"recipeTitleDiv")
-            let recipeTitlePlaceholder = u.CreateElement("div",mealDiv,`recipeTitlePlaceholder${i}${j + 1}`,"recipeTitlePlaceholder")
-            let recipeTitle = u.CreateElement("text",recipeTitleDiv,`recipeTitle${i}${j}`,"recipeTitle");
-            if (recipe === null){continue}
+            let recipeTitleDiv = u.CreateElement("div", mealDiv, `recipeTitleDiv${i}${j}`, "listItem")
+            let recipeTitle = u.CreateElement("text", recipeTitleDiv, `recipeTitle${i}${j}`, "recipeTitle");
+            if (recipe === null) { continue }
             if (recipe.morv === "b") { recipeTitle.innerText = `${recipe.recipeTitle}` }
-            else {recipeTitle.innerText = `${recipe.recipeTitle} - ${recipe.morv}`}
+            else { recipeTitle.innerText = `${recipe.recipeTitle} - ${recipe.morv}` }
 
-            if (recipe.recipeType === "dessert core") {recipeTitleDiv.style = "background-color:#F28D18" }
-            else if (recipe.recipeType === "core") {recipeTitleDiv.style = "background-color:#23D08A" }
+            // ["core","veg","starch","sauce","other","dessert core","dessert other"] 
+            let recipeColors = ["#264D9B", "#5E81C5", "#85A2DC", "#B5C9F0", "#CCCCCC", "#23D08A", "#71E6B7"]
+            for (let i = 0; i < e.recipeTypeEnum.length; i++) {
+                if (recipe.recipeType === e.recipeTypeEnum[i]) { recipeTitleDiv.style.backgroundColor = recipeColors[i]; break }
+            }
+            if (recipe.recipeType === "core") { recipeTitleDiv.style.color = "white" }
 
-            RecipeDragDrop(recipeTitle, recipeTitlePlaceholder)
-
-            let deleteRecipeFromMenu = u.CreateElement("button",recipeTitleDiv,`deleteRecipe${i}${j}`, "removeRecipe","x")
+            let deleteRecipeFromMenu = u.CreateElement("button", recipeTitleDiv, `deleteRecipe${i}${j}`, "removeRecipe", "x")
             deleteRecipeFromMenu.addEventListener("click", function () {
                 Dict[3].deleteRecipe(menuTitle, i, j)
                 u.WriteDict(3)
@@ -234,97 +235,3 @@ function RefreshEditMenu() {
         }
     }
 }
-//
-// create functions to support recipe drag and drop
-// CURRENTLY BORKEN in ligeti/smallchoir friday dinner can't move anything to 4th place...
-var dragRecipeID = null;
-function RecipeDragDrop(draggable, droppable) {
-    if (draggable) {
-        draggable.setAttribute("draggable", true);
-        draggable.addEventListener("dragstart", function () {
-            dragRecipeID = event.target.id
-        });
-    }
-    if (droppable) {
-        droppable.addEventListener("dragover", function () {
-            u.AllowDrop(event)
-            event.target.style = "height:20px; background-color:#eee; width:304px"
-        })
-        droppable.addEventListener("dragleave", function () {
-            event.target.style = "height:5px; background-color:#ffffff; width:304px"
-        })
-        droppable.addEventListener("drop", function () {
-            u.Drop(event)
-            event.target.style = "height:5px; background-color:#ffffff; width:304px"
-            let draggedMealID = parseInt(dragRecipeID.slice(-2, -1))
-            let droppedMealID = parseInt(event.target.id.slice(-2, -1))
-            let draggedRecipeID = parseInt(dragRecipeID.slice(-1))
-            let droppedRecipeID = parseInt(event.target.id.slice(-1))
-
-            if (draggedMealID !== droppedMealID) { console.log("you dragged to another meal! cheat") }
-            if (draggedRecipeID === droppedRecipeID || (draggedRecipeID + 1) === droppedRecipeID) {
-                console.log("you didn't move")
-                RefreshEditMenu()
-            }
-            else {
-                console.log(`dragging ${draggedRecipeID} to ${droppedRecipeID}`)
-                let menuTitle = u.ID("selectEditMenu").value
-                let meal = Dict[3].getMeal(menuTitle, draggedMealID)
-                let oldRecipes = meal.recipes
-                let newRecipes = []
-                if (draggedRecipeID > droppedRecipeID) {
-                    // add recipes that haven't moved to newRecipes
-                    for (let i = 0; i < droppedRecipeID; i++) {
-                        newRecipes[i] = oldRecipes[i]
-                    }
-                    for (let i = oldRecipes.length - 1; i > draggedRecipeID; i--) {
-                        newRecipes[i] = oldRecipes[i]
-                    }
-                    // add recipes that have moved by 1 to newRecipes
-                    for (let i = droppedRecipeID; i < draggedRecipeID; i++) {
-                        newRecipes[i + 1] = oldRecipes[i]
-                    }
-                    // add the recipe that you moved
-                    newRecipes[droppedRecipeID] = oldRecipes[draggedRecipeID]
-                    meal.recipes = newRecipes
-                }
-                else { //draggedID < droppedID
-                    // add recipes that haven't moved to newRecipes
-                    console.log(oldRecipes)
-                    for (let i = 0; i < draggedRecipeID; i++) {
-                        newRecipes[i] = oldRecipes[i]
-                    }
-                    console.log(newRecipes)
-                    for (let i = oldRecipes.length - 1; i > droppedRecipeID; i--) {
-                        newRecipes[i] = oldRecipes[i]
-                    }
-                    console.log(newRecipes)                    
-                    // add recipes that have moved by 1 to newRecipes
-                    for (let i = draggedRecipeID + 1; i < droppedRecipeID; i++) {
-                        newRecipes[i - 1] = oldRecipes[i]
-                    }
-                    console.log(newRecipes)                    
-                    // add the recipe that you moved
-                    newRecipes[droppedRecipeID - 1] = oldRecipes[draggedRecipeID]
-
-                    /*
-                    if (droppedRecipeID === oldRecipes.length) {
-                        newRecipes[droppedRecipeID - 1] = oldRecipes[draggedRecipeID]
-                    }
-                    else {
-                        newRecipes[droppedRecipeID] = oldRecipes[draggedRecipeID]
-                    } */
-                    console.log(newRecipes)                    
-                    meal.recipes = newRecipes
-                }
-                u.WriteDict(3)
-                RefreshEditMenu()
-            }
-        })
-    }
-}
-
-//
-
-    //
-//

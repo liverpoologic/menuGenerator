@@ -2,11 +2,12 @@ var u = require("./UtilityFunctions.js")
 var d = require("./Dicts.js") 
 var Dict = d.Dict 
 
-
-
 // onLoad
-u.ID("addfood_btn").addEventListener("click", AddFoodBtn)
+function onLoad(){
+    u.ID("addfood_btn").addEventListener("click", AddFoodBtn)
+} 
 
+/** adds a food to Dict[1] based on the info in the add food tab */
 function AddFoodBtn ()
 {
     let thing = u.ID("foodThing").value.toLowerCase()
@@ -24,9 +25,13 @@ function AddFoodBtn ()
     u.SetValues([["foodThing",""],["foodUnit",""],["selectFoodShop","Shop"],["selectFoodType","Food Type"]])
 
     for (let i=0; i+1 < u.ID("ingredientTable").rows.length; i++){
-        if(u.ID(`selectIngredientFood${i}`).value==="Food"){
-        u.ClearDropdown(`selectIngredientFood${i}`,"Food")
-        u.CreateDropdown(`selectIngredientFood${i}`,Dict[1],true) // recipe > add ingredients
-        }
+
+        u.ClearDropdown(`selectIngredientFood${i}`, u.ID(`selectIngredientFood${i}`).value)
+        u.CreateDropdown(`selectIngredientFood${i}`, Dict[1], true)
     }
+}
+
+module.exports = {
+    btn:AddFoodBtn,
+    onLoad:onLoad
 }
