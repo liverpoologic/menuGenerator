@@ -10,12 +10,24 @@ Dict[4] - enum of enums */
 const Dict = []
 
 Dict[1] = {
-    addFood(thing, unit, shop, foodType) //add a food to t1
+    addFood(thing, unit, shop, foodType, allergens) //add a food to t1
     {
         if (typeof thing != "string") { console.log(`invalid input: ${thing} not a string`) }
         else if (typeof unit != "string" && unit != null) { console.log(`invalid input: ${unit} not a string or null`) }
         else if (Dict[4].shopEnum.indexOf(shop) < 0) { console.log(`invalid input: ${shop} not in the shop enum`) }
-        else { this[thing] = { unit: unit, shop: shop, foodType: foodType }; }
+        else {
+            this[thing] = { unit: unit, shop: shop, foodType: foodType }; 
+            this.addAllergens(thing,allergens);
+        }
+    },
+    addAllergens(thing,allergens){
+        this[thing].allergens = allergens.sort();
+        allergens.forEach(allergen => {
+            if (Dict[4].allergenEnum.indexOf(allergen) < 0 && allergen !== "") {
+                Dict[4].addItem(allergen, "allergenEnum")
+            }
+        })
+        Dict[4].allergenEnum = Dict[4].allergenEnum.sort();
     },
     getFood(x) {
         return this[x]

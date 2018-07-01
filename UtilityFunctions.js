@@ -1,6 +1,7 @@
 var d = require("./Dicts.js")
 var fs = require("fs")
 var e = d.Dict[4]
+var tagsInput = require('tags-input')
 
 /** function to clear drop down and put in default option
  * @param {string} elementID ID of the dropdown to clear
@@ -42,13 +43,30 @@ function CreateEditCellListeners(cellID, inputType, keyID, dictID, property, dro
             cell.innerHTML = `<select id='Input_${cellID}'><option>${oldValue}</option></select><button id='Save_${cellID}' class='insideCellBtn'>✔</button>`
             CreateDropdown(`Input_${cellID}`, dropdownSource, dropdownKeys)
         }
+
         cell.className = "tableInput"
         ID(cellID).removeEventListener("click", editCell)
-        ID(`Save_${cellID}`).addEventListener("click", function saveNewCell() {
-            let newValue = ID(`Input_${cellID}`).value
-            d.Dict[dictID][key][property] = newValue
-            WriteDict(dictID)
-        })
+
+        if(inputType === "tags"){
+            cell.innerHTML = `<input id='Input_${cellID}'></input><button id='Save_${cellID}' class='insideCellBtn'>✔</button>`
+            tagsInput(ID(`Input_${cellID}`), "allergenList","populate"," ",oldValue);
+
+            ID(`Save_${cellID}`).addEventListener("click", function saveNewCell() {
+                let newValue = ID(`Input_${cellID}`).value.split(" ")
+                d.Dict[dictID].addAllergens(key,newValue)
+                WriteDict(dictID)
+                WriteDict(4)    
+            })    
+
+        }
+        else{
+            ID(`Save_${cellID}`).addEventListener("click", function saveNewCell() {
+                let newValue = ID(`Input_${cellID}`).value
+                d.Dict[dictID][key][property] = newValue
+                WriteDict(dictID)
+            })    
+        }
+
     })
 }
 /** function to create a dropdown from a given object. Note that if keys=true, the items will be sorted.
@@ -59,31 +77,17 @@ function CreateEditCellListeners(cellID, inputType, keyID, dictID, property, dro
  */
 function CreateDropdown(elementID, source, keys, valueOpts) { 
     var select = ID(elementID);
-    if (keys === true) {
-        var options = Object.keys(source).sort()
-    }
-    else {
-        var options = source
-    }
+    var options = keys ? GetKeysExFns(source).sort() : source;
     if (typeof valueOpts !== "object") {
-        valueOpts = []
-        for (let x = 0; x < options.length; x++) {
-            valueOpts[x] = options[x]
-        }
+        valueOpts = options;
     }
-    for (let i = 0; i < options.length; i++) {
-        let displayOpt = options[i];
-        let valueOpt = valueOpts[i]
-        if (keys === true) {
-            if (typeof source[displayOpt] === "function") {
-                continue
-            }
-        }
-        let el = document.createElement("option");
+    options.forEach((option,i) => {
+        let displayOpt = option;
+        let valueOpt = valueOpts[i];
+        let el = CreateElement("option",select)
         el.textContent = displayOpt;
         el.value = valueOpt;
-        select.appendChild(el);
-    }
+    });
 }
 /** creates an element of type [elementType] and attaches it to element [parent]
  * @param {string} elementType the type of element you want to create (e.g. "div")
@@ -91,7 +95,7 @@ function CreateDropdown(elementID, source, keys, valueOpts) {
  */
 function CreateElement(elementType, parent, id, className, innerText, display) {
     let newElement = document.createElement(elementType)
-    parent.appendChild(newElement)
+    if(parent !== "") parent.appendChild(newElement)
     Html(newElement, id, className, undefined, undefined, innerText)
     if (display !== undefined && display !== "") { newElement.style.display = display };
     return newElement
@@ -140,6 +144,11 @@ function CompareFoodType(a, b) {
         comparison = -1
     }
     return comparison; // 1 means a is after b, -1 means a should be before b
+}
+function Compare(a,b){
+    if(a>b) return 1
+    else if (b>a) return -1
+    else return 0
 }
 /**compares meal type to identify if meal[a] is before or after meal[b] (including date and meal type). Returns 1 if a is after b, and -1 if a is before b. Returns 0 if a=b.
  * @param {string} a the key for meal a 
@@ -324,10 +333,6 @@ function ReadDict(){
  * @param {*} location the location of the key (e.g. Dict[1])
  */
 function RenameKey(oldKeyName, newKeyName, location) {
-    console.log(oldKeyName)
-    console.log(newKeyName)
-    console.log(location)
-    console.log(Object.getOwnPropertyDescriptor(location, oldKeyName))
     if (oldKeyName !== newKeyName) {
         Object.defineProperty(location, newKeyName, Object.getOwnPropertyDescriptor(location, oldKeyName));
         delete location[oldKeyName];
@@ -351,6 +356,14 @@ function ShowElements(ids, display) {
         }
     }
 }
+/**
+ * returns the keys of an object excluding any methods
+ * @param {object} obj  
+ */
+function GetKeysExFns(obj){
+    return Object.keys(obj).filter(x => typeof obj[x] !== "function")
+}
+
 /** swap two elements of an array
  * @param {object} array the array in questions
  * @param {number} value1 the id of the first value
@@ -395,6 +408,15 @@ function WriteDict(dictID) {
     }
 } // TO DO add rest of dropdowns to this. Do we want to re-initialise all dropdowns?
 
+/**
+ * get the date in the form MMM yy (e.g. Jun 18)
+ * @param {date} date 
+ */
+function GetMMMyy(date){
+    var ret = date.toLocaleString("en-uk", {month: "short",year:"2-digit"});
+    return ret;
+}
+
 module.exports = {
     ClearDropdown: ClearDropdown, // function to clear drop down and put in default option   
     ClearTable: ClearTable, // function to clear table, leaving a given number of header rows
@@ -402,11 +424,14 @@ module.exports = {
     CreateEditCellListeners: CreateEditCellListeners, // creates listener to enable 'edit cell' (currently used in admin tables)
     CreateElement: CreateElement, // creates an element and attaches it to a given parent and gives it an id
     CreateRow: CreateRow, // creates a row with given properties
+    Compare:Compare, //compares two numeric values
     CompareFoodType: CompareFoodType, // compares food type to identify if fooda.type is before or after foodb.type
     CompareMeal: CompareMeal, // compares two meals and identifies whether meal a is before or after meal b
     CompareRecipe: CompareRecipe, // compares two recipes and identifies whether recipe a is before or after recipe b    
     DisplayIngredient: DisplayIngredient, // changes g to kg when relevant, sets decimal places
     GetFormalDate: GetFormalDate, // convert date into 'formal' - e.g 1st, 2nd, 3rd
+    GetKeysExFns:GetKeysExFns, //gets keys excluding any functions of a given object
+    GetMMMyy:GetMMMyy, // convert date into MMM yy (Jun 18)
     GetNumber:GetNumber, // returns the number in a string (ignores letters)
     HideElements: HideElements, // hide element with given ID
     Html: Html, // set attributes of an html object: id, classname, style, innerHTML and innerText    

@@ -7,7 +7,7 @@ var Dict = d.Dict
 var e = d.Dict[4]
 
 module.exports = {
-    CreateTable:CreateTable, // creates / refreshes an admin table
+    CreateTable: CreateTable, // creates / refreshes an admin table
     CreateTableContents: CreateTableContents, // creates / refreshes a given dictionary table's contents
     RefreshEnumTable: RefreshEnumTable, // refreshes enum table contents
     onLoad: onLoad
@@ -35,24 +35,40 @@ function onLoad() {
 function CreateTable(tableID) { // create admin table header and filter row, then calls CreateTableContents (clear existing and then create)
     var e = d.Dict[4]
     let table = u.ID(`t${tableID}Table`)
+    //collect filters to reapply later
+    let filters = table.rows[1]
     table.innerHTML = "" // clear table
-    if (tableID === 1) {
-        u.CreateRow("t1Table", "th", ["Food Name", "Unit", "Shop", "Type", "-"], "", [40, 15, 15, 15, 5], "%")
-        CreateFilterRow(1, ["longText", "longText", "select", "select", null], [true])
-        u.CreateDropdown("t1TableFilter2input", e.shopEnum, false)
-        u.CreateDropdown("t1TableFilter3input", e.foodTypeEnum, false)
+    switch (tableID) {
+        case 1:
+            u.CreateRow("t1Table", "th", ["Food Name", "Unit", "Shop", "Type", "Allergens", "-"], "", [30, 10, 15, 15, 15, 5], "%")
+            if (filters) table.appendChild(filters)
+            else {
+                CreateFilterRow(1, ["longText", "longText", "select", "select", "select", null], [true])
+                u.CreateDropdown("t1TableFilter2input", e.shopEnum, false)
+                u.CreateDropdown("t1TableFilter3input", e.foodTypeEnum, false)
+                u.CreateDropdown("t1TableFilter4input", e.allergenEnum, false)
+            }
+            break;
+
+        case 2:
+            u.CreateRow("t2Table", "th", ["Recipe Title", "Meal", "Type", "Serves", "Morv", "-"], "", [55, 15, 15, 10, 10, 5], "%")
+            if (filters) table.appendChild(filters)
+            else {
+                CreateFilterRow(2, ["longText", "select", "select", null, "select", null])
+
+                u.CreateDropdown("t2TableFilter1input", e.mealTypeEnum, false)
+                u.CreateDropdown("t2TableFilter2input", e.recipeTypeEnum, false)
+                u.CreateDropdown("t2TableFilter4input", e.morvEnum, false)
+            }
+            break;
+        case 3:
+            u.CreateRow("t3Table", "th", ["Menu Title", "Start Date", "End Date", "-"], "", [40, 30, 30, 10], "%")
+
+            if (filters) table.appendChild(filters)
+            else CreateFilterRow(3, ["longText", null, null, null])
+            break;
     }
-    else if (tableID === 2) {
-        u.CreateRow("t2Table", "th", ["Recipe Title", "Meal", "Type", "Serves", "Morv", "-"], "", [55, 15, 15, 10, 10, 5], "%")
-        CreateFilterRow(2, ["longText", "select", "select", null, "select", null])
-        u.CreateDropdown("t2TableFilter1input", e.mealTypeEnum, false)
-        u.CreateDropdown("t2TableFilter2input", e.recipeTypeEnum, false)
-        u.CreateDropdown("t2TableFilter4input", e.morvEnum, false)
-    }
-    else if (tableID === 3) {
-        u.CreateRow("t3Table", "th", ["Menu Title", "Start Date", "End Date", "-"], "", [40, 30, 30, 10], "%")
-        CreateFilterRow(3, ["longText", null, null, null])
-    }
+
     CreateTableContents(tableID)
 }
 
@@ -60,34 +76,35 @@ function CreateTable(tableID) { // create admin table header and filter row, the
  * @param {number} dictID id of dictionary (1,2 or 3)
  * @param {array} filterType array including each filter type from left to right e.g. ["longText,"text","number","select",null] - null means no input required. */
 function CreateFilterRow(dictID, filterType) {
-    let tableID = `t${dictID}Table`
-    let Table = u.ID(tableID)
-    let filterRow = Table.insertRow()
-    for (let i = 0; i < filterType.length; i++) {
+    let tableID = `t${dictID}Table`;
+    let Table = u.ID(tableID);
+    let filterRow = Table.insertRow();
+
+    filterType.forEach((type, i) => {
         let filterCell = u.CreateElement("th", filterRow)
         filterCell.addEventListener("change", function () {
             CreateTableContents(dictID)
         })
 
-        if (filterType[i] === "select") {
+        if (type === "select") {
             u.Html(filterCell, `${tableID}Filter${i}`, "", "", `<select id=${tableID}Filter${i}input><option value="All">All</option></select>`)
         }
-        else if (filterType[i] === "longText") {
+        else if (type === "longText") {
             u.Html(filterCell, `${tableID}Filter${i}`, "", "", `<input id=${tableID}Filter${i}input type='text' style='width:80%'><button id=${tableID}Filter${i}clear class='insideCellBtn'>x</button>`)
             u.ID(`${tableID}Filter${i}clear`).addEventListener("click", function () {
                 u.ID(`${tableID}Filter${i}input`).value = ""
                 CreateTableContents(dictID)
             })
         }
-        else if (filterType[i] !== null) {
-            u.Html(filterCell, `${tableID}Filter${i}`, "", "", `<input id=${tableID}Filter${i}input type='${filterType[i]}' class='tableTextInput'>`)
+        else if (type !== null) {
+            u.Html(filterCell, `${tableID}Filter${i}`, "", "", `<input id=${tableID}Filter${i}input type='${type}' class='tableTextInput'>`)
         }
-    }
+    });
 }
 
 /** Refresh contents of a given admin table
  * @param {number} dictID ID of the table (1,2 or 3). */
-function CreateTableContents(dictID) {
+function CreateTableContents(dictID, filters) {
     var e = d.Dict[4]
     let table = u.ID(`t${dictID}Table`)
     u.ClearTable(table.id, 2)
@@ -98,14 +115,16 @@ function CreateTableContents(dictID) {
         let j = table.rows.length - 1;
 
         if (dictID === 1) {
-            let filter = Filter(1, i, [["key", ""], ["unit", ""], ["shop", "all"], ["foodType", "all"]])
+            let filter = Filter(1, i, [["key", ""], ["unit", ""], ["shop", "all"], ["foodType", "all"], ["allergens", "all"]])
             if (filter === false) { continue }
-            let cellIDs = [`t1TableKey${j}`, `t1TableUnit${j}`, `t1TableShop${j}`, `t1TableFoodType${j}`, `t1RemoveLinebtn${j}`]
-            let cellContents = [dictKeys[i], rowKey.unit, rowKey.shop, rowKey.foodType, "<input type='button' value='-'>"]
+            let cellIDs = [`t1TableKey${j}`, `t1TableUnit${j}`, `t1TableShop${j}`, `t1TableFoodType${j}`, `t1TableAllergens${j}`, `t1RemoveLinebtn${j}`]
+            let cellContents = [dictKeys[i], rowKey.unit, rowKey.shop, rowKey.foodType, rowKey.allergens, "<input type='button' value='-'>"]
             u.CreateRow("t1Table", "td", cellContents, cellIDs)
             u.CreateEditCellListeners(`t1TableUnit${j}`, "text", `t1TableKey${j}`, 1, "unit")
             u.CreateEditCellListeners(`t1TableShop${j}`, "select", `t1TableKey${j}`, 1, "shop", e.shopEnum, false)
             u.CreateEditCellListeners(`t1TableFoodType${j}`, "select", `t1TableKey${j}`, 1, "foodType", e.foodTypeEnum, false)
+            u.CreateEditCellListeners(`t1TableAllergens${j}`, "tags", `t1TableKey${j}`, 1, "allergens")
+
 
             // add listener to enable edit food name
             u.ID(`t1TableKey${j}`).addEventListener("click", EditFoodName)
@@ -279,7 +298,7 @@ function Filter(dictID, id, parameters) { //returns false if value should be fil
             if (typeof thing[property] === "string") { thingProperty = thing[property].toLowerCase() }
             else { thingProperty = thing[property] }
 
-            if (thingProperty === null) { continue }
+            if (thingProperty === null || thingProperty === undefined) { continue }
             else if (thingProperty.indexOf(filter[i]) > -1) { filterBool[i] = true }
         }
     }
@@ -318,11 +337,10 @@ function SaveChangesRecipe() {
         let mealKeys = Object.keys(Dict[3][menuTitle].meals)
         for (let x = 0; x < mealKeys.length; x++) {
             let mealNo = parseInt(mealKeys[x])
-            console.log(Dict[3][menuTitle].meals[mealNo])
             let recipeKeys = Object.keys(Dict[3][menuTitle].meals[mealNo].recipes)
-            for (let y=0; y<recipeKeys.length; y++){
+            for (let y = 0; y < recipeKeys.length; y++) {
                 let recipe = Dict[3][menuTitle].meals[mealNo].recipes[y]
-                if(recipe.recipeTitle === recipeTitle){
+                if (recipe.recipeTitle === recipeTitle) {
                     let morv = recipe.morv
                     Dict[3].deleteRecipe(menuTitle, mealNo, y)
                     Dict[3].addRecipe(menuTitle, mealNo, recipeTitle, morv)
@@ -381,24 +399,24 @@ function ChangeEnumName(oldValue) {
     let enumObj = e[u.ID("selectAdminEnum").value]
     delete enumObj[j]
     enumObj[j] = newValue
-    if(u.ID("selectAdminEnum").value === "foodTypeEnum"){ // if you are changing food-type-enum, change types of food in Dict[1]
+    if (u.ID("selectAdminEnum").value === "foodTypeEnum") { // if you are changing food-type-enum, change types of food in Dict[1]
         let foodKeys = Object.keys(Dict[1])
-        for(let i=0; i<foodKeys.length; i++){
+        for (let i = 0; i < foodKeys.length; i++) {
             let foodName = foodKeys[i]
             let food = Dict[1][foodName]
-            if (typeof food === "function") {continue}
-            else if (food.foodType === oldValue){
+            if (typeof food === "function") { continue }
+            else if (food.foodType === oldValue) {
                 food.foodType = newValue
             }
         }
     }
-    if(u.ID("selectAdminEnum").value === "shopEnum"){ // if you are changing shopping-enum, change types of shop in Dict[1], Dict[2] and Dict[3]
+    if (u.ID("selectAdminEnum").value === "shopEnum") { // if you are changing shopping-enum, change types of shop in Dict[1], Dict[2] and Dict[3]
         let foodKeys = Object.keys(Dict[1])
-        for(let i=0; i<foodKeys.length; i++){
+        for (let i = 0; i < foodKeys.length; i++) {
             let foodName = foodKeys[i]
             let food = Dict[1][foodName]
-            if (typeof food === "function") {continue}
-            else if (food.shop === oldValue){
+            if (typeof food === "function") { continue }
+            else if (food.shop === oldValue) {
                 food.shop = newValue
             }
         }

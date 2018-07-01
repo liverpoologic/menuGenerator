@@ -1,117 +1,139 @@
 .title {
     font-family: Arial, Helvetica, sans-serif;
+    background-color: #071C46;
+    color: #ffffff;
+}
+
+h1 {
+    display: inline-block;
+    padding: 0px 16px;
     font-size: 25px;
+}
+
+allergen {
+    display:block;
+    padding:2px;
+    font-size: 10px;
+    font-style: italic
+}
+
+/* Style the tab */
+
+.htab {
+    font-family: Arial, Helvetica, sans-serif;
+    overflow: hidden;
+    background-color: #103F9C;
+}
+
+/* Style the buttons inside the tab */
+
+.htab button {
+    background-color: inherit;
+    float: left;
+    border: none;
+    margin: 0;
+    outline: none;
+    cursor: pointer;
     padding: 14px 16px;
+    transition: 0.3s;
+    font-size: 17px;
+}
+
+/* Change background color of buttons on hover */
+
+.htab button:hover {
     background-color: #071C46;
     color: #ffffff;
-  }
+}
 
+/* Create an active/current tablink class */
 
-  /* Style the tab */
-  .htab {
-   font-family: Arial, Helvetica, sans-serif;
-   overflow: hidden;
-   background-color: #103F9C;
- }
-  
-  /* Style the buttons inside the tab */
-  .htab button {
-      background-color: inherit;
-      float: left;
-      border: none;
-      margin: 0;
-      outline: none;
-      cursor: pointer;
-      padding: 14px 16px;
-      transition: 0.3s;
-      font-size: 17px;
-  }
-  
-  /* Change background color of buttons on hover */
-  .htab button:hover {
+.htab button.active {
     background-color: #071C46;
     color: #ffffff;
-  }
-  
-  /* Create an active/current tablink class */
-  .htab button.active {
-    background-color: #071C46;
-      color: #ffffff;
-  }
-  
-  /* Style the tab content */
-  .htabcontent {
-      font-family: Arial, Helvetica, sans-serif;
-      display: none;
-      padding: 12px 12px;
-      border-top: none;
-      border-bottom: none;
-      height: 100%;
-  }
+}
+
+/* Style the tab content */
+
+.htabcontent {
+    font-family: Arial, Helvetica, sans-serif;
+    display: none;
+    padding: 12px 12px;
+    border-top: none;
+    border-bottom: none;
+    height: 100%;
+}
+
 /* start of vtab */
-    div.vtab {
-        float: left;
-        padding: 10px, 10px;
-        border: 0px solid #ccc;
-        background-color: #f1f1f1;
-        width: 130px;
-        height: 100%;
-        }
 
-    /* Style the buttons inside the tab */
-    div.vtab button {
-        display: block;
-        background-color: inherit;
-        color: black;
-        padding: 16px 16px;
-        width: 100%;
-        border: none;
-        outline: none;
-        text-align: left;
-        cursor: pointer;
-        transition: 0.3s;
-        font-size: 17px;
-    }
+div.vtab {
+    float: left;
+    padding: 10px, 10px;
+    margin-right: 10px;
+    border: 0px solid #ccc;
+    background-color: #f1f1f1;
+    width: 130px;
+    height: 100%;
+}
 
-    /* Change background color of buttons on hover */
-    div.vtab button:hover {
-        background-color: #ddd;
-    }
+/* Style the buttons inside the tab */
 
-    /* Create an active/current "tab button" class */
-    div.vtab button.active {
-        background-color: #ccc;
-    }
+div.vtab button {
+    display: block;
+    background-color: inherit;
+    color: black;
+    padding: 16px 16px;
+    width: 100%;
+    border: none;
+    outline: none;
+    text-align: left;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 17px;
+}
 
-    /* Style the tab content */
-    .vtabcontent {
-        float: left;
-        padding: 0px 10px;
-        width: 70%;
-        border-left: none;
-        height: 300px;
-    }
+/* Change background color of buttons on hover */
 
-  
-  .flex-container {
+div.vtab button:hover {
+    background-color: #ddd;
+}
+
+/* Create an active/current "tab button" class */
+
+div.vtab button.active {
+    background-color: #ccc;
+}
+
+/* Style the tab content */
+
+.vtabcontent {
+    float: left;
+    padding: 0px 10px;
+    width: 70%;
+    border-left: none;
+    height: 300px;
+}
+
+.flex-container {
     display: flex;
     flex-wrap: nowrap;
     width: 90%;
     padding: 16px
-  }
-  .container {
-    padding: 16px
-  }
-  
-  
+}
 
-  .taclass{
-    display:block;
-    width:100%;
-    padding:2%;
+.container {
+    padding: 16px
+}
+
+/* text area class (for method) */
+
+.taclass {
+    display: block;
+    width: 100%;
+    padding: 2%;
     -webkit-box-sizing: border-box;
-       -moz-box-sizing: border-box;
-            box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    box-sizing: border-box;
 }
 
 table {
@@ -119,10 +141,12 @@ table {
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
-    display:block
+    display: block
 }
 
-table tr:hover {background-color: #8DA5D9;}
+table tr:hover {
+    background-color: #8DA5D9;
+}
 
 td, th {
     border: 1px solid #dddddd;
@@ -132,12 +156,13 @@ td, th {
 }
 
 tr:nth-child(even) {
-    background-color: #bcc6da    ;
+    background-color: #bcc6da;
 }
 
 tr:nth-child(odd) {
     background-color: #ffffff;
 }
+
 tr.sub {
     margin-left: 20px;
 }
@@ -148,6 +173,7 @@ menu {
 }
 
 /* Full-width input fields */
+
 input[type=text], input[type=number], select {
     padding: 6px 6px;
     margin: 8px 0;
@@ -155,18 +181,22 @@ input[type=text], input[type=number], select {
     border: 1px solid #ccc;
     box-sizing: border-box;
 }
-.tableTextInput{
-    width:80%
+
+.tableTextInput {
+    width: 80%
 }
+
 /*remove padding for table input fields */
-.tableInput{
+
+.tableInput {
     padding: 0 6px;
     margin: 0;
 }
 
 /* Set a style for all buttons */
+
 button {
-    background-color:#071C46;
+    background-color: #071C46;
     color: white;
     padding: 8px 8px;
     margin: 4px 0;
@@ -179,6 +209,7 @@ button:hover {
 }
 
 /* Extra styles for the cancel button */
+
 .cancelbtn {
     width: auto;
     padding: 10px 18px;
@@ -186,113 +217,121 @@ button:hover {
 }
 
 /*style for +/- meal and recipe buttons */
-.mealbtn{
+
+.mealbtn {
     color: #ffffff;
     margin: 2px 35px;
-    width:25px;
+    width: 25px;
 }
 
-.recipebtn{
+.recipebtn {
     background-color: #ffffff;
     color: #000000;
     margin: 2px 20px;
-    width:20px;
+    width: 20px;
 }
 
-/* Center the image and position the close button */
-.imgcontainer {
-    text-align: center;
-    margin: 24px 0 12px 0;
-    position: relative;
-}
-
-img.avatar {
-    width: 40%;
-    border-radius: 50%;
-}
-
-span.psw {
-    float: right;
-    padding-top: 16px;
+.recipeDiv {
+    width: 50%;
+    display: none;
 }
 
 /* The Modal (background) */
+
 .modal {
-    display: none; /* Hidden by default */
-    position: fixed; /* Stay in place */
-    z-index: 1; /* Sit on top */
+    display: none;
+    /* Hidden by default */
+    position: fixed;
+    /* Stay in place */
+    z-index: 1;
+    /* Sit on top */
     left: 0;
     top: 0;
-    width: 100%; /* Full width */
-    height: 100%; /* Full height */
-    overflow: auto; /* Enable scroll if needed */
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+    width: 100%;
+    /* Full width */
+    height: 100%;
+    /* Full height */
+    overflow: auto;
+    /* Enable scroll if needed */
+    background-color: rgb(0, 0, 0);
+    /* Fallback color */
+    background-color: rgba(0, 0, 0, 0.4);
+    /* Black w/ opacity */
     padding-top: 60px;
     font-family: Arial, Helvetica, sans-serif;
 }
 
 /* Modal Content/Box */
+
 .modal-content {
     background-color: #fefefe;
-    margin: 5% auto 15% auto; /* 5% from the top, 15% from the bottom and centered */
+    margin: 5% auto 25% auto;
+    /* 5% from the top, 15% from the bottom and centered */
     border: 1px solid #888;
-    width: 80%; /* Could be more or less, depending on screen size */
-}
-
-/* The Close Button (x) */
-.close {
-    position: absolute;
-    right: 25px;
-    top: 0;
-    color: #000;
-    font-size: 35px;
-    font-weight: bold;
-}
-
-.close:hover,
-.close:focus {
-    color: red;
-    cursor: pointer;
+    width: 60%;
+    /* Could be more or less, depending on screen size */
 }
 
 h3 {
     font-size: 25px;
     font-weight: bold;
-    color: #103F9C;    
+    color: #103F9C;
 }
 
 h4 {
     font-size: 16px;
     font-weight: bold;
 }
-.shoppingbtn{
-    margin:3px;
+
+.shoppingbtn {
+    background-color: #B5C9F0;
+    color: black;
+    margin: 0px 7px 20px 0px;
     border-radius: 4px;
     height: 35px;
     font-size: 16px;
-    
 }
-.mealTitle{
+
+.shoppingbtn-active {
+    margin: 0px 7px 20px 0px;
+    border-radius: 4px;
+    height: 35px;
+    font-size: 16px;
+}
+
+.shoppingbtn-empty {
+    background-color: #cccccc;
+    margin: 0px 7px 20px 0px;
+    border-radius: 4px;
+    height: 35px;
+    font-size: 16px;
+}
+
+.shoppingbtn-active-empty {
+    background-color: #666666;
+    margin: 0px 7px 20px 0px;
+    border-radius: 4px;
+    height: 35px;
+    font-size: 16px;
+}
+
+.mealTitle {
     font-size: 16px;
     font-weight: bold;
     margin: 6px;
 }
-.recipeTitle{
+
+.recipeTitle {
     font-size: 12px;
     padding: 6px;
 }
 
-.recipeTitleDiv{
+.listItem {
     width: 300px;
-    height: 20px;  
-    background-color: #85D0E1;
-    padding: 4px 2px;  
-}
-.recipeTitlePlaceholder{
-    height: 5px;
-    background-color: #ffffff;
-    display: block;
+    height: 20px;
+    background-color: #cccccc;
+    padding: 4px 2px;
+    margin: 5px;
 }
 
 .shoppingTable {
@@ -310,92 +349,540 @@ h4 {
     padding-top: 12px;
     padding-bottom: 12px;
     text-align: left;
-    background-color: #103F9C ;
+    background-color: #103F9C;
     color: white;
-} 
+}
+
 pbr {
     line-height: 150%
 }
+
 .addRecipeFilter {
     margin: 6px;
-    height:120px;
+    height: 120px;
 }
-.filterLabel{
-    font-size:12px;
+
+.filterLabel {
+    font-size: 12px;
 }
-.filter-container{
-    margin:2px;
+
+.filter-container {
+    margin: 2px;
 }
-.removeRecipe{
-    margin:0;
-    padding:2px 10px;
+
+.removeRecipe {
+    margin: 0;
+    padding: 2px 10px;
     background-color: inherit;
     color: black;
     float: right;
     font-weight: bold
 }
 
-.insideCellBtn{
+.insideCellBtn {
     background-color: inherit;
     color: black;
     font-weight: bold;
-    float:right;
-    padding:8px 2px;
+    float: right;
+    padding: 8px 2px;
 }
 
 /* media print stylesheet */
 
 @media print {
-
-    table{
+    table {
         background-color: grey
     }
-    .printMenu{
+    .printMenu {
         font-family: Arial, Helvetica, sans-serif;
     }
     .printMealTitle {
         page-break-before: always;
-        display:block;    
-        page-break-after: avoid;    
+        display: block;
+        page-break-after: avoid;
         font-size: 25px;
         font-weight: bold;
-        color: rgb(60, 83, 153);    
+        color: rgb(60, 83, 153);
     }
     .printDessertRecipeTitle {
         page-break-before: always;
-        display:block;
+        display: block;
     }
-
     .printRecipeDiv {
         page-break-before: avoid;
         page-break-inside: avoid;
-        display:block;
+        display: block;
     }
     .printIngredientTable {
         page-break-inside: avoid;
-        display:block;
+        display: block;
     }
     .printMethod {
         page-break-inside: avoid;
-        display:block;
+        display: block;
     }
-
-    .printRecipeTitle{
-        page-break-after: avoid; 
-        display:block;    
+    .printRecipeTitle {
+        page-break-after: avoid;
+        display: block;
     }
-    .printShoppingList{
+    .printShoppingList {
         page-break-before: always;
-        display:block;
-        font-family: Arial, Helvetica, sans-serif;        
+        display: block;
+        font-family: Arial, Helvetica, sans-serif;
     }
-    .essentialsNote{
-        font-family: Arial, Helvetica, sans-serif;        
-        font-size: 12px        
+    .essentialsNote {
+        font-family: Arial, Helvetica, sans-serif;
+        font-size: 12px
     }
-
 }
 
-.printShoppingTable{
-    width:auto;
+.printShoppingTable {
+    width: auto;
 }
+
+@-webkit-keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        -webkit-transform: translateY(0);
+    }
+    40% {
+        -webkit-transform: translateY(-16px);
+    }
+    60% {
+        -webkit-transform: translateY(-7px);
+    }
+}
+
+@keyframes bounce {
+    0%, 20%, 50%, 80%, 100% {
+        -webkit-transform: translateY(0);
+        transform: translateY(0);
+    }
+    40% {
+        -webkit-transform: translateY(-16px);
+        transform: translateY(-16px);
+    }
+    60% {
+        -webkit-transform: translateY(-7px);
+        transform: translateY(-7px);
+    }
+}
+
+.bounce {
+    -webkit-animation-name: bounce;
+    animation-name: bounce;
+}
+
+#forkongithub a {
+    background: #990033;
+    color: #fff;
+}
+
+.project_container a {
+    color: #000;
+}
+
+.clearfix:before, .clearfix:after {
+    display: block;
+    content: "";
+    line-height: 0;
+    clear: both;
+}
+
+.taggle_list {
+    float: left;
+    width: 100%;
+    -webkit-padding-start: 0px;
+}
+
+.taggle_input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    font-weight: 300;
+}
+
+.taggle_list li {
+    float: left;
+    display: inline-block;
+    white-space: nowrap;
+    font-weight: 500;
+    margin-bottom: 5px;
+}
+
+.taggle_list .taggle {
+    margin-right: 8px;
+    background: #E2E1DF;
+    padding: 5px 10px;
+    border-radius: 3px;
+    position: relative;
+    cursor: pointer;
+    transition: all .3s;
+    -webkit-animation-duration: 1s;
+    animation-duration: 1s;
+    -webkit-animation-fill-mode: both;
+    animation-fill-mode: both;
+}
+
+.taggle_list .taggle_hot {
+    background: #cac8c4;
+}
+
+.taggle_list .taggle .close {
+    font-size: 1.1rem;
+    position: absolute;
+    top: 5px;
+    right: 3px;
+    text-decoration: none;
+    padding-left: 2px;
+    padding-top: 3px;
+    line-height: 0.5;
+    color: #ccc;
+    color: rgba(0, 0, 0, 0.2);
+    padding-bottom: 4px;
+    display: none;
+    border: 0;
+    background: none;
+    cursor: pointer;
+}
+
+.taggle_list .taggle:hover {
+    padding: 5px;
+    padding-right: 15px;
+    background: #ccc;
+    transition: all .3s;
+}
+
+.taggle_list .taggle:hover>.close {
+    display: block;
+}
+
+.taggle_list .taggle .close:hover {
+    padding: 0px;
+    color: #990033;
+}
+
+.taggle_placeholder {
+    position: absolute;
+    color: #CCC;
+    top: 12px;
+    left: 8px;
+    transition: opacity, .25s;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+}
+
+.taggle_input {
+    padding: 8px;
+    padding-left: 0;
+    float: left;
+    margin-top: -5px;
+    background: none;
+    width: 100%;
+    max-width: 100%;
+}
+
+.taggle_sizer {
+    padding: 0;
+    margin: 0;
+    position: absolute;
+    top: -500px;
+    z-index: -1;
+    visibility: hidden;
+}
+
+/*container styles*/
+
+textarea.input, .textarea.input {
+    border: 0;
+    background: #FDFDFD;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.2), 0 1px 1px rgba(255, 255, 255, 0.7);
+    min-height: 60px;
+    padding: 8px;
+    border-radius: 3px;
+    color: #555;
+    transition: all .25s;
+    cursor: text;
+    margin-bottom: 10px;
+    position: relative;
+}
+
+.textarea.input:focus, .textarea.input.active, textarea.input:focus, textarea.input.active {
+    background: #fff;
+    transition: all .25s;
+}
+
+.textarea.input, textarea.input {
+    height: auto;
+}
+
+.textarea.tags {
+    position: relative;
+}
+
+.textarea.tags * {
+    box-sizing: content-box;
+}
+
+.placeholder_input {
+    position: relative;
+}
+
+.placeholder_input span {
+    position: absolute;
+    color: #AAA;
+    top: 50%;
+    margin-top: -11px;
+    left: 10px;
+}
+
+.placeholder_input input {
+    width: 120px;
+}
+
+.ui-autocomplete {
+    position: absolute;
+    top: 0;
+    left: 0;
+}
+
+.ui-menu {
+    list-style: none;
+    padding: 2px;
+    margin: 0;
+    display: block;
+    outline: none;
+}
+
+.ui-widget-content {
+    background: #fff;
+    color: #990033;
+}
+
+.ui-menu .ui-menu-item {
+    margin: 0;
+    padding: 0;
+    width: 100%;
+}
+
+.ui-menu .ui-menu-item a {
+    text-decoration: none;
+    display: block;
+    padding: 2px .4em;
+    line-height: 1.5;
+    min-height: 0;
+    font-weight: normal;
+    color: #8a8a8a;
+    cursor: pointer;
+}
+
+.ui-menu .ui-menu-item a:hover {
+    color: #fff;
+    background: #990033;
+}
+
+.ui-state-hover, .ui-widget-content .ui-state-hover, .ui-widget-header .ui-state-hover, .ui-state-focus, .ui-widget-content .ui-state-focus, .ui-widget-header .ui-state-focus {
+    background: #990033;
+    color: #fff !important;
+}
+
+.ui-state-hover a, .ui-state-hover a:hover, .ui-state-hover a:link, .ui-state-hover a:visited {
+    color: #fff;
+}
+
+.ui-state-active, .ui-widget-content .ui-state-active, .ui-widget-header .ui-state-active {
+    border: 1px solid #aaaaaa;
+    background: #ffffff;
+    font-weight: normal;
+    color: #212121;
+}
+
+.ui-helper-hidden {
+    display: none;
+}
+
+.ui-helper-hidden-accessible {
+    border: 0;
+    clip: rect(0 0 0 0);
+    height: 1px;
+    margin: -1px;
+    overflow: hidden;
+    padding: 0;
+    position: absolute;
+    width: 1px;
+}
+
+.autocomplete {
+    max-height: 200px;
+    overflow: scroll;
+    position: absolute;
+    top: 66px;
+    background: white;
+    width: 99.5%;
+    left: 0.25%;
+    z-index: 2;
+}
+
+.autocomplete ul li {
+    display: block;
+    padding: 6px 8px;
+}
+
+.autocomplete ul li.selected, .autocomplete ul li:hover {
+    background: #ff6633;
+    color: #fff;
+    cursor: pointer;
+}
+
+.ui-autocomplete {
+    max-height: 200px;
+    overflow: scroll;
+    width: 99% !important;
+}
+
+.custom.textarea {
+    border-radius: 0;
+    box-shadow: none;
+}
+
+.custom.textarea .taggle {
+    border-radius: 0;
+    padding: 5px;
+    padding-right: 20px;
+}
+
+.custom.textarea .taggle .close {
+    display: inline-block;
+    right: 3px;
+}
+
+.custom.delicious {
+    background-image: linear-gradient(to bottom, #eee 1%, #fff 15%);
+    border: 1px solid #AAA;
+    min-height: 50px;
+}
+
+.custom.delicious.active {
+    border-color: #3274D1;
+    background-image: linear-gradient(to bottom, #eee 1%, #fff 15%);
+}
+
+.custom.delicious .taggle {
+    color: #444;
+    border-radius: 0;
+    border-top-left-radius: 1.5rem;
+    border-bottom-left-radius: 1.5rem;
+    background-color: #ddd;
+    font-family: sans-serif;
+    font-size: 0.8rem;
+    padding: 5px;
+    padding-left: 20px;
+}
+
+.custom.delicious .taggle .close {
+    color: #aaa;
+    font-size: 0.9rem;
+    height: 0.7rem;
+    width: 0.7rem;
+    line-height: .1rem;
+    margin-top: 3px;
+    right: auto;
+    left: 5px;
+}
+
+.custom.delicious .taggle .close:hover {
+    color: #888;
+}
+
+.custom.stackoverflow {
+    border: 1px solid #ccc;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+}
+
+.custom.stackoverflow .taggle {
+    color: #3E6D8E;
+    border-radius: 0;
+    background-color: #E0EAF1;
+    font-weight: 200;
+}
+
+.custom.stackoverflow .taggle.taggle_hot {
+    background: #BDD0DD;
+}
+
+.custom.stackoverflow .taggle .close {
+    color: #aaa;
+    border-radius: 0.7rem;
+    font-size: 0.9rem;
+    height: 0.7rem;
+    width: 0.7rem;
+    line-height: .1rem;
+    margin-top: 3px;
+}
+
+.custom.stackoverflow .taggle .close:hover {
+    background: #C03434;
+    color: #fff;
+}
+
+.tags-input {
+    display: inline-block;
+    padding: 0 2px;
+    background: #FFF;
+    border: 1px solid #CCC;
+    width: 16em;
+    border-radius: 2px;
+    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1)
+}
+
+.tags-input .tag {
+    display: inline-block;
+    background: #EEE;
+    color: #444;
+    padding: 0 4px;
+    margin: 2px;
+    border: 1px solid #CCC;
+    border-radius: 2px;
+    font: inherit;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+    cursor: pointer;
+    transition: all .1s ease
+}
+
+.tags-input .tag.selected {
+    background-color: #777;
+    border-color: #777;
+    color: #EEE
+}
+
+.tags-input .tag.dupe {
+    -webkit-transform: scale3d(1.2, 1.2, 1.2);
+    transform: scale3d(1.2, 1.2, 1.2);
+    background-color: #FCC;
+    border-color: #700
+}
+
+.tags-input input {
+    -webkit-appearance: none!important;
+    -moz-appearance: none!important;
+    appearance: none!important;
+    display: inline-block!important;
+    padding: 3px;
+    margin: 0!important;
+    background: 0 0!important;
+    border: none!important;
+    box-shadow: none!important;
+    font: inherit!important;
+    font-size: 100%!important;
+    outline: 0!important
+}
+
+.tags-input .selected~input {
+    opacity: .3
+}
+
+/*# sourceMappingURL=tags-input.css.map */

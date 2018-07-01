@@ -4,7 +4,6 @@
 <head>
   <meta charset="UTF-8">
   <title>Pigotts Menu Manager</title>
-  <button id="test_btn">test</button>
   <link rel="stylesheet" href="./style.css">
 </head>
 
@@ -12,7 +11,12 @@
   <div id="mainApp">
 
     <div class="title">
-      <b>Pigotts menu generator</b>
+      <h1>
+        <b>Pigotts menu generator</b>
+      </h1>
+      <button id="settings_btn" style="float:right; margin:0px">
+        <img src="resources/settings.png" height="42px" width="42px" />
+      </button>
     </div>
     <div class="htab">
       <button id="AddFoodTabBtn" class="htablinks">Add Food</button>
@@ -21,6 +25,7 @@
       <button id="ViewMenuTabBtn" class="htablinks">View Menu</button>
       <button id="EditMenuTabBtn" class="htablinks">Edit Menu</button>
       <button id="ShoppingTabBtn" class="htablinks">Shopping</button>
+      <button id="PeopleTabBtn" class="htablinks">People</button>
       <button id="AdminTabBtn" class="htablinks">Admin</button>
 
     </div>
@@ -37,13 +42,14 @@
         <option>Food Type</option>
       </select>
       <br>
+      <div id="allergenDiv" width="400px"></div>
       <br>
       <button id="addfood_btn">Add Food</button>
     </div>
     <div id="AddRecipe" class="htabcontent">
       <h2 id="AddRecipePageTitle"> Add Recipe </h2>
-      <div class="flex-container">
-        <div id="addRecipe_left" style="width:50%; margin:0 20px 0 0">
+      <div class="flex-container" style="padding:0px">
+        <div id="addRecipe_left" style="width:40%; margin:0 20px 0 0">
           <input type="text" id="recipeTitle" placeholder="Recipe Title">
           <br>
           <select id="selectRecipeMealType">
@@ -64,7 +70,7 @@
           <br>
           <button id="addRecipe_btn">Add Recipe</button>
         </div>
-        <div id="addRecipe_right" style="width:50%">
+        <div id="addRecipe_right" style="width:60%">
           <table id="ingredientTable">
           </table>
           <br>
@@ -77,31 +83,41 @@
       <h2> Add Menu </h2>
       <input type="text" id="menuTitle" placeholder="Menu Title">
       <br>
-      <br> Start Date:  <input type="date" id="menuStartDate">
+      <br> Start Date:
+      <input type="date" id="menuStartDate">
       <br>
-      <br> End Date:  <input type="date" id="menuEndDate">
-      <br> <br>
+      <br> End Date:
+      <input type="date" id="menuEndDate">
+      <br>
+      <br>
       <button id="addmenu_btn">Add Empty Menu</button>
       <br>
       <br>
       <button id="add_weekend_menu">Add Standard Weekend Menu</button>
     </div>
     <div id="addMealsToMenu" class="modal">
-        <div class="modal-content animate">
-          <div class="flex-container" style="width:97%">
-            <div class="container" style="width:50%">
-              <text>Add meals to </text> <text id="menuTitleForAddMeals" display="block"></text><br>
-              <select id="selectDayForAddMeals"><option>Select Day</option></select>
-              <br>
-              <select id="selectMealTypeForAddMeals"><option>Select Meal</option></select>
-              <br><br>
-              <button id="addMeals_btn">Add Meal</button>
-            </div>
-            <div id="currentMealList"class="container" style="width:50%">
-            </div>
+      <div class="modal-content animate">
+        <div class="flex-container" style="width:97%">
+          <div class="container" style="width:50%">
+            <text>Add meals to </text>
+            <text id="menuTitleForAddMeals" display="block"></text>
+            <br>
+            <select id="selectDayForAddMeals">
+              <option>Select Day</option>
+            </select>
+            <br>
+            <select id="selectMealTypeForAddMeals">
+              <option>Select Meal</option>
+            </select>
+            <br>
+            <br>
+            <button id="addMeals_btn">Add Meal</button>
+          </div>
+          <div id="currentMealList" class="container" style="width:50%">
           </div>
         </div>
       </div>
+    </div>
     <div id="ViewMenu" class="htabcontent">
       <h2> View Menu </h2>
       <select id="selectViewMenu">
@@ -168,7 +184,7 @@
         </div>
       </div>
 
-      
+
       <div id="multiplyUp" class="modal">
         <div class="modal-content animate">
           <div class="container">
@@ -199,12 +215,24 @@
       <button id="printShoppingbtn" style="margin:4px 40px">Print to PDF</button>
       <br>
       <br>
+      <div id="shoppingbtndiv"></div>
+    </div>
+    <div id="People" class="htabcontent">
+      <h2> People </h2>
+      <select id="selectPeopleMenu">
+        <option>Menu</option>
+      </select>
+      <div id="viewPeopleDiv">
+      </div>
+      <br>
+      <br>
     </div>
     <div id="Admin" class="htabcontent" style="padding=0px">
       <div class="vtab">
         <button id="t1FoodDictTabBtn" class="vtablinks">Food</button>
         <button id="t2RecipeDictTabBtn" class="vtablinks">Recipes</button>
         <button id="t3MenuDictTabBtn" class="vtablinks">Menus</button>
+        <button id="enumsTabBtn" class="vtablinks">Other</button>
       </div>
       <div id="t1FoodDict" class="vtabcontent" style="display:none">
         <h2> All Food </h2>
@@ -227,12 +255,26 @@
         <br>
         <br>
       </div>
+      <div id="enums" class="vtabcontent" style="display:none">
+          <h2> Other </h2>
+          <select id="selectAdminEnum"><option>Select an Enum</option></select>
+          <div id="enumTableDiv">
+      </div>
+      </div>
+    </div>
+    <div id="settingsModal" class="modal">
+      <div class="modal-content animate">
+        <div class="container">
+          <text>Filepath for print output: (e.g. C:\Users\joe.bloggs\Desktop)</text>
+          <br>
+          <input id="filepath" type="text" style="width:100%" placeholder="filepath for print output"></input>
+        </div>
+      </div>
     </div>
   </div>
   <div id="PrintMenu" class="printMenu" style="display:none"></div>
   <div id="PrintShopping" class="printShopping" style="display:none"></div>
   <script> 
-    // require renderer.js
     require('./renderer.js')
   </script>
 </body>

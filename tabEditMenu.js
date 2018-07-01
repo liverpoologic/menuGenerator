@@ -220,7 +220,7 @@ function RefreshEditMenu() {
             if (recipe.morv === "b") { recipeTitle.innerText = `${recipe.recipeTitle}` }
             else { recipeTitle.innerText = `${recipe.recipeTitle} - ${recipe.morv}` }
 
-            // ["core","veg","starch","sauce","other","dessert core","dessert other"] 
+            // ["core","veg","starch","sauce","other","dessert c","dessert other"] 
             let recipeColors = ["#264D9B", "#5E81C5", "#85A2DC", "#B5C9F0", "#CCCCCC", "#23D08A", "#71E6B7"]
             for (let i = 0; i < e.recipeTypeEnum.length; i++) {
                 if (recipe.recipeType === e.recipeTypeEnum[i]) { recipeTitleDiv.style.backgroundColor = recipeColors[i]; break }
