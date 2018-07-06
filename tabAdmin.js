@@ -44,9 +44,9 @@ function CreateTable(tableID) { // create admin table header and filter row, the
             if (filters) table.appendChild(filters)
             else {
                 CreateFilterRow(1, ["longText", "longText", "select", "select", "select", null], [true])
-                u.CreateDropdown("t1TableFilter2input", e.shopEnum, false)
-                u.CreateDropdown("t1TableFilter3input", e.foodTypeEnum, false)
-                u.CreateDropdown("t1TableFilter4input", e.allergenEnum, false)
+                u.CreateDropdown("t1TableFilter2input", e.shopEnum, false,undefined,'all')
+                u.CreateDropdown("t1TableFilter3input", e.foodTypeEnum, false,undefined,'all')
+                u.CreateDropdown("t1TableFilter4input", e.allergenEnum, false,undefined,'all')
             }
             break;
 
@@ -56,9 +56,9 @@ function CreateTable(tableID) { // create admin table header and filter row, the
             else {
                 CreateFilterRow(2, ["longText", "select", "select", null, "select", null])
 
-                u.CreateDropdown("t2TableFilter1input", e.mealTypeEnum, false)
-                u.CreateDropdown("t2TableFilter2input", e.recipeTypeEnum, false)
-                u.CreateDropdown("t2TableFilter4input", e.morvEnum, false)
+                u.CreateDropdown("t2TableFilter1input", e.mealTypeEnum, false,undefined,'all')
+                u.CreateDropdown("t2TableFilter2input", e.recipeTypeEnum, false,undefined,'all')
+                u.CreateDropdown("t2TableFilter4input", e.morvEnum, false,undefined,'all')
             }
             break;
         case 3:
@@ -118,12 +118,14 @@ function CreateTableContents(dictID, filters) {
             let filter = Filter(1, i, [["key", ""], ["unit", ""], ["shop", "all"], ["foodType", "all"], ["allergens", "all"]])
             if (filter === false) { continue }
             let cellIDs = [`t1TableKey${j}`, `t1TableUnit${j}`, `t1TableShop${j}`, `t1TableFoodType${j}`, `t1TableAllergens${j}`, `t1RemoveLinebtn${j}`]
-            let cellContents = [dictKeys[i], rowKey.unit, rowKey.shop, rowKey.foodType, rowKey.allergens, "<input type='button' value='-'>"]
+
+            var allergens = rowKey.allergens ? rowKey.allergens.join(", ") : "";
+            let cellContents = [dictKeys[i], rowKey.unit, rowKey.shop, rowKey.foodType, allergens, "<input type='button' value='-'>"]
             u.CreateRow("t1Table", "td", cellContents, cellIDs)
             u.CreateEditCellListeners(`t1TableUnit${j}`, "text", `t1TableKey${j}`, 1, "unit")
             u.CreateEditCellListeners(`t1TableShop${j}`, "select", `t1TableKey${j}`, 1, "shop", e.shopEnum, false)
             u.CreateEditCellListeners(`t1TableFoodType${j}`, "select", `t1TableKey${j}`, 1, "foodType", e.foodTypeEnum, false)
-            u.CreateEditCellListeners(`t1TableAllergens${j}`, "tags", `t1TableKey${j}`, 1, "allergens")
+            u.CreateEditCellListeners(`t1TableAllergens${j}`, "tags", `t1TableKey${j}`, 1, "allergens",'allergenList')
 
 
             // add listener to enable edit food name

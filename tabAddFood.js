@@ -11,11 +11,6 @@ function onLoad() {
     tagsInput(allergenInput, "allergenList","create"," ");
     allergenInput.setAttribute('type', 'tags');
 
-    u.CreateElement("datalist", u.ID("allergenDiv"), "allergenList")
-    Dict[4].allergenEnum.forEach(ea => {
-        var opt = u.CreateElement("option", u.ID("allergenList"));
-        opt.value = ea;
-    })
 }
 
 /** adds a food to Dict[1] based on the info in the add food tab */
@@ -37,9 +32,10 @@ function AddFoodBtn() {
     u.SetValues([["foodThing", ""], ["foodUnit", ""], ["selectFoodShop", "Shop"], ["selectFoodType", "Food Type"]]);
 
     for (let i = 0; i + 1 < u.ID("ingredientTable").rows.length; i++) {
+        var select = u.ID(`selectIngredientFood${i}`);
 
-        u.ClearDropdown(`selectIngredientFood${i}`, u.ID(`selectIngredientFood${i}`).value)
-        u.CreateDropdown(`selectIngredientFood${i}`, Dict[1], true)
+        u.CreateDropdown(select.id, Dict[1], true,undefined,select.value)
+
     }
 }
 

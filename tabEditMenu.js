@@ -132,8 +132,7 @@ function ApplyFilters() {
         }
     }
     filteredRecipeKeys.sort()
-    u.ClearDropdown("selectRecipeForMenu", "Choose Recipe")
-    u.CreateDropdown("selectRecipeForMenu", filteredRecipeKeys, false)
+    u.CreateDropdown("selectRecipeForMenu", filteredRecipeKeys, false, undefined, "Choose Recipe")
 }
 /** Triggered when the 'clear filters' btn is clicked */
 function ClearFiltersBtn() {
@@ -164,7 +163,6 @@ function AddRecipeToMenu() {
 }
 /** create select meal dropdown from menu (in edit menu > add recipe) */
 function RefreshAddRecipeModal() {
-    u.ClearDropdown("selectMealForMenu", "Choose Meal")
     // create meal enum & dropdon          
     let menu = Dict[3][u.ID("selectMenuForNewRecipe").value]
     let mealEnum = []
@@ -175,7 +173,7 @@ function RefreshAddRecipeModal() {
     // creating my own dropdown as needs different displays and values
     let values = []
     for (let i = 0; i < mealEnum.length; i++) { values[i] = i }
-    u.CreateDropdown("selectMealForMenu", mealEnum, false, values)
+    u.CreateDropdown("selectMealForMenu", mealEnum, false, values, 'Choose Meal')
 }
 /** multiply up the menu from inputs in the multiply up modal */
 function MultiplyUp() {

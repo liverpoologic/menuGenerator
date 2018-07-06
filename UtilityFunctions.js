@@ -3,16 +3,6 @@ var fs = require("fs")
 var e = d.Dict[4]
 var tagsInput = require('tags-input')
 
-/** function to clear drop down and put in default option
- * @param {string} elementID ID of the dropdown to clear
- * @param {string} option string that should be used as default value after it is cleared*/
-function ClearDropdown(elementID, option) {
-    ID(elementID).innerHTML = "";
-    let opt = document.createElement("option");
-    opt.textContent = option
-    opt.value = option
-    ID(elementID).appendChild(opt)
-}
 /** function to clear table, leaving a given number of header rows
  * @param {string} tableID html ID of the table to clear
  * @param {number} numberOfRowsToKeep how many rows should be left untouched (can be 0 to clear whole table)*/
@@ -27,67 +17,128 @@ function ClearTable(tableID, numberOfRowsToKeep) {
  * @param {string} inputType this can be "text", "number" or "select" and indicates the kind of input field required
  * @param {string} keyID the ID of the cell that contains the key for that object (e.g. cellID for 'allspice')
  * @param {number} dictID the ID of the dictionary being changed
- * @param {string} property the property of the dictionary object being changed (e.g. shop)
- * @param {object} dropdownSource the object which is the source of the required dropdown. Do not include unless inputType = "select"
+ * @param {string} property the property of the dictionary object being changed (e.g. shop). Use array with multiple properties for nested props
+ * @param {object} dropdownSource the object which is the source of the required dropdown. Do not include unless inputType = "select" or 'tags'.
  * @param {boolean} dropdownKeys 'true' means the dropdown should be the keys of the source object, 'false' means the dropdown should just print the contents of the object
  */
 function CreateEditCellListeners(cellID, inputType, keyID, dictID, property, dropdownSource, dropdownKeys) {
-    ID(cellID).addEventListener("click", function editCell() {
-        let cell = ID(cellID)
+
+    function CreateButton(cell, inputType) {
+        return CreateEl('button').parent(cell).id(`save_${cell.id}`).className('insideCellBtn').innerHTML('✔').end();
+    }
+
+    function CreateInput(cell, inputType, oldValue, dropdownSource, dropdownKeys) {
+        let elType = inputType === 'select' ? 'select' : 'input'
+        if(inputType = 'tags') console.log(oldValue)
+        let el = CreateEl(elType).type(inputType).parent(cell).id(`input_${cell.id}`).value(oldValue).end();
+        console.log(el);
+
+        switch (inputType) {
+            case 'select':
+                CreateDropdown(el.id, dropdownSource, dropdownKeys,undefined,oldValue)
+                break;
+            case 'tags':
+                tagsInput(el, dropdownSource, "populate", " ", oldValue)
+                break;
+        }
+        return el;
+    }
+
+    function getProp(item,property){
+        if (typeof property === 'string') return item[property]
+        var ret = item
+        property.forEach( prop =>{
+            ret = ret[prop]
+        })
+        return ret;
+    }
+
+    let cell = ID(cellID)
+    cell.addEventListener("click", function editCell() {
+        cell.innerHTML = ""
         let key = ID(keyID).innerText
-        let oldValue = d.Dict[dictID][key][property]
-        if (inputType === "text" || inputType === "number") {
-            cell.innerHTML = `<input type='${inputType}' id='Input_${cellID}' value='${oldValue}' class='tableTextInput'><button id='Save_${cellID}' class='insideCellBtn'>✔</button>`
-        }
-        else if (inputType === "select") {
-            cell.innerHTML = `<select id='Input_${cellID}'><option>${oldValue}</option></select><button id='Save_${cellID}' class='insideCellBtn'>✔</button>`
-            CreateDropdown(`Input_${cellID}`, dropdownSource, dropdownKeys)
-        }
+        let item =  d.Dict[dictID][key]
+        let oldValue = getProp(item,property)
+
+        let input = CreateInput(cell, inputType, oldValue, dropdownSource, dropdownKeys)
+        let button = CreateButton(cell, inputType)
 
         cell.className = "tableInput"
-        ID(cellID).removeEventListener("click", editCell)
+        cell.removeEventListener("click", editCell)
 
-        if(inputType === "tags"){
-            cell.innerHTML = `<input id='Input_${cellID}'></input><button id='Save_${cellID}' class='insideCellBtn'>✔</button>`
-            tagsInput(ID(`Input_${cellID}`), "allergenList","populate"," ",oldValue);
+        if (inputType === "tags") {
 
-            ID(`Save_${cellID}`).addEventListener("click", function saveNewCell() {
-                let newValue = ID(`Input_${cellID}`).value.split(" ")
-                d.Dict[dictID].addAllergens(key,newValue)
-                WriteDict(dictID)
-                WriteDict(4)    
-            })    
+            button.addEventListener("click", function saveNewCell() {
+                let newValue = input.value.split(",")
+                d.Dict[dictID].addAllergens(key, newValue)
+                WriteDict(dictID, 4)
+            })
 
         }
-        else{
-            ID(`Save_${cellID}`).addEventListener("click", function saveNewCell() {
-                let newValue = ID(`Input_${cellID}`).value
-                d.Dict[dictID][key][property] = newValue
+        else {
+            button.addEventListener("click", function saveNewCell() {
+                let newValue = input.value
+                if(typeof property === 'string'){item[property] = newValue;}
+                else if(property.length === 2){item[property[0][property[1]]] = newValue;}
+                else if(property.length === 3){item[property[0][property[1][property[2]]]] = newValue;}
                 WriteDict(dictID)
-            })    
+            })
         }
 
     })
 }
+
+
 /** function to create a dropdown from a given object. Note that if keys=true, the items will be sorted.
  * @param {string} elementID the ID of the element you want to add the dropdown to (this should already be of type "select")
  * @param {object} source the object which is the source of the required dropdown. Do not include unless inputType = "select"
  * @param {boolean} keys 'true' means the dropdown should be the keys of the source object, 'false' means the dropdown should just print the contents of the object
  * @param {array} valueOpts an array containing strings which should be assigned as values to the corresponding item in the source
+ * @param {array} _default a string which is the value and display name of the default option if nothing is currently selected.
  */
-function CreateDropdown(elementID, source, keys, valueOpts) { 
+function CreateDropdown(elementID, source, keys, valueOpts,_default) {
     var select = ID(elementID);
+    var populated = false
+    if(select != null){
+        if(select.value != "") populated = true
+    }
+    var defaultValueOpt = populated ? select.value : _default
+
+    var defaultDisplayOpt = populated ? Array.prototype.filter.call(select.children,x => x.value === defaultValueOpt)[0].text : _default
+
+    if (select != null) select.innerHTML = ""
     var options = keys ? GetKeysExFns(source).sort() : source;
-    if (typeof valueOpts !== "object") {
+    if (!valueOpts) {
         valueOpts = options;
     }
-    options.forEach((option,i) => {
+    if(_default) {
+        CreateEl('option').parent(select).textContent(defaultDisplayOpt).value(defaultValueOpt).end();
+    }
+    options.forEach((option, i) => {
         let displayOpt = option;
         let valueOpt = valueOpts[i];
-        let el = CreateElement("option",select)
-        el.textContent = displayOpt;
-        el.value = valueOpt;
+        let el = CreateEl('option').parent(select).textContent(displayOpt).value(valueOpt).end();
     });
+}
+/**Create element with dot notation: CreateEl().id('id').type('text').end() */
+function CreateEl(elType) {
+    var props = ['type','textContent', 'parent', 'id', 'className', 'innerText', 'innerHTML', 'display', 'value']
+    var ret = {
+        end: function () {
+            var v = this.vals //access this.vals object
+            var el = document.createElement(elType);
+            if (v.parent) v.parent.appendChild(el);
+            props.forEach(pr => {
+                if (v[pr]) el[pr] = v[pr]
+            });
+            return el;
+        },
+        vals: {}
+    };
+    props.forEach(pr => {
+        ret[pr] = function (val) { this.vals[pr] = val; return this; }
+    })
+    return ret;
 }
 /** creates an element of type [elementType] and attaches it to element [parent]
  * @param {string} elementType the type of element you want to create (e.g. "div")
@@ -95,7 +146,7 @@ function CreateDropdown(elementID, source, keys, valueOpts) {
  */
 function CreateElement(elementType, parent, id, className, innerText, display) {
     let newElement = document.createElement(elementType)
-    if(parent !== "") parent.appendChild(newElement)
+    if (parent !== "") parent.appendChild(newElement)
     Html(newElement, id, className, undefined, undefined, innerText)
     if (display !== undefined && display !== "") { newElement.style.display = display };
     return newElement
@@ -108,7 +159,7 @@ function CreateElement(elementType, parent, id, className, innerText, display) {
  * @param {array} cellWidth array of numbers to assign as the cellWidth for each cell from left to right
  * @param {string} widthUnit can be either "%" or "px" . Cannot be blank if cellWidth is populated.
  */
-function CreateRow(tableID, cellType, cellInnerHtml, cellIDs, cellWidth, widthUnit) { 
+function CreateRow(tableID, cellType, cellInnerHtml, cellIDs, cellWidth, widthUnit) {
     // EXAMPLE u.CreateRow("t1table","th",["cell1text","cell2text],["id1","id2"],[40,60],"%")
     if (typeof cellWidth === "undefined") { cellWidth = "", widthUnit = "" }
     let Table = ID(tableID)
@@ -119,6 +170,7 @@ function CreateRow(tableID, cellType, cellInnerHtml, cellIDs, cellWidth, widthUn
         if (typeof cellIDs === "object") { newCell.id = cellIDs[i] }
         newRow.appendChild(newCell);
     }
+    return newRow
 }
 /**compares food type to identify if food[a].type is before or after food[b].type. If types are the same, identifies if food[a] is before or after food[b] in the alphabet. Returns 1 if a is after b, and -1 if a is before b. Returns 0 if a=b.
  * @param {string} a the key for food a e.g. oranges
@@ -145,9 +197,9 @@ function CompareFoodType(a, b) {
     }
     return comparison; // 1 means a is after b, -1 means a should be before b
 }
-function Compare(a,b){
-    if(a>b) return 1
-    else if (b>a) return -1
+function Compare(a, b) {
+    if (a > b) return 1
+    else if (b > a) return -1
     else return 0
 }
 /**compares meal type to identify if meal[a] is before or after meal[b] (including date and meal type). Returns 1 if a is after b, and -1 if a is before b. Returns 0 if a=b.
@@ -249,7 +301,7 @@ function GetFormalDate(date) {
 /** get number from end of a cell ID
  * @param {string} input the id which you want to extract the number from
  */
-function GetNumber(input){
+function GetNumber(input) {
     return parseInt(input.match(/\d+$/)[0]);
 }
 /** hide element with given ID(s)
@@ -317,15 +369,15 @@ function OpenVTab(tabName) {
     ID(`${tabName}TabBtn`).className += " active";
 }
 /** reads in 'Dict' from Dict.json */
-function ReadDict(){
+function ReadDict() {
     let input = JSON.parse(fs.readFileSync("./resources/Dict.json", { encoding: "utf8" }))
-    for (let i=1; i<input.length; i++){
+    for (let i = 1; i < input.length; i++) {
         for (var thing in input[i]) {
-            if (input[i].hasOwnProperty(thing)){
+            if (input[i].hasOwnProperty(thing)) {
                 d.Dict[i][thing] = input[i][thing]
             }
         }
-    } 
+    }
 }
 /**renames the 'key' of a dictionary object (e.g. change food name)
  * @param {*} oldKeyName the old key name
@@ -341,7 +393,7 @@ function RenameKey(oldKeyName, newKeyName, location) {
 /**sets values for an array of html elements, with the form: ([[id,newValue],[id,newValue]...]) */
 function SetValues(input) {
     for (let i = 0; i < input.length; i++) {
-       // console.log(`setting value of ${input[i][0]} as ${input[i][1]}`)
+        // console.log(`setting value of ${input[i][0]} as ${input[i][1]}`)
         ID(input[i][0]).value = input[i][1]
     }
 }
@@ -360,7 +412,7 @@ function ShowElements(ids, display) {
  * returns the keys of an object excluding any methods
  * @param {object} obj  
  */
-function GetKeysExFns(obj){
+function GetKeysExFns(obj) {
     return Object.keys(obj).filter(x => typeof obj[x] !== "function")
 }
 
@@ -369,7 +421,7 @@ function GetKeysExFns(obj){
  * @param {number} value1 the id of the first value
  * @param {number} value2 the if of the second value
  */
-function Swap(array, value1, value2){
+function Swap(array, value1, value2) {
     let temp = array[value1]
     array[value1] = array[value2]
     array[value2] = temp
@@ -377,15 +429,15 @@ function Swap(array, value1, value2){
 /**writes a selected dictionary to Dict.json. 'dictID' should be '1,2,3,4 or 0 to represent all
  * @param {*} dictID the id of the dictionary (1,2,3) or 0 to write all dictionaries */
 function WriteDict(dictID) {
+    if (arguments.length > 1) {
+        Array.prototype.forEach.call(arguments, x => WriteDict(x));
+        return true
+    }
     let admin = require("./tabAdmin.js");
     let viewMenu = require("./tabViewMenu.js");
 
-    if (dictID === 0) { // if dictID = 0, run function for 1 2 and 3
-        for (let i = 1; i < 5; i++) {
-            WriteDict(i)
-        }
-    }
-    else if (dictID === 4){
+    if (dictID === 0) { WriteDict(1, 2, 3, 4); return true; }// if dictID = 0, run function for 1 2 and 3
+    else if (dictID === 4) {
         let shopping = require("./tabShopping.js");
         fs.writeFileSync(`./resources/Dict.json`, JSON.stringify(d.Dict), { encoding: "utf8" })
         admin.RefreshEnumTable()
@@ -397,51 +449,48 @@ function WriteDict(dictID) {
         let editMenu = require("./tabEditMenu.js");
         editMenu.RefreshEditMenu()
         viewMenu.RefreshViewMenu()
-        // below bit of code refreshes any dropdowns that are affected by a dictionary change.
-        // dropdownIDs below need to be updated when new dropdown is added. Hard coded.
-        let dropdownIDs = [[], [], ["selectRecipeForMenu"], ["selectEditMenu", "selectViewMenu", "selectMenuForNewRecipe", "selectMenuForMultiplyUp", "selectMenuForShopping"]]
-        for (let i = 0; i < dropdownIDs[dictID].length; i++) {
-            let id = dropdownIDs[dictID][i]
-            ClearDropdown(id, ID(id).value)
-            CreateDropdown(id, d.Dict[dictID], true)
-        }
+
     }
-} // TO DO add rest of dropdowns to this. Do we want to re-initialise all dropdowns?
+    var dropdowns = require('./createDropdowns.js')
+    dropdowns.RefreshDropdowns(d.Dict)
+    dropdowns.RefreshDataLists(d.Dict)
+
+}
 
 /**
  * get the date in the form MMM yy (e.g. Jun 18)
  * @param {date} date 
  */
-function GetMMMyy(date){
-    var ret = date.toLocaleString("en-uk", {month: "short",year:"2-digit"});
+function GetMMMyy(date) {
+    var ret = date.toLocaleString("en-uk", { month: "short", year: "2-digit" });
     return ret;
 }
 
 module.exports = {
-    ClearDropdown: ClearDropdown, // function to clear drop down and put in default option   
     ClearTable: ClearTable, // function to clear table, leaving a given number of header rows
     CreateDropdown: CreateDropdown, // create dropdown options
     CreateEditCellListeners: CreateEditCellListeners, // creates listener to enable 'edit cell' (currently used in admin tables)
+    CreateEl: CreateEl, // creates an element using dot notation
     CreateElement: CreateElement, // creates an element and attaches it to a given parent and gives it an id
     CreateRow: CreateRow, // creates a row with given properties
-    Compare:Compare, //compares two numeric values
+    Compare: Compare, //compares two numeric values
     CompareFoodType: CompareFoodType, // compares food type to identify if fooda.type is before or after foodb.type
     CompareMeal: CompareMeal, // compares two meals and identifies whether meal a is before or after meal b
     CompareRecipe: CompareRecipe, // compares two recipes and identifies whether recipe a is before or after recipe b    
     DisplayIngredient: DisplayIngredient, // changes g to kg when relevant, sets decimal places
     GetFormalDate: GetFormalDate, // convert date into 'formal' - e.g 1st, 2nd, 3rd
-    GetKeysExFns:GetKeysExFns, //gets keys excluding any functions of a given object
-    GetMMMyy:GetMMMyy, // convert date into MMM yy (Jun 18)
-    GetNumber:GetNumber, // returns the number in a string (ignores letters)
+    GetKeysExFns: GetKeysExFns, //gets keys excluding any functions of a given object
+    GetMMMyy: GetMMMyy, // convert date into MMM yy (Jun 18)
+    GetNumber: GetNumber, // returns the number in a string (ignores letters)
     HideElements: HideElements, // hide element with given ID
     Html: Html, // set attributes of an html object: id, classname, style, innerHTML and innerText    
     ID: ID, // changes 'document.getElementById' to just ID
     OpenHTab: OpenHTab, // opens a horizontal tab (i.e. main navigation)
     OpenVTab: OpenVTab, // opens a vertical tab (i.e. admin table tabs
-    ReadDict:ReadDict, // reads in 'Dict' from resources
+    ReadDict: ReadDict, // reads in 'Dict' from resources
     RenameKey: RenameKey, // renames the 'key' of a dictionary object (e.g. change food name)
     SetValues: SetValues, // sets values for an array of html elements
     ShowElements: ShowElements, // show multiple elements with a given display
-    Swap:Swap, // swaps two elements of an array
+    Swap: Swap, // swaps two elements of an array
     WriteDict: WriteDict, // writes a selected dictionary to Dict.json
 }

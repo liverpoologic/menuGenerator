@@ -58,18 +58,19 @@ function AddIngredientsRow() {
     var e = d.Dict[4]
     let j = u.ID("ingredientTable").rows.length - 1;
     let colhtml = []
-    colhtml.push(`<select id='selectIngredientFood${j}'><option>Food</option></select>`)
+    colhtml.push(`<select id='selectIngredientFood${j}'></select>`)
     colhtml.push(`<input type='number' id='ingredientQuantitySmall${j}' style='width:100%'>`)
     colhtml.push("")
-    colhtml.push(`<select id='selectIngredientMorv${j}'><option>null</option></select>`)
+    colhtml.push(`<select id='selectIngredientMorv${j}'></select>`)
     colhtml.push("-")
     colhtml.push("+")
     colhtml.push("⇧")
     colhtml.push("⇩")
 
     u.CreateRow("ingredientTable", "td", colhtml,["","",`ingredientUnitDisplay${j}`,"",`-ingbtn${j}`,`+ingbtn${j}`,`upbtn${j}`,`downbtn${j}`],[210,90,60,60,15,15,15,15], "px")
-    u.CreateDropdown(`selectIngredientFood${j}`, Dict[1], true) // recipe > add ingredients
-    u.CreateDropdown(`selectIngredientMorv${j}`, e.morvEnum, false) // recipe > morv            
+    
+    u.CreateDropdown(`selectIngredientFood${j}`, Dict[1], true,undefined,'Food') // recipe > add ingredients
+    u.CreateDropdown(`selectIngredientMorv${j}`, e.morvEnum, false,undefined,'morv') // recipe > morv            
 
     u.ID(`selectIngredientFood${j}`).addEventListener("change", DisplayUnit)
 

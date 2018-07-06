@@ -9,39 +9,15 @@ var viewMenu = require("./tabViewMenu.js")
 var editMenu = require("./tabEditMenu.js")
 var shopping = require("./tabShopping.js")
 var people = require("./tabPeople.js")
+var dropdowns = require('./createDropdowns.js')
 const ipc = require('electron').ipcRenderer
 
 exports.OnLoad = function () {
-    // Import the 3 dictionaries
+    // Import the dictionary
     u.ReadDict()
-    var e = d.Dict[4]
 
-    // Create array of menu names
-    var menuValList = u.GetKeysExFns(d.Dict[3]).sort((a,b) => {
-        return u.Compare(d.Dict[3][a].startDate,d.Dict[3][b].startDate)
-    });
-
-    var menuNameList = menuValList.map(menuTitle => {
-        var menu = d.Dict[3].getMenu(menuTitle);
-        return menu.startDate ? `${menuTitle} (${u.GetMMMyy(new Date(menu.startDate))})` : menuTitle;
-    });
-
-    // Create dropdowns
-    u.CreateDropdown("selectFoodShop", e.shopEnum, false) // add food > select shop    
-    u.CreateDropdown("selectFoodType", e.foodTypeEnum, false) // add food > select food type    
-    u.CreateDropdown("selectRecipeMealType", e.mealTypeEnum, false) // add recipe > select meal type
-    u.CreateDropdown("selectRecipeType", e.recipeTypeEnum, false) // add recipe > select recipe type
-    u.CreateDropdown("recipeMorv", e.morvOpts, false) // add recipe > select morv    
-    u.CreateDropdown("selectViewMenu", menuNameList, false, menuValList) // view menu > select menu
-    u.CreateDropdown("selectEditMenu", menuNameList, false, menuValList) // edit menu > select menu
-    u.CreateDropdown("selectMenuForNewRecipe", menuNameList, false, menuValList) // edit menu > add recipe > select menu
-    u.CreateDropdown("selectRecipeForMenu", d.Dict[2], true) // edit menu > add recipe > select recipe
-    u.CreateDropdown("selectMorvForMenu", e.morvEnum, false) // edit menu > add recipe > select morv
-    u.CreateDropdown("selectMenuForMultiplyUp", menuNameList, false, menuValList) // edit menu > multiply up > select menu    
-    u.CreateDropdown("selectMenuForShopping", menuNameList, false, menuValList) // shopping > select menu
-    u.CreateDropdown("selectMealTypeForAddMeals", e.mealTypeEnum, false) // add menu > add meals > select meal type 
-    u.CreateDropdown("selectPeopleMenu", menuNameList, false, menuValList) // edit menu > select menu   
-    u.CreateDropdown("selectAdminEnum", e, true) // enum of enums for the admin > other screen
+    dropdowns.RefreshDropdowns(d.Dict)
+    dropdowns.RefreshDataLists(d.Dict)
 
     // onLoad for other tabs
     addFood.onLoad()

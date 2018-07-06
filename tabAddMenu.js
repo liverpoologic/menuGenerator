@@ -62,8 +62,7 @@ function CreateAddMealModal(menuTitle) { // creates and shows the modal 'add mea
         let x = dateList[j]
         dateEnum[j] = `${e.weekday[x.getDay()]} (${u.GetFormalDate(x)})`
     }
-    u.ClearDropdown("selectDayForAddMeals", "Select Day")
-    u.CreateDropdown("selectDayForAddMeals", dateEnum, false, dateList)
+    u.CreateDropdown("selectDayForAddMeals", dateEnum, false, dateList,'Select Day')
     CreateMealList()
     u.ID("addMealsToMenu").style = "display: block"
 }
