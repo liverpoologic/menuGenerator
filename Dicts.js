@@ -183,6 +183,15 @@ Dict[3] = {
             this.multiplyUp(menuTitle, this[menuTitle].meateaters, this[menuTitle].vegetarians)
         }
     },
+    changeAllergyType(menuTitle, personName, allergens, foods, morv){
+        if (!this[menuTitle].specials) this[menuTitle].specials = {};
+        this[menuTitle].specials[personName] = {
+            allergens:allergens ? allergens : [],
+            foods:foods ? foods : [],
+            morv:morv 
+        }
+        Dict[4].specialsEnum[personName] = this[menuTitle].specials[personName]
+    },
     multiplyUp(menuTitle, meateaters, vegetarians) {
         this[menuTitle].meateaters = meateaters
         this[menuTitle].vegetarians = vegetarians

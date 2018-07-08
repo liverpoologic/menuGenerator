@@ -365,6 +365,11 @@ function RefreshEnumTable() {
     let enumObj = e[enumName]
     if (enumName === "Select an Enum") { return false }
     u.CreateElement("table", u.ID("enumTableDiv"), "enumTable")
+
+    if(enumName === 'specialsEnum' ){
+        enumObj = Object.keys(enumObj)
+    }
+
     for (let i = 0; i < enumObj.length; i++) {
         u.CreateRow("enumTable", "td", [enumObj[i], "⇧", "⇩", "×"], [`enumObj${i}`, `enumObjUp${i}`, `enumObjDown${i}`, `enumObjDelete${i}`], [200, 15, 15, 15], "px")
         u.ID(`enumObj${i}`).addEventListener("click", EditEnumName)

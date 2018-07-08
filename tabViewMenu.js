@@ -69,22 +69,55 @@ function RefreshViewMenu() {
             let recipeDiv = u.CreateElement("div", mealDiv, `recipeDiv${i}${j}`, "recipeDiv")
             u.CreateElement("br", mealDiv)
 
-            let allergenListText = u.CreateElement("allergen", recipeDiv, `allergens${i}${j}`)
+            let specials = u.CreateElement("specials", recipeDiv, `specials${i}${j}`)
             u.CreateElement("br", recipeDiv)
 
-            let allergenList = []
+            let specialsArr = [];
 
             let ingredientTable = u.CreateElement("table", recipeDiv, `ingredientTable${i}${j}`);
 
-            Object.keys(recipe.ingredients).forEach((key, k) => {
-                let ingredient = Dict[3].getIngredient(menuTitle, i, j, key)
+            // get rid of special people who won't eat this meal
+            if(menu.specials && recipe.morv !== 'b'){
+                console.log('morv')
+                console.log(recipe.morv)
+                var specialPeople = {};
+                Object.keys(menu.specials).forEach(personName => {
+                    console.log(personName);
+                    var data = menu.specials[personName];
+                    console.log(data);
+                    if(data.morv === recipe.morv){
+                        specialPeople[personName] = data
+                    }
+                })
+
+            }
+            else var specialPeople = menu.specials;
+
+            console.log(specialPeople)
+
+            Object.keys(recipe.ingredients).forEach((foodName, k) => {
+                let ingredient = Dict[3].getIngredient(menuTitle, i, j, foodName)
                 let html = []
                 let ids = []
-                var allergens = Dict[1].getFood(key).allergens;
-                if (allergens) {
-                    allergens.forEach(allergen => {
-                        if (allergenList.indexOf(allergen) < 0) allergenList.push(allergen)
-                    });
+                var allergens = Dict[1].getFood(foodName).allergens;
+                if (menu.specials) {
+                    Object.keys(specialPeople).forEach(personName => {
+
+                        var dietaryReq = menu.specials[personName];
+                        let allergenList = [];
+                        if (allergens && dietaryReq.allergens) {
+                            allergens.forEach(allergen => {
+                                if (dietaryReq.allergens.indexOf(allergen) >= 0) allergenList.push(foodName);
+                            });
+                        }
+                        if (dietaryReq.foods) {
+                            if (dietaryReq.foods.indexOf(foodName) >= 0) allergenList.push(foodName);
+                        }
+
+                        if (allergenList.length > 0) {
+                            specialsArr.push({ personName: personName, foodName: foodName })
+                        }
+                    })
                 }
 
                 if (ingredient.quantityLarge === null) {
@@ -93,7 +126,7 @@ function RefreshViewMenu() {
                 else {
                     html = u.DisplayIngredient(ingredient.quantitySmall, ingredient.quantityLarge, ingredient.food.unit)
                 }
-                html.unshift(key)
+                html.unshift(foodName)
                 for (let x = 0; x < 4; x++) {
                     ids.push(`${i}${j}${k}${x}`)
                 }
@@ -102,9 +135,42 @@ function RefreshViewMenu() {
             });
             let method = u.CreateElement("p", recipeDiv);
             var methodHTML = recipe.method.replace(/(?:\r\n|\r|\n)/g, '<br><br>');
-            method.innerHTML = methodHTML
+            method.innerHTML = methodHTML;
 
-            allergenListText.innerText = allergenList.sort().join(", ")
+            if (specialsArr.length > 0) {
+
+                var specialsObj1 = {}
+
+                specialsArr.forEach(obj => {
+                    if (!specialsObj1[obj.personName]) {
+                        specialsObj1[obj.personName] = []
+                    }
+                    specialsObj1[obj.personName].push(obj.foodName)
+
+                })
+
+                var specialsObj2 = {}
+
+                Object.keys(specialsObj1).forEach(person => {
+                    var foodJoined = specialsObj1[person].sort().join(", ");
+                    if (!specialsObj2[foodJoined]) {
+                        specialsObj2[foodJoined] = []
+                    }
+                    specialsObj2[foodJoined].push(person)
+                })
+
+
+                specialsText = Object.keys(specialsObj2).map(problemFoods => {
+                    var people = specialsObj2[problemFoods]
+                    return `${people.length} - ${problemFoods} (${people.join(", ")})`
+                });
+                specialsText.splice(0, 0, 'Specials:');
+
+
+                specials.innerHTML = specialsText.join('<br>');
+
+                recipeTitle.innerText = `${recipeTitle.innerText} *`
+            }
         });
     });
 }

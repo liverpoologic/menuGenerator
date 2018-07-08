@@ -87,9 +87,6 @@ function RefreshDropdowns(Dict) {
     })
 }
 
-
-
-
 function RefreshDataLists(Dict) {
 
     var dataListConfig = [
@@ -101,6 +98,10 @@ function RefreshDataLists(Dict) {
             id: 'food',
             sourceArr: u.GetKeysExFns(Dict[1]).sort()
         },
+        {
+            id:'specialPeople',
+            sourceArr: u.GetKeysExFns(Dict[4].specialsEnum)
+        }
     ]
 
     dataListConfig.forEach(obj => {
