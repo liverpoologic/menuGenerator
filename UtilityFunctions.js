@@ -31,7 +31,6 @@ function CreateEditCellListeners(cellID, inputType, keyID, dictID, property, dro
         let elType = inputType === 'select' ? 'select' : 'input'
         if(inputType = 'tags') console.log(oldValue)
         let el = CreateEl(elType).type(inputType).parent(cell).id(`input_${cell.id}`).value(oldValue).end();
-        console.log(el);
 
         switch (inputType) {
             case 'select':
@@ -332,19 +331,7 @@ function Html(variable, id, className, style, innerHTML, innerText, value) {
         if (value !== undefined && value !== "") { variable.value = value };
     }
 }
-/**
- * takes an array of objects and groups by a particular property
- */
-// function GroupBy(obj,key,keypropName){
-//     {
-//         fuzz:{a:1,b:1},
-//         mati:{a:2,b:1},
-//         weelin:{a:3,b:3}
-//     }
-//     =>
-//     []
 
-// }
 /** shortens 'document.getElementById' to just ID
  * @param {string} elementID the ID to be located
  */
@@ -382,8 +369,8 @@ function OpenVTab(tabName) {
     ID(`${tabName}TabBtn`).className += " active";
 }
 /** reads in 'Dict' from Dict.json */
-function ReadDict() {
-    let input = JSON.parse(fs.readFileSync("./resources/Dict.json", { encoding: "utf8" }))
+function ReadDict(fileName) {
+    let input = JSON.parse(fs.readFileSync("./resources/"+fileName, { encoding: "utf8" }))
     for (let i = 1; i < input.length; i++) {
         for (var thing in input[i]) {
             if (input[i].hasOwnProperty(thing)) {
@@ -479,6 +466,18 @@ function GetMMMyy(date) {
     return ret;
 }
 
+function SaveBackup(){
+    fs.writeFileSync(`./resources/Dict-backup.json`, JSON.stringify(d.Dict), { encoding: "utf8" });
+    alert('saved')
+}
+
+function RestoreFromBackup(){
+    d.ClearDict(d.Dict);
+    ReadDict('Dict-backup.json');
+    WriteDict(0);
+    alert('restored')
+}
+
 module.exports = {
     ClearTable: ClearTable, // function to clear table, leaving a given number of header rows
     CreateDropdown: CreateDropdown, // create dropdown options
@@ -502,6 +501,8 @@ module.exports = {
     OpenVTab: OpenVTab, // opens a vertical tab (i.e. admin table tabs
     ReadDict: ReadDict, // reads in 'Dict' from resources
     RenameKey: RenameKey, // renames the 'key' of a dictionary object (e.g. change food name)
+    RestoreFromBackup:RestoreFromBackup, //restores Dicts from backup
+    SaveBackup:SaveBackup, //saves a backup of Dicts
     SetValues: SetValues, // sets values for an array of html elements
     ShowElements: ShowElements, // show multiple elements with a given display
     Swap: Swap, // swaps two elements of an array

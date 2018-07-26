@@ -299,6 +299,17 @@ Dict[4] = {
 };
 Dict[5] = {};
 
+function ClearDict(dict){
+    dict.forEach(d => {
+        Object.keys(d).forEach(key => {
+            if(typeof d[key] != 'function'){
+                delete d[key]
+            }
+        })
+    })
+}
+
 module.exports = {
     Dict: Dict,
+    ClearDict:ClearDict
 }

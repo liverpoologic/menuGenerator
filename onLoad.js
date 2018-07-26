@@ -14,7 +14,7 @@ const ipc = require('electron').ipcRenderer
 
 exports.OnLoad = function () {
     // Import the dictionary
-    u.ReadDict()
+    u.ReadDict('Dict.json')
 
     dropdowns.RefreshDropdowns(d.Dict)
     dropdowns.RefreshDataLists(d.Dict)
@@ -70,6 +70,10 @@ exports.OnLoad = function () {
         d.Dict[5].filepath = u.ID("filepath").value
         u.WriteDict(4)
     })
+
+    //create event listener for 'save_backup' and 'restore_from_backup' button
+    u.ID("save_backup").addEventListener("click",u.SaveBackup)
+    u.ID("restore_from_backup").addEventListener("click",u.RestoreFromBackup)
 
     // function to return to normal once pdf has printed
     ipc.on('wrote-pdf', function (event, path) {
