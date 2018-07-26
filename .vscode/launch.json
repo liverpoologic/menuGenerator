@@ -16,7 +16,7 @@
             "name": "Launch Program",
             "runtimeExecutable": "npm",
             "runtimeArgs": [
-                "start"
+                "start-debug"
             ],
             "port": 9229
         }
