@@ -167,9 +167,15 @@ tr.sub {
     margin-left: 20px;
 }
 
-menu {
+.menu {
     margin-left: 5px;
     font-size: 18px;
+}
+
+.editMenu {
+    margin-left: 5px;
+    font-size: 18px;
+    width:300px;
 }
 
 /* Full-width input fields */
@@ -498,4 +504,19 @@ pbr {
 
 .tags-input .selected~input {
     opacity: .3
+}
+
+.modifiers {
+    float:right;
+    height:25px;
+}
+
+.modifierInput{
+    width:45px;
+    height:25px;
+}
+
+.modifierText{
+        font-size: 14px;
+        font-weight: bold;
 }

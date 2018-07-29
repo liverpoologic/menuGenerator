@@ -26,7 +26,6 @@ function RefreshViewMenu() {
         let day = e.weekday[new Date(meal.date).getDay()]
         let mealTitle = u.CreateElement("h3", menuDiv, `mealTitle${i}`, "", `${day} ${meal.mealType}`, "inline-block")
 
-
         if (Object.keys(meal.recipes).length > 0) { // if there is a recipe in the meal, print the recipes and hide/show buttons
 
             let showMealBtn = u.CreateElement("button", menuDiv, `showMealBtn${i}`, "mealbtn", "+", "inline")
@@ -42,8 +41,12 @@ function RefreshViewMenu() {
                 u.ShowElements(`showMealBtn${i}`, "inline")
             })
         }
-        u.CreateElement("br", menuDiv)
-        let mealDiv = u.CreateElement("div", menuDiv, `mealDiv${i}`, "mealDiv", "", "none")
+        u.CreateElement("br", menuDiv);
+        let mealDiv = u.CreateElement("div", menuDiv, `mealDiv${i}`, "mealDiv", "", "none");
+        let mCount = meal.modifier ? Number(menu.meateaters)+Number(meal.modifier.meateaters) : menu.meateaters;
+        let vCount = meal.modifier ? Number(menu.vegetarians)+Number(meal.modifier.vegetarians) : menu.vegetarians;
+        let mealNumbersText = `M: ${mCount} V: ${vCount}`;
+        let mealNumbers = u.CreateEl('specials').innerText(mealNumbersText).parent(mealDiv).end();
 
         // adds recipe 
         meal.recipes.forEach((recipe, j) => {
@@ -192,7 +195,7 @@ function PrintMenu() {
     u.ShowElements("PrintMenu", "block")
     GeneratePrintMenu()
     u.HideElements("mainApp")
-    ipc.send('print-to-pdf', `${filePath}/${menuTitle}_shopping_${rand}.pdf`)
+    ipc.send('print-to-pdf', `${filePath}/${menuTitle}_menu_${rand}.pdf`)
 }
 
 /** Generate menu to be printed (from view menu tab) */
@@ -206,6 +209,10 @@ function GeneratePrintMenu() {
         let day = e.weekday[new Date(meal.date).getDay()]
         let mealTitle = u.CreateElement("h3", menuDiv, `printMealTitle${i}`, "printMealTitle", `${day} ${meal.mealType}`, "block");
         let mealDiv = u.CreateElement("div", menuDiv, `printMealDiv${i}`, "mealDiv")
+        let mCount = meal.modifier ? Number(menu.meateaters)+Number(meal.modifier.meateaters) : menu.meateaters;
+        let vCount = meal.modifier ? Number(menu.vegetarians)+Number(meal.modifier.vegetarians) : menu.vegetarians;
+        let mealNumbersText = `M: ${mCount} V: ${vCount}`;
+        let mealNumbers = u.CreateEl('specials').innerText(mealNumbersText).parent(mealDiv).end();
 
         // adds recipe 
         for (let j = 0; j < meal.recipes.length; j++) {

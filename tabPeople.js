@@ -108,8 +108,8 @@ function deleteAllergenRow() {
     //remove from dict obj if it exists
     var menuTitle = u.ID('selectPeopleMenu').value;
     var key = u.ID(`agnPerson${i}`).value;
-    if(key){
-        delete Dict[3][menuTitle].allergies[key];
+    if(key && Dict[3][menuTitle].specials[key]){
+        delete Dict[3][menuTitle].specials[key];
         u.WriteDict(3);    
     }
 

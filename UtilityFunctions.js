@@ -29,7 +29,6 @@ function CreateEditCellListeners(cellID, inputType, keyID, dictID, property, dro
 
     function CreateInput(cell, inputType, oldValue, dropdownSource, dropdownKeys) {
         let elType = inputType === 'select' ? 'select' : 'input'
-        if(inputType = 'tags') console.log(oldValue)
         let el = CreateEl(elType).type(inputType).parent(cell).id(`input_${cell.id}`).value(oldValue).end();
 
         switch (inputType) {
@@ -128,7 +127,7 @@ function CreateEl(elType) {
             var el = document.createElement(elType);
             if (v.parent) v.parent.appendChild(el);
             props.forEach(pr => {
-                if (v[pr]) el[pr] = v[pr]
+                if (typeof v[pr] !== 'undefined') el[pr] = v[pr]
             });
             return el;
         },

@@ -9,7 +9,7 @@ function onLoad(){
     var e = d.Dict[4]
     u.ID("selectMenuForShopping").addEventListener("change", RefreshLists)
     u.ID("printShoppingbtn").addEventListener('click', PrintShopping)
-   // RefreshButtons()  
+    RefreshButtons()  
     for (let i = 0; i < e.shopEnum.length; i++) { // create buttons
         shopBtnStatus[i] = { shopName: e.shopEnum[i], empty: false, active: false }
     }

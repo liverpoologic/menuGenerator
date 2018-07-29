@@ -27,16 +27,21 @@ function AddWeekendMenuBtn() { //when you press 'add weekend menu' button on the
 
     Dict[3].addMenu(title, startDate, endDate)
 
-    Dict[3].addMeal(title, "dinner", startDate)
-    Dict[3].addMeal(title, "breakfast", midDate)
-    Dict[3].addMeal(title, "snack", midDate)
-    Dict[3].addMeal(title, "lunch", midDate)
-    Dict[3].addMeal(title, "dinner", midDate)
-    Dict[3].addMeal(title, "breakfast", endDate)
-    Dict[3].addMeal(title, "lunch", endDate)
-
-    Dict[3].addRecipe(title, 1, "Standard Breakfast", "b")
-    Dict[3].addRecipe(title, 5, "Standard Breakfast", "b")
+    try{
+        Dict[3].addMeal(title, "dinner", startDate)
+        Dict[3].addMeal(title, "breakfast", midDate)
+        Dict[3].addMeal(title, "snack", midDate)
+        Dict[3].addMeal(title, "lunch", midDate)
+        Dict[3].addMeal(title, "dinner", midDate)
+        Dict[3].addMeal(title, "breakfast", endDate)
+        Dict[3].addMeal(title, "lunch", endDate)
+    
+        Dict[3].addRecipe(title, 1, "Standard Breakfast", "b")
+        Dict[3].addRecipe(title, 5, "Standard Breakfast", "b")    
+    }
+    catch(e){
+        console.log(e)
+    }
 
     u.WriteDict(3)
     u.SetValues([["menuTitle", ""], ["menuEndDate", ""], ["menuStartDate", ""]])

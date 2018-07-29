@@ -155,6 +155,10 @@ function AddRecipeToMenu() {
     let mealID = parseInt(u.ID("selectMealForMenu").value)
     let recipeTitle = u.ID("selectRecipeForMenu").value
     let morv = u.ID("selectMorvForMenu").value
+    console.log(menuTitle);
+    console.log(mealID);
+    console.log(recipeTitle);
+    console.log(morv);
 
     Dict[3].addRecipe(menuTitle, mealID, recipeTitle, morv)
     u.WriteDict(3)
@@ -175,6 +179,7 @@ function RefreshAddRecipeModal() {
     for (let i = 0; i < mealEnum.length; i++) { values[i] = i }
     u.CreateDropdown("selectMealForMenu", mealEnum, false, values, 'Choose Meal')
 }
+
 /** multiply up the menu from inputs in the multiply up modal */
 function MultiplyUp() {
     let menuTitle = u.ID("selectMenuForMultiplyUp").value
@@ -205,7 +210,8 @@ function RefreshEditMenu() {
         let meal = Dict[3].getMeal(menuTitle, i)
         let day = e.weekday[new Date(meal.date).getDay()]
         let mealTitle = u.CreateElement("text", menuDiv)
-        u.Html(mealTitle, `mealTitle${i}`, "mealTitle", "display:inline-block", "", `${day} ${meal.mealType}`)
+        u.Html(mealTitle, `mealTitle${i}`, "mealTitle", "display:inline-block", "", `${day} ${meal.mealType}`);
+        CreateModifierDiv(menuDiv,i,menuTitle)
 
         // generate and display the mealDiv where the recipes for that meal will go
         let mealDiv = u.CreateElement("div", menuDiv, `mealDiv${i}`)
@@ -232,4 +238,24 @@ function RefreshEditMenu() {
             })
         }
     }
+}
+
+function CreateModifierDiv(menuDiv,i,menuTitle){
+    var meal = Dict[3].getMeal(menuTitle,i);
+    var div = u.CreateEl('div').className('modifiers').parent(menuDiv).end();
+    var mValue = meal.modifier ? meal.modifier.meateaters : 0;
+    var vValue = meal.modifier ? meal.modifier.vegetarians : 0;
+    var inputs = {}
+
+    u.CreateEl('text').innerText('M:').className('modifierText').parent(div).end();
+    inputs.m = u.CreateEl('input').type('number').className('modifierInput').id(`meateaters${i}`).parent(div).value(mValue).end();
+    u.CreateEl('text').innerText('  V:').className('modifierText').parent(div).end();
+    inputs.v = u.CreateEl('input').type('number').className('modifierInput').id(`vegetarians${i}`).parent(div).value(vValue).end();
+
+    ['m','v'].forEach(ea => {
+        inputs[ea].addEventListener('change',function(){
+            Dict[3].addNumbersModifier(menuTitle,i,u.ID(`meateaters${i}`).value,u.ID(`vegetarians${i}`).value);
+            u.WriteDict(3);
+        })
+    })
 }

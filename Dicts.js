@@ -197,6 +197,10 @@ Dict[3] = {
         this[menuTitle].vegetarians = vegetarians
         for (var mealKey in Dict[3][menuTitle].meals) {
             if (this[menuTitle].meals.hasOwnProperty(mealKey)) {
+                let mModifier = this[menuTitle].meals[mealKey].modifier ? this[menuTitle].meals[mealKey].modifier.meateaters : 0;
+                let vModifier = this[menuTitle].meals[mealKey].modifier ? this[menuTitle].meals[mealKey].modifier.vegetarians : 0;
+                let mCount = Number(this[menuTitle].meateaters) + Number(mModifier);
+                let vCount = Number(this[menuTitle].vegetarians) + Number(vModifier);
                 for (var recipeKey in this[menuTitle].meals[mealKey].recipes) {
                     if (this.getMeal(menuTitle, mealKey).recipes.hasOwnProperty(recipeKey)) {
                         let recipe = this.getRecipe(menuTitle, mealKey, recipeKey)
@@ -204,23 +208,23 @@ Dict[3] = {
                             if (recipe.ingredients.hasOwnProperty(ingredientKey)) {
                                 let ingredient = this.getIngredient(menuTitle, mealKey, recipeKey, ingredientKey)
                                 if (recipe.morv === "m") {
-                                    ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * this[menuTitle].meateaters
+                                    ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * mCount
                                 }
                                 else if (recipe.morv === "v") {
-                                    ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * this[menuTitle].vegetarians
+                                    ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * vCount
                                 }
                                 else if (recipe.morv === "b") {
-                                    ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * (this[menuTitle].vegetarians + this[menuTitle].meateaters)
+                                    ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * (vCount + mCount)
                                 }
                                 else if (recipe.morv === null) {
                                     if (ingredient.morv === "v") {
-                                        ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * this[menuTitle].vegetarians
+                                        ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * vCount
                                     }
                                     else if (ingredient.morv === "m") {
-                                        ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * this[menuTitle].meateaters
+                                        ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * mCount
                                     }
                                     else if (ingredient.morv === "b") {
-                                        ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * (this[menuTitle].vegetarians + this[menuTitle].meateaters)
+                                        ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * (vCount + mCount)
                                     }
                                     else { console.log(`invalid ingredient morv: ${ingredient.morv}`) }
                                 }
@@ -232,6 +236,11 @@ Dict[3] = {
                 }
             }
         }
+    },
+    addNumbersModifier(menuTitle,mealID,meateaters,vegetarians){
+        var thisMeal = this[menuTitle].meals[mealID]
+        thisMeal.modifier = {meateaters:meateaters, vegetarians:vegetarians};
+        this.multiplyUp(menuTitle,this[menuTitle].meateaters,this[menuTitle].vegetarians)
     },
     getMenu(x) {
         return this[x]
