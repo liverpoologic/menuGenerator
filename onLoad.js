@@ -115,7 +115,7 @@ function KeyPress() {
             }
             break;
         default:
-            if (key > 111 && key < 119) {// f1-f7 keys for h tabs
+            if (key > 111 && key < 120) {// f1-f8 keys for h tabs
                 let HtabList = document.getElementsByClassName("htabcontent")
                 let x = key - 112
                 u.OpenHTab(HtabList[x].id)

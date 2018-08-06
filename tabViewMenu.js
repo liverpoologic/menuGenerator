@@ -43,8 +43,8 @@ function RefreshViewMenu() {
         }
         u.CreateElement("br", menuDiv);
         let mealDiv = u.CreateElement("div", menuDiv, `mealDiv${i}`, "mealDiv", "", "none");
-        let mCount = meal.modifier ? Number(menu.meateaters)+Number(meal.modifier.meateaters) : menu.meateaters;
-        let vCount = meal.modifier ? Number(menu.vegetarians)+Number(meal.modifier.vegetarians) : menu.vegetarians;
+        let mCount = meal.modifier ? Number(menu.meateaters) + Number(meal.modifier.meateaters) : menu.meateaters;
+        let vCount = meal.modifier ? Number(menu.vegetarians) + Number(meal.modifier.vegetarians) : menu.vegetarians;
         let mealNumbersText = `M: ${mCount} V: ${vCount}`;
         let mealNumbers = u.CreateEl('specials').innerText(mealNumbersText).parent(mealDiv).end();
 
@@ -80,23 +80,17 @@ function RefreshViewMenu() {
             let ingredientTable = u.CreateElement("table", recipeDiv, `ingredientTable${i}${j}`);
 
             // get rid of special people who won't eat this meal
-            if(menu.specials && recipe.morv !== 'b'){
-                console.log('morv')
-                console.log(recipe.morv)
+            if (menu.specials && recipe.morv !== 'b') {
                 var specialPeople = {};
                 Object.keys(menu.specials).forEach(personName => {
-                    console.log(personName);
                     var data = menu.specials[personName];
-                    console.log(data);
-                    if(data.morv === recipe.morv){
+                    if (data.morv === recipe.morv) {
                         specialPeople[personName] = data
                     }
                 })
 
             }
             else var specialPeople = menu.specials;
-
-            console.log(specialPeople)
 
             Object.keys(recipe.ingredients).forEach((foodName, k) => {
                 let ingredient = Dict[3].getIngredient(menuTitle, i, j, foodName)
@@ -204,20 +198,22 @@ function GeneratePrintMenu() {
     menuDiv.innerHTML = "" //clear the child div
     let menuTitle = u.ID("selectViewMenu").value
     let menu = Dict[3].getMenu(menuTitle)
-    for (let i = 0; i < menu.meals.length; i++) {
-        let meal = Dict[3].getMeal(menuTitle, i)
+
+    menu.meals.forEach((meal, i) => {
         let day = e.weekday[new Date(meal.date).getDay()]
         let mealTitle = u.CreateElement("h3", menuDiv, `printMealTitle${i}`, "printMealTitle", `${day} ${meal.mealType}`, "block");
-        let mealDiv = u.CreateElement("div", menuDiv, `printMealDiv${i}`, "mealDiv")
-        let mCount = meal.modifier ? Number(menu.meateaters)+Number(meal.modifier.meateaters) : menu.meateaters;
-        let vCount = meal.modifier ? Number(menu.vegetarians)+Number(meal.modifier.vegetarians) : menu.vegetarians;
+        let mealDiv = u.CreateElement("div", menuDiv, `printMealDiv${i}`, "printMealDiv")
+        let mCount = meal.modifier ? Number(menu.meateaters) + Number(meal.modifier.meateaters) : menu.meateaters;
+        let vCount = meal.modifier ? Number(menu.vegetarians) + Number(meal.modifier.vegetarians) : menu.vegetarians;
         let mealNumbersText = `M: ${mCount} V: ${vCount}`;
         let mealNumbers = u.CreateEl('specials').innerText(mealNumbersText).parent(mealDiv).end();
 
+        u.CreateElement("br", menuDiv);
+
         // adds recipe 
-        for (let j = 0; j < meal.recipes.length; j++) {
-            let recipe = Dict[3].getRecipe(menuTitle, i, j)
-            let recipeDiv = u.CreateElement("div", mealDiv, `printRecipeDiv${i}${j}`, "printRecipeDiv", "", "display:block")
+        meal.recipes.forEach((recipe, j) => {
+
+            let recipeDiv = u.CreateElement("div", mealDiv, `printRecipeDiv${i}${j}`, "printRecipeDiv")
             u.CreateElement("br", mealDiv)
 
             let recipeTitle = u.CreateElement("h4", recipeDiv, `printRecipeTitle${i}${j}`, "printRecipeTitle", `${recipe.recipeTitle} (${recipe.serves}) - ${recipe.morv}`, "block");
@@ -227,14 +223,51 @@ function GeneratePrintMenu() {
                     recipeTitle.className = "printDessertRecipeTitle"
                 }
             }
-            // adds ingredients table
+            u.CreateElement("br", mealDiv)
+            let specials = u.CreateElement("specials", recipeDiv, `specials${i}${j}`)
+            u.CreateElement("br", recipeDiv)
+
+            let specialsArr = [];
+
             let ingredientTable = u.CreateElement("table", recipeDiv, `printIngredientTable${i}${j}`, "printIngredientTable", "", "block")
 
-            let ingredientKey = Object.keys(recipe.ingredients)
-            for (let k = 0; k < ingredientKey.length; k++) {
-                let ingredient = Dict[3].getIngredient(menuTitle, i, j, ingredientKey[k])
+            // get rid of special people who won't eat this meal
+            if (menu.specials && recipe.morv !== 'b') {
+                var specialPeople = {};
+                Object.keys(menu.specials).forEach(personName => {
+                    var data = menu.specials[personName];
+                    if (data.morv === recipe.morv) {
+                        specialPeople[personName] = data
+                    }
+                })
+
+            }
+            else var specialPeople = menu.specials;
+
+            Object.keys(recipe.ingredients).forEach((foodName, k) => {
+                let ingredient = Dict[3].getIngredient(menuTitle, i, j, foodName)
                 let html = []
                 let ids = []
+                var allergens = Dict[1].getFood(foodName).allergens;
+                if (menu.specials) {
+                    Object.keys(specialPeople).forEach(personName => {
+
+                        var dietaryReq = menu.specials[personName];
+                        let allergenList = [];
+                        if (allergens && dietaryReq.allergens) {
+                            allergens.forEach(allergen => {
+                                if (dietaryReq.allergens.indexOf(allergen) >= 0) allergenList.push(foodName);
+                            });
+                        }
+                        if (dietaryReq.foods) {
+                            if (dietaryReq.foods.indexOf(foodName) >= 0) allergenList.push(foodName);
+                        }
+
+                        if (allergenList.length > 0) {
+                            specialsArr.push({ personName: personName, foodName: foodName })
+                        }
+                    })
+                }
 
                 if (ingredient.quantityLarge === null) {
                     html = [`(${ingredient.quantitySmall})`, null, ingredient.food.unit]
@@ -242,17 +275,54 @@ function GeneratePrintMenu() {
                 else {
                     html = u.DisplayIngredient(ingredient.quantitySmall, ingredient.quantityLarge, ingredient.food.unit)
                 }
-                html.unshift(ingredientKey[k])
+                html.unshift(foodName)
                 for (let x = 0; x < 4; x++) {
                     ids.push(`print${i}${j}${k}${x}`)
                 }
                 u.CreateRow(`printIngredientTable${i}${j}`, "td", html, ids, [50, 10, 10, 30], "%")
                 u.ID(`print${i}${j}${k}1`).style.fontSize = "11px"
-            }
+            });
             let method = u.CreateElement("p", recipeDiv, `printMethod${i}${j}`, "printMethod", "", "block");
             method.innerHTML = recipe.method.replace(/(?:\r\n|\r|\n)/g, '<br><br>');
-        }
-    }
+
+            if (specialsArr.length > 0) {
+
+                var specialsObj1 = {}
+
+                specialsArr.forEach(obj => {
+                    if (!specialsObj1[obj.personName]) {
+                        specialsObj1[obj.personName] = []
+                    }
+                    specialsObj1[obj.personName].push(obj.foodName)
+
+                })
+
+                var specialsObj2 = {}
+
+                Object.keys(specialsObj1).forEach(person => {
+                    var foodJoined = specialsObj1[person].sort().join(", ");
+                    if (!specialsObj2[foodJoined]) {
+                        specialsObj2[foodJoined] = []
+                    }
+                    specialsObj2[foodJoined].push(person)
+                })
+
+
+                specialsText = Object.keys(specialsObj2).map(problemFoods => {
+                    var people = specialsObj2[problemFoods]
+                    return `${people.length} - ${problemFoods} (${people.join(", ")})`
+                });
+                specialsText.splice(0, 0, 'Specials:');
+
+
+                specials.innerHTML = specialsText.join('<br>');
+
+                recipeTitle.innerText = `${recipeTitle.innerText} *`
+            }
+        });
+    });
+
+
 }
 
 module.exports = {
