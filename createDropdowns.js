@@ -80,7 +80,7 @@ function RefreshDropdowns(Dict) {
             var _default = x._default;
             var domObj = u.ID(id);
             if (domObj != null) {
-                if (domObj.value != null && domObj.value != undefined) _default = domObj.value;
+                if (domObj.value != null && domObj.value != undefined && domObj.value != "") _default = domObj.value;
             }
             u.CreateDropdown(id, x.source, x.keys, x.valueOpts, _default);
         })

@@ -27,7 +27,7 @@ function AddRecipeBtn() {
     for (let i = 0; i+1 < u.ID("ingredientTable").rows.length; i++) {
         let foodName = u.ID(`selectIngredientFood${i}`).value
         let quantitySmall = parseFloat(u.ID(`ingredientQuantitySmall${i}`).value)
-        if (u.ID(`selectIngredientMorv${i}`).value === "null") {
+        if (u.ID(`selectIngredientMorv${i}`).value === "morv" || u.ID(`selectIngredientMorv${i}`).value === "null") {
             Dict[2].addIngredient(title, foodName, quantitySmall, null)
         }
         else {
@@ -36,7 +36,7 @@ function AddRecipeBtn() {
         };
         u.ID(`selectIngredientFood${i}`).value = "Food"
         u.ID(`ingredientQuantitySmall${i}`).value = ""
-        u.ID(`selectIngredientMorv${i}`).value = "null"
+        u.ID(`selectIngredientMorv${i}`).value = "morv"
     }
 
     for (let i = u.ID("ingredientTable").rows.length; i > 2; i--) {
@@ -57,15 +57,16 @@ function CreateIngredientTable() {
 function AddIngredientsRow() {
     var e = d.Dict[4]
     let j = u.ID("ingredientTable").rows.length - 1;
-    let colhtml = []
-    colhtml.push(`<select id='selectIngredientFood${j}'></select>`)
-    colhtml.push(`<input type='number' id='ingredientQuantitySmall${j}' style='width:100%'>`)
-    colhtml.push("")
-    colhtml.push(`<select id='selectIngredientMorv${j}'></select>`)
-    colhtml.push("-")
-    colhtml.push("+")
-    colhtml.push("⇧")
-    colhtml.push("⇩")
+    let colhtml = [
+        `<select id='selectIngredientFood${j}'></select>`,
+        `<input type='number' id='ingredientQuantitySmall${j}' style='width:100%'>`,
+        "",
+        `<select id='selectIngredientMorv${j}'></select>`,
+        "-",
+        "+",
+        "⇧",
+        "⇩"
+    ]
 
     u.CreateRow("ingredientTable", "td", colhtml,["","",`ingredientUnitDisplay${j}`,"",`-ingbtn${j}`,`+ingbtn${j}`,`upbtn${j}`,`downbtn${j}`],[210,90,60,60,15,15,15,15], "px")
     

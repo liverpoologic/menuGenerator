@@ -19,6 +19,7 @@
         <img src="resources/settings.png" height="42px" width="42px" />
       </button>
     </div>
+    <div id='errors'></div>
     <div class="htab">
       <button id="AddFoodTabBtn" class="htablinks">Add Food</button>
       <button id="AddRecipeTabBtn" class="htablinks">Add Recipe</button>
@@ -228,17 +229,17 @@
     </div>
     <div id="Admin" class="htabcontent" style="padding:0px">
       <div class="vtab">
-        <button id="t1FoodDictTabBtn" class="vtablinks">Food</button>
-        <button id="t2RecipeDictTabBtn" class="vtablinks">Recipes</button>
-        <button id="t3MenuDictTabBtn" class="vtablinks">Menus</button>
-        <button id="enumsTabBtn" class="vtablinks">Other</button>
+        <button id="AdminTabBtn1" class="vtablinks">Food</button>
+        <button id="AdminTabBtn2" class="vtablinks">Recipes</button>
+        <button id="AdminTabBtn3" class="vtablinks">Menus</button>
+        <button id="AdminTabBtn4" class="vtablinks">Other</button>
       </div>
-      <div id="t1FoodDict" class="vtabcontent" style="display:none">
+      <div id="AdminTabContent1" class="vtabcontent" style="display:none">
         <h2> All Food </h2>
         <table id="t1Table">
         </table>
       </div>
-      <div id="t2RecipeDict" class="vtabcontent" style="display: none;">
+      <div id="AdminTabContent2" class="vtabcontent" style="display: none;">
         <h2> All Recipes
           <button id="clearIngredientSearch" class="insideCellBtn" style='float:right'>x</button>
           <input type="text" id="ingredientSearchInput" placeholder="ingredient" style="margin:4px 10px; float:right;"></input>
@@ -246,7 +247,7 @@
         <table id="t2Table">
         </table>
       </div>
-      <div id="t3MenuDict" class="vtabcontent" style="display: none;">
+      <div id="AdminTabContent3" class="vtabcontent" style="display: none;">
         <h2> All Menus </h2>
         <table id="t3Table">
         </table>
@@ -254,7 +255,7 @@
         <br>
         <br>
       </div>
-      <div id="enums" class="vtabcontent" style="display:none">
+      <div id="AdminTabContent4" class="vtabcontent" style="display:none">
           <h2> Other </h2>
           <select id="selectAdminEnum"><option>Select an Enum</option></select>
           <div id="enumTableDiv">

@@ -191,8 +191,6 @@ function RefreshLists(){
 /** show a given shopping div and hide the rest
  * @param {number} i the number of the shop (0=bakers, etc.) */
 function ShowShoppingDiv(i) {
-    console.log(i);
-    console.log(e.shopEnum[i]);
     for (let j = 0; j < e.shopEnum.length; j++) {
         if (i === j) {
             u.ShowElements(`shoppingdiv${e.shopEnum[j]}`, "block")

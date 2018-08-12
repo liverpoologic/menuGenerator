@@ -16,18 +16,26 @@ Dict[1] = {
         else if (typeof unit != "string" && unit != null) { console.log(`invalid input: ${unit} not a string or null`) }
         else if (Dict[4].shopEnum.indexOf(shop) < 0) { console.log(`invalid input: ${shop} not in the shop enum`) }
         else {
-            this[thing] = { unit: unit, shop: shop, foodType: foodType }; 
-            this.addAllergens(thing,allergens);
+            this[thing] = { unit: unit, shop: shop, foodType: foodType };
+                this.addAllergens(thing,allergens);
         }
     },
     addAllergens(thing,allergens){
-        this[thing].allergens = allergens.sort();
-        allergens.forEach(allergen => {
-            if (Dict[4].allergenEnum.indexOf(allergen) < 0 && allergen !== "") {
-                Dict[4].addItem(allergen, "allergenEnum")
-            }
-        })
-        Dict[4].allergenEnum = Dict[4].allergenEnum.sort();
+        console.log(allergens);
+        console.log(allergens.length);
+        //special case for empty string
+        if(allergens.length === 1 && allergens[0].length === 0){
+            this[thing].allergens = [];
+        }
+        else{
+            this[thing].allergens = allergens.sort();
+            allergens.forEach(allergen => {
+                if (Dict[4].allergenEnum.indexOf(allergen) < 0 && allergen !== "") {
+                    Dict[4].addItem(allergen, "allergenEnum")
+                }
+            })
+            Dict[4].allergenEnum = Dict[4].allergenEnum.sort();    
+        }
     },
     getFood(x) {
         return this[x]
@@ -55,13 +63,13 @@ Dict[2] = {
         else { this[recipeTitle] = { mealType: mealType, morv: morv, serves: serves, method: method, recipeType: recipeType, ingredients: {} }; }
     },
     addIngredient(recipeTitle, foodName, quantitySmall, morv) {
+        console.log('adding ingredient');
         if (typeof foodName != "string") { console.log(`invalid input: ${foodName} not a string`) }
-        //    else if (!(foodName in obj)) {console.log(`invalid input: ${foodName} isn't in Dict[1]`)}
         else if (typeof quantitySmall != "number") { console.log(`invalid input: ${quantitySmall} not a number`) }
         else if (Dict[4].morvEnum.indexOf(morv) < 0) { console.log(`invalid input: ${morv} not in the morv enum`) }
         else {
             let t1Food = Dict[1][foodName]
-            this[recipeTitle].ingredients[foodName] = { food: [], morv: morv, quantitySmall: quantitySmall, quantityLarge: null };
+            this[recipeTitle].ingredients[foodName] = { food: [], morv: morv, quantitySmall: quantitySmall };
             this[recipeTitle].ingredients[foodName].food = { thing: t1Food.thing, unit: t1Food.unit, shop: t1Food.shop };
         }
     },

@@ -15,8 +15,6 @@ function onLoad() {
 
 /** adds a food to Dict[1] based on the info in the add food tab */
 function AddFoodBtn() {
-
-    tagsInput(u.ID('allergenInput'),"","clear"," ");
     
     let thing = u.ID("foodThing").value.toLowerCase()
     let shop = u.ID("selectFoodShop").value;
@@ -26,10 +24,12 @@ function AddFoodBtn() {
     let allergens = u.ID("allergenInput").value.split(" ");
 
     Dict[1].addFood(thing, foodUnit, shop, foodType, allergens)
+    u.SetValues([["foodThing", ""], ["foodUnit", ""], ["selectFoodShop", "Shop"], ["selectFoodType", "Food Type"]]);
+
+    tagsInput(u.ID('allergenInput'),"","clear"," ");
 
     u.WriteDict(1)
     u.WriteDict(4)    
-    u.SetValues([["foodThing", ""], ["foodUnit", ""], ["selectFoodShop", "Shop"], ["selectFoodType", "Food Type"]]);
 
     for (let i = 0; i + 1 < u.ID("ingredientTable").rows.length; i++) {
         var select = u.ID(`selectIngredientFood${i}`);

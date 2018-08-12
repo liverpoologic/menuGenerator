@@ -43,8 +43,8 @@ function AddWeekendMenuBtn() { //when you press 'add weekend menu' button on the
         console.log(e)
     }
 
-    u.WriteDict(3)
-    u.SetValues([["menuTitle", ""], ["menuEndDate", ""], ["menuStartDate", ""]])
+    u.SetValues([["menuTitle", ""], ["menuEndDate", ""], ["menuStartDate", ""]]);
+    u.WriteDict(3);
 }
 function CreateAddMealModal(menuTitle) { // creates and shows the modal 'add meal', calls 'CreateMealList' to make the right hand panel
     let startDate = new Date(Dict[3][menuTitle].startDate)

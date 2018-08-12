@@ -353,8 +353,8 @@ function OpenHTab(tabName) {
     ID(`${tabName}TabBtn`).className += " active";
 }
 /** opens a vertical tab (i.e. admin table tabs)
- * @param {string} tabName the name of the tab you want to open */
-function OpenVTab(tabName) {
+ * @param {string} tabName the id of the tab you want to open */
+function OpenVTab(tabID) {
     var i, tabcontent, tablinks;
     tabcontent = document.getElementsByClassName("vtabcontent");
     for (i = 0; i < tabcontent.length; i++) {
@@ -364,8 +364,8 @@ function OpenVTab(tabName) {
     for (i = 0; i < tablinks.length; i++) {
         tablinks[i].className = tablinks[i].className.replace(" active", "");
     }
-    ID(tabName).style.display = "block";
-    ID(`${tabName}TabBtn`).className += " active";
+    ID(`AdminTabContent${tabID}`).style.display = "block";
+    ID(`AdminTabBtn${tabID}`).className += " active";
 }
 /** reads in 'Dict' from Dict.json */
 function ReadDict(fileName) {
@@ -448,7 +448,6 @@ function WriteDict(dictID) {
         let editMenu = require("./tabEditMenu.js");
         editMenu.RefreshEditMenu()
         viewMenu.RefreshViewMenu()
-
     }
     var dropdowns = require('./createDropdowns.js')
     dropdowns.RefreshDropdowns(d.Dict)

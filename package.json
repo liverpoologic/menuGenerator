@@ -7,22 +7,26 @@
   "scripts": {
     "start": "electron .",
     "start-debug": "electron . --nolazy --inspect-brk=9229",
-    "package-win": "electron-packager . menu-generator --extra-resource=./resources/Dict.json --extra-resource=./resources/settings.png --overwrite --ignore=\\.gitignore --ignore=./resources --ignore=./release-builds  --ignore=./PDFs --asar=true --platform=win32 --arch=ia32 --icon=./resources/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='Menu Generator'",
-    "package-mac": "electron-packager . menu-generator --mac --extra-resource=./resources/Dict.json --extra-resource=./resources/settings.png --overwrite --ignore=\\.gitignore --ignore=./resources --ignore=./release-builds  --ignore=./PDFs --asar=true --platform=darwin --arch=x64 --icon=./resources/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='Menu Generator'"
+    "package-win": "electron-packager . menu-generator --extra-resource=./resources/Dict.json  --extra-resource=./resources/Dict-backup.json --extra-resource=./resources/settings.png --overwrite --ignore=\\.gitignore --ignore=./tests --ignore=./resources --ignore=./release-builds  --ignore=./PDFs --asar=true --platform=win32 --arch=ia32 --icon=./resources/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='Menu Generator'",
+    "package-mac": "electron-packager . menu-generator --mac --extra-resource=./resources/Dict.json --extra-resource=./resources/settings.png --extra-resource=./resources/Dict-backup.json --overwrite --ignore=\\.gitignore --ignore=./resources --ignore=./release-builds  --ignore=./PDFs --asar=true --platform=darwin --arch=x64 --icon=./resources/icon.ico --prune=true --out=release-builds --version-string.CompanyName=CE --version-string.FileDescription=CE --version-string.ProductName='Menu Generator'",
+    "test": "mocha"
   },
   "keywords": [],
   "author": "Lisa Karlin",
   "license": "CC0-1.0",
   "devDependencies": {
-    "electron": "^2.0.3"
-  },
-  "dependencies": {
-    "awesomplete": "^1.1.2",
-    "choices.js": "^3.0.4",
+    "chai": "^4.1.2",
+    "chai-as-promised": "^7.1.1",
+    "electron": "^2.0.3",
     "electron-installer-windows": "^1.1.0",
     "electron-packager": "^11.0.0",
+    "jsdom": "11.12.0",
+    "jsdom-global": "3.0.2",
+    "mocha": "^5.2.0",
+    "spectron": "^3.8.0"
+  },
+  "dependencies": {
     "electron-pdf": "^1.2.2",
-    "form-data": "^2.3.1",
     "fs": "0.0.1-security",
     "tags-input": "^1.1.1"
   }

@@ -117,16 +117,15 @@ function CreateTableContents(dictID, filters) {
         if (dictID === 1) {
             let filter = Filter(1, i, [["key", ""], ["unit", ""], ["shop", "all"], ["foodType", "all"], ["allergens", "all"]])
             if (filter === false) { continue }
-            let cellIDs = [`t1TableKey${j}`, `t1TableUnit${j}`, `t1TableShop${j}`, `t1TableFoodType${j}`, `t1TableAllergens${j}`, `t1RemoveLinebtn${j}`]
+            let cellIDs = [`t1TableKey${j}`, `t1TableUnit${j}`, `t1TableShop${j}`, `t1TableFoodType${j}`, `t1TableAllergens${j}`, '']
 
             var allergens = rowKey.allergens ? rowKey.allergens.join(", ") : "";
-            let cellContents = [dictKeys[i], rowKey.unit, rowKey.shop, rowKey.foodType, allergens, "<input type='button' value='-'>"]
+            let cellContents = [dictKeys[i], rowKey.unit, rowKey.shop, rowKey.foodType, allergens, `<input type='button' value='-' id=t1RemoveLinebtn${j}>`]
             u.CreateRow("t1Table", "td", cellContents, cellIDs)
             u.CreateEditCellListeners(`t1TableUnit${j}`, "text", `t1TableKey${j}`, 1, "unit")
             u.CreateEditCellListeners(`t1TableShop${j}`, "select", `t1TableKey${j}`, 1, "shop", e.shopEnum, false)
             u.CreateEditCellListeners(`t1TableFoodType${j}`, "select", `t1TableKey${j}`, 1, "foodType", e.foodTypeEnum, false)
             u.CreateEditCellListeners(`t1TableAllergens${j}`, "tags", `t1TableKey${j}`, 1, "allergens",'allergenList')
-
 
             // add listener to enable edit food name
             u.ID(`t1TableKey${j}`).addEventListener("click", EditFoodName)
@@ -136,8 +135,8 @@ function CreateTableContents(dictID, filters) {
             if (filter === false) { continue }
             filter = FilterIngredient(i) // checks that ingredient isn't being filtered out
             if (filter === false) { continue }
-            let cellIDs = [`t2TableKey${j}`, `t2TableMeal${j}`, `t2TableType${j}`, `t2TableServes${j}`, `t2TableMorv${j}`, `t2RemoveLinebtn${j}`]
-            let cellContents = [dictKeys[i], rowKey.mealType, rowKey.recipeType, rowKey.serves, rowKey.morv, "<input type='button' value='-'>"]
+            let cellIDs = [`t2TableKey${j}`, `t2TableMeal${j}`, `t2TableType${j}`, `t2TableServes${j}`, `t2TableMorv${j}`, '']
+            let cellContents = [dictKeys[i], rowKey.mealType, rowKey.recipeType, rowKey.serves, rowKey.morv,`<input type='button' value='-' id=t2RemoveLinebtn${j}>`]
             u.CreateRow("t2Table", "td", cellContents, cellIDs)
 
             u.CreateEditCellListeners(`t2TableMeal${j}`, "select", `t2TableKey${j}`, 2, "mealType", e.mealTypeEnum, false)
@@ -201,8 +200,8 @@ function CreateTableContents(dictID, filters) {
             let endDate = `${endDay}/${endMonth}/${endYear}`
             //
 
-            let cellIDs = [`t3TableKey${j}`, `t3TableStartDate${j}`, `t3TableEndDate${j}`, `t3RemoveLinebtn${j}`]
-            let cellContents = [dictKeys[i], startDate, endDate, "<input type='button' value='-'>"]
+            let cellIDs = [`t3TableKey${j}`, `t3TableStartDate${j}`, `t3TableEndDate${j}`, '']
+            let cellContents = [dictKeys[i], startDate, endDate, `<input type='button' value='-' id=t3RemoveLinebtn${j}>`]
             u.CreateRow("t3Table", "td", cellContents, cellIDs)
 
             u.CreateEditCellListeners(`t3TableStartDate${j}`, "date", `t3TableTitle${j}`, 3, "startDate")
@@ -355,7 +354,7 @@ function SaveChangesRecipe() {
     u.ShowElements("addRecipe_btn", "inline")
     u.HideElements("editRecipe_btn")
     u.OpenHTab("Admin")
-    u.OpenVTab("t2RecipeDict")
+    u.OpenVTab(2)
 }
 
 /** displays elements of an enum */

@@ -53,8 +53,7 @@ exports.OnLoad = function () {
     var VtabList = document.getElementsByClassName("vtablinks")
     for (let i = 0; i < VtabList.length; i++) {
         let btnID = VtabList[i].id
-        let tabIDlength = btnID.length - 6
-        let tabID = btnID.slice(0, tabIDlength)
+        let tabID = btnID.slice(-1)
         u.ID(btnID).addEventListener("click", function () {
             u.OpenVTab(tabID)
         })
@@ -90,11 +89,6 @@ exports.OnLoad = function () {
 /** executes an action depending on the key pressed */
 function KeyPress() {
     let key = event.keyCode;
-    if(key === 191){
-        var TEST = u.ID('testing2');
-        console.log(TEST)
-    }
-
     var vTabNums = [105,102,99,110];
     switch (key) {
         case 191: //forward slash key
@@ -124,8 +118,7 @@ function KeyPress() {
                 event.preventDefault()
                 let VtabList = document.getElementsByClassName("vtabcontent")
                 let x = vTabNums.indexOf(key)
-                console.log(x);
-                u.OpenVTab(VtabList[x].id)
+                u.OpenVTab(x+1)
             }
             else if (key > 48 && key < 58 && u.ID("Shopping").style.display === "block") {// 1-7 for shopping tables
                 event.preventDefault()
