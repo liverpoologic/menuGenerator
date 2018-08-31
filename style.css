@@ -175,7 +175,11 @@ tr.sub {
 .editMenu {
     margin-left: 5px;
     font-size: 18px;
-    width:300px;
+    width:470px;
+}
+
+.mealTitleBar{
+  width:400px;
 }
 
 /* Full-width input fields */
@@ -333,11 +337,12 @@ h4 {
 }
 
 .listItem {
-    width: 300px;
+    width: 400px;
     height: 20px;
     background-color: #cccccc;
     padding: 4px 2px;
-    margin: 5px;
+    margin: 2px;
+    display: inline-block;
 }
 
 .shoppingTable {
@@ -401,6 +406,13 @@ pbr {
     }
     .printMenu {
         font-family: Arial, Helvetica, sans-serif;
+    }
+    .firstPrintMealTitle{
+      display: block;
+      page-break-after: avoid;
+      font-size: 25px;
+      font-weight: bold;
+      color: rgb(60, 83, 153);
     }
     .printMealTitle {
         page-break-before: always;
@@ -512,11 +524,31 @@ pbr {
 }
 
 .modifierInput{
-    width:45px;
+    width:55px;
     height:25px;
+    margin: 3px 0 !important;
 }
 
 .modifierText{
         font-size: 14px;
         font-weight: bold;
+}
+.comments-textarea{
+  height:100px;
+  width:400px;
+}
+.modal-title{
+   font-size: 16px;
+   font-weight: bold;
+}
+.specialCountInput{
+  width:60px;
+  height:25px;
+  float:right;
+  margin: 3px 0 !important;
+}
+
+.mealTitleBar{
+  margin: 6px;
+padding: 1px;
 }

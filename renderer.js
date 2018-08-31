@@ -11,17 +11,17 @@ If recipe morv = b, all ingredients will be 'b'
 */
 window.onerror = function(message, source, lineno, colno, error) {
     u.ID('errors').innerText = message;
-}
+};
 
 var fs = require("fs");
-var u = require("./UtilityFunctions.js")
-var d = require("./Dicts.js")
-var OnLoad = require("./onLoad.js")
-var addFood = require("./tabAddFood.js")
-var addRecipe = require("./tabAddRecipe.js")
-var addMenu = require("./tabAddMenu.js")
-var editMenu = require("./tabEditMenu.js")
-var shopping = require("./tabShopping.js")
+var u = require("./UtilityFunctions.js");
+var d = require("./Dicts.js");
+var OnLoad = require("./onLoad.js");
+var addFood = require("./tabs/addFood.js");
+var addRecipe = require("./tabs/addRecipe.js");
+var addMenu = require("./tabs/addMenu.js");
+var editMenu = require("./tabs/editMenu.js");
+var shopping = require("./tabs/shopping.js");
 
-OnLoad.OnLoad()
+OnLoad.OnLoad();
 

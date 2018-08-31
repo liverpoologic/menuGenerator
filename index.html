@@ -12,10 +12,10 @@
   <div id="mainApp">
 
     <div class="title">
-      <h1>
+      <h1 id='pageTitle'>
         <b>Pigotts menu generator</b>
       </h1>
-        <button id="settings_btn" style="float:right; margin:0px">
+      <button id="settings_btn" style="float:right; margin:0px">
         <img src="resources/settings.png" height="42px" width="42px" />
       </button>
     </div>
@@ -29,7 +29,6 @@
       <button id="ShoppingTabBtn" class="htablinks">Shopping</button>
       <button id="PeopleTabBtn" class="htablinks">People</button>
       <button id="AdminTabBtn" class="htablinks">Admin</button>
-
     </div>
     <div id="AddFood" class="htabcontent">
       <h2> Add Food </h2>
@@ -83,7 +82,7 @@
     </div>
     <div id="AddMenu" class="htabcontent">
       <h2> Add Menu </h2>
-      <input type="text" id="menuTitle" placeholder="Menu Title">
+      <input type="text" id="newMenuTitle" placeholder="Menu Title">
       <br>
       <br> Start Date:
       <input type="date" id="menuStartDate">
@@ -97,29 +96,6 @@
       <br>
       <button id="add_weekend_menu">Add Standard Weekend Menu</button>
     </div>
-    <div id="addMealsToMenu" class="modal">
-      <div class="modal-content animate">
-        <div class="flex-container" style="width:97%">
-          <div class="container" style="width:50%">
-            <text>Add meals to </text>
-            <text id="menuTitleForAddMeals" display="block"></text>
-            <br>
-            <select id="selectDayForAddMeals">
-              <option>Select Day</option>
-            </select>
-            <br>
-            <select id="selectMealTypeForAddMeals">
-              <option>Select Meal</option>
-            </select>
-            <br>
-            <br>
-            <button id="addMeals_btn">Add Meal</button>
-          </div>
-          <div id="currentMealList" class="container" style="width:50%">
-          </div>
-        </div>
-      </div>
-    </div>
     <div id="ViewMenu" class="htabcontent">
       <h2> View Menu </h2>
       <select id="selectViewMenu">
@@ -128,8 +104,6 @@
       <button id="printMenubtn" style="margin:4px 40px">Print to PDF</button>
       <div id="viewMenuDiv" class="menu">
       </div>
-      <br>
-      <br>
     </div>
     <div id="EditMenu" class="htabcontent">
       <h2>Edit Menu</h2>
@@ -140,69 +114,6 @@
       <button id="addRecipeToMenu_btn" style="width:200px; display:none">Add Recipe</button>
       <button id="multiplyUp_btn" style="width:200px; display:none">Multiply Up</button>
       <button id="editMealsEditMenu_btn" style="width:200px; display:none">Edit Meals</button>
-      <div id="addRecipeToMenu" class="modal">
-        <div class="modal-content animate">
-          <div class="flex-container" style="width:97%">
-            <div style="width:400px">
-              <select id="selectMenuForNewRecipe">
-                <option>Choose Menu</option>
-              </select>
-              <br>
-              <select id="selectMealForMenu">
-                <option>Choose Meal</option>
-              </select>
-              <br>
-              <select id="selectRecipeForMenu">
-                <option>Choose Recipe</option>
-              </select>
-              <br>
-              <select id="selectMorvForMenu">
-                <option>Choose Morv</option>
-              </select>
-              <br>
-              <button id="addRecipeToMenu_submit">Add Recipe</button>
-            </div>
-            <div style="width:20px"></div>
-            <div style="width:250px">
-              <label>
-                <b>Filters</b>
-              </label>
-              <br>
-              <div class="flex-container" style="padding:5px">
-                <div class="filter-container" id="mealTypeFilters"></div>
-                <div class="filter-container" id="recipeTypeFilters"></div>
-                <div class="filter-container" id="morvFilters"></div>
-              </div>
-              <br>
-              <button id="addRecipeApplyFilters" padding="6px">Apply Filters</button>
-              <button id="addRecipeClearFilters">Clear Filters</button>
-              <br>
-
-            </div>
-          </div>
-          <div class="container" style="background-color:#f1f1f1">
-            <button type="button" id="addRecipeCancel_btn" class="cancelbtn">Cancel</button>
-          </div>
-        </div>
-      </div>
-      <div id="multiplyUp" class="modal">
-        <div class="modal-content animate">
-          <div class="container">
-            <select id="selectMenuForMultiplyUp">
-              <option>Choose Menu</option>
-            </select>
-            <br>
-            <input id="multiplyUpMeateaters" type="number" placeholder="meateaters"></input>
-            <br>
-            <input id="multiplyUpVegetarians" type="number" placeholder="vegetarians"></input>
-            <br>
-            <button id="multiplyUp_submit">Multiply Up</button>
-          </div>
-          <div class="container" style="background-color:#f1f1f1">
-            <button type="button" id="multiplyUpCancel_btn" class="cancelbtn">Cancel</button>
-          </div>
-        </div>
-      </div>
       <br>
       <div id="editMenuDiv" class="editMenu">
       </div>
@@ -256,29 +167,143 @@
         <br>
       </div>
       <div id="AdminTabContent4" class="vtabcontent" style="display:none">
-          <h2> Other </h2>
-          <select id="selectAdminEnum"><option>Select an Enum</option></select>
-          <div id="enumTableDiv">
-      </div>
+        <h2> Other </h2>
+        <select id="selectAdminEnum"><option>Select an Enum</option></select>
+        <div id="enumTableDiv">
+        </div>
       </div>
     </div>
-    <div id="settingsModal" class="modal">
-      <div class="modal-content animate">
-        <div class="container">
-          <text>Filepath for print output: (e.g. C:\Users\joe.bloggs\Desktop)</text>
-          <br>
-          <input id="filepath" type="text" style="width:100%" placeholder="filepath for print output"></input>
-          <button id="save_backup">Save backup</button>
-          <button id="restore_from_backup" >Restore from backup</button>
+    <div id="Modals">
+      <div id="settingsModal" class="modal">
+        <div class="modal-content animate">
+          <div class="container">
+            <text class='modal-title'>Settings</text>
+            <br>
+            <text>Filepath for print output: (e.g. C:\Users\joe.bloggs\Desktop)</text>
+            <br>
+            <input id="filepath" type="text" style="width:100%" placeholder="filepath for print output"></input>
+            <button id="save_backup">Save backup</button>
+            <button id="restore_from_backup" >Restore from backup</button>
+            <br>
+            <button id="missingItemWizard">run missing Dict items wizard</button>
+          </div>
+        </div>
+      </div>
+      <div id="addMealsToMenu" class="modal">
+        <div class="modal-content animate">
+          <div class='container' style='padding-bottom:0px;'>
+            <text class='modal-title'>Add meals to </text>
+            <text class='modal-title' id="menuTitleForAddMeals" display="block"></text>
+          </div>
+          <div class="flex-container" style="width:97%; padding:0">
+            <div class="container" style="width:50%">
+              <select id="selectDayForAddMeals" style="width:100%">
+                <option>Select Day</option>
+              </select>
+              <br>
+              <select id="selectMealTypeForAddMeals" style="width:100%">
+                <option>Select Meal</option>
+              </select>
+              <br>
+              <br>
+              <button id="addMeals_btn">Add Meal</button>
+              <br>
+              <br>
+              <button id="close_addMeals_modal_btn" class="cancelbtn">Close</button>
+            </div>
+            <div id="currentMealList" class="container" style="width:50%">
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="editRecipeInMenu" class="modal">
+        <div class="modal-content animate">
+          <div class="flex-container" style="width:97%">
+            <div>
+              <text class="modal-header">Add Comments</text>
+              <br><br>
+              <textarea id="add_comments" class='comments-textarea'></textarea>
+              <br><br>
+              <button id="save_comments">Save Comments</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="addRecipeToMenu" class="modal">
+        <div class="modal-content animate">
+          <div class='container' style='padding-bottom:0px;'>
+            <text class='modal-title'>Add a Recipe</text>
+          </div>
+          <div class="flex-container" style="width:97%">
+            <div style="width:400px">
+              <select id="selectMenuForNewRecipe" style='width:80%'>
+                <option>Choose Menu</option>
+              </select>
+              <br>
+              <select id="selectMealForMenu" style='width:80%'>
+                <option>Choose Meal</option>
+              </select>
+              <br>
+              <select id="selectRecipeForMenu" style='width:80%'>
+                <option>Choose Recipe</option>
+              </select>
+              <br>
+              <select id="selectMorvForMenu" style='width:80%'>
+                <option>Choose Morv</option>
+              </select>
+              <br><br>
+              <button id="addRecipeToMenu_submit">Add Recipe</button>
+            </div>
+            <div style="width:20px"></div>
+            <div style="width:350px">
+              <label>
+                <b>Filters</b>
+              </label>
+              <br>
+              <div class="flex-container" style="padding:5px">
+                <div class="filter-container" id="mealTypeFilters"></div>
+                <div class="filter-container" id="recipeTypeFilters"></div>
+                <div class="filter-container" id="morvFilters"></div>
+              </div>
+              <br>
+              <button id="addRecipeApplyFilters" padding="6px">Apply Filters</button>
+              <button id="addRecipeClearFilters">Clear Filters</button>
+              <br>
+            </div>
+          </div>
+          <div class="container" style="background-color:#f1f1f1">
+            <button type="button" id="addRecipeCancel_btn" class="cancelbtn">Close</button>
+          </div>
+        </div>
+      </div>
+      <div id="multiplyUp" class="modal">
+        <div class="modal-content animate">
+          <div class="container">
+            <text class='modal-title'>Multiply Up</text>
+            <br><br>
+            <select id="selectMenuForMultiplyUp">
+              <option>Choose Menu</option>
+            </select>
+            <br>
+            <input id="multiplyUpMeateaters" type="number" placeholder="meateaters"></input>
+            <br>
+            <input id="multiplyUpVegetarians" type="number" placeholder="vegetarians"></input>
+            <br>
+            <button id="multiplyUp_submit">Multiply Up</button>
+          </div>
+          <div class="container" style="background-color:#f1f1f1">
+            <button type="button" id="multiplyUpCancel_btn" class="cancelbtn">Cancel</button>
+          </div>
         </div>
       </div>
     </div>
   </div>
+
   <div id="PrintMenu" class="printMenu" style="display:none"></div>
   <div id="PrintShopping" class="printShopping" style="display:none"></div>
-  <script> 
-    require('./renderer.js')
-  </script>
+  <script>
+  require('./renderer.js')
+</script>
 </body>
 
 </html>

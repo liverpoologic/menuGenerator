@@ -1,0 +1,268 @@
+{
+  "enums": {
+    "mealTypeEnum": [
+      "breakfast",
+      "snack",
+      "lunch",
+      "dinner"
+    ],
+    "recipeTypeEnum": [
+      "core",
+      "veg",
+      "starch",
+      "sauce",
+      "other",
+      "dessert c",
+      "dessert other"
+    ],
+    "morvEnum": [
+      "m",
+      "b",
+      "v",
+      null
+    ],
+    "morvOpts": [
+      "b",
+      "v",
+      "m",
+      "v / b"
+    ],
+    "shopEnum": [
+      "Bakers",
+      "Bookers",
+      "Tesco",
+      "Peterley",
+      "Pigotts",
+      "Troutt",
+      "Wren Davis",
+      "Other"
+    ],
+    "foodTypeEnum": [
+      "alium",
+      "citrus",
+      "dairy",
+      "fruit",
+      "herb",
+      "meat & fish",
+      "nuts & seeds",
+      "pulses",
+      "spice",
+      "staple",
+      "starch",
+      "sweet",
+      "veg",
+      "other"
+    ],
+    "weekday": [
+      "Sunday",
+      "Monday",
+      "Tuesday",
+      "Wednesday",
+      "Thursday",
+      "Friday",
+      "Saturday"
+    ],
+    "allergenEnum": [
+      "aliums",
+      "celery",
+      "chilli",
+      "cow-dairy",
+      "dairy",
+      "fish",
+      "gluten",
+      "meat",
+      "msg",
+      "nuts",
+      "pork",
+      "salt"
+    ],
+    "specialsEnum": {
+      "Sara Pay": {
+        "allergens": [],
+        "foods": [
+          "chickpeas (tinned)",
+          "red lentils"
+        ],
+        "morv": "m"
+      },
+      "Mati Lang": {
+        "allergens": [
+          "cow-dairy"
+        ],
+        "foods": [],
+        "morv": "m"
+      },
+      "David Mears": {
+        "allergens": [
+          "meat",
+          "fish",
+          "dairy"
+        ],
+        "foods": [
+          "eggs",
+          "honey"
+        ],
+        "morv": "v"
+      },
+      "Fuzz Watkins": {
+        "allergens": [
+          "cow-dairy"
+        ],
+        "foods": [],
+        "morv": "m"
+      }
+    }
+  },
+  "filepath": "C:\\Users\\Lisa Karlin\\Documents\\Menus",
+  "foods": {
+    "butter": {
+      "unit": "g",
+      "shop": "Bookers",
+      "foodType": "staple",
+      "allergens": [
+        "cow-dairy",
+        "dairy"
+      ]
+    },
+    "flour": {
+      "unit": "g",
+      "shop": "Bookers",
+      "foodType": "starch",
+      "allergens": [
+        "gluten"
+      ]
+    },
+    "sugar": {
+      "unit": "g",
+      "shop": "Bookers",
+      "foodType": "staple",
+      "allergens": []
+    }
+  },
+  "recipes": {
+    "Roux": {
+      "mealType": "lunch",
+      "morv": [
+        "b"
+      ],
+      "serves": 5,
+      "method": "Make a roux",
+      "recipeType": "core",
+      "ingredients": [
+        {
+          "foodName": "butter",
+          "morv": "b",
+          "quantity": 300
+        },
+        {
+          "foodName": "flour",
+          "morv": "b",
+          "quantity": 150
+        },
+        {
+          "foodName": "sugar",
+          "morv": "b",
+          "quantity": 50
+        },
+        {
+          "foodName": "flour",
+          "morv": "v",
+          "quantity": 10
+        }
+      ]
+    },
+    "Standard Breakfast": {
+      "mealType": "breakfast",
+      "morv": [
+        "b"
+      ],
+      "serves": 10,
+      "method": "for test purposes",
+      "recipeType": "core",
+      "ingredients": [
+        {
+          "foodName": "butter",
+          "morv": "b",
+          "quantity": 20
+        }
+      ]
+    }
+  },
+  "menus": {
+    "Test Menu": {
+      "startDate": "2018-08-03T00:00:00.000Z",
+      "endDate": "2018-08-05T00:00:00.000Z",
+      "meateaters": 10,
+      "vegetarians": 10,
+      "meals": [
+        {
+          "mealType": "dinner",
+          "date": "2018-08-03T00:00:00.000Z",
+          "recipes": [
+            {
+              "recipeTitle": "Roux",
+              "morv": "m"
+            }
+          ]
+        },
+        {
+          "mealType": "breakfast",
+          "date": "2018-08-04T00:00:00.000Z",
+          "recipes": [
+            {
+              "recipeTitle": "Standard Breakfast",
+              "morv": "b",
+              "comments": "New comments"
+            }
+          ]
+        },
+        {
+          "mealType": "snack",
+          "date": "2018-08-04T00:00:00.000Z",
+          "recipes": []
+        },
+        {
+          "mealType": "lunch",
+          "date": "2018-08-04T00:00:00.000Z",
+          "recipes": []
+        },
+        {
+          "mealType": "dinner",
+          "date": "2018-08-04T00:00:00.000Z",
+          "recipes": []
+        },
+        {
+          "mealType": "breakfast",
+          "date": "2018-08-05T00:00:00.000Z",
+          "recipes": [
+            {
+              "recipeTitle": "Standard Breakfast",
+              "morv": "b"
+            }
+          ]
+        },
+        {
+          "mealType": "lunch",
+          "date": "2018-08-05T00:00:00.000Z",
+          "recipes": []
+        }
+      ],
+      "specials": {
+        "Mati Lang": {
+          "allergens": [
+            "cow-dairy"
+          ],
+          "foods": [],
+          "morv": "m"
+        },
+        "Fuzz Watkins": {
+          "allergens": [
+            "cow-dairy"
+          ],
+          "foods": [],
+          "morv": "m"
+        }
+      }
+    }
+  }
+}

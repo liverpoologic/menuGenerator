@@ -1,17 +1,18 @@
-var d = require("./Dicts.js")
-var u = require("./UtilityFunctions.js")
-var Dict = d.Dict
-var e = d.Dict[4]
-var tagsInput = require('tags-input')
+var d = require("../Dicts.js");
+var u = require("../UtilityFunctions.js");
+var Dict = d.Dict;
+var Config = d.Config;
+var tagsInput = require('tags-input');
 
 var cellWidths = [60, 150, 150, 20, 15, 15];
 
 
 module.exports = {
     onLoad: onLoad
-}
+};
 
 function onLoad() {
+  let e = d.Config.enums;
     //event listener to load people list page when menu is selected
     u.ID("selectPeopleMenu").addEventListener("change", CreatePeopleList);
     u.CreateElement("table", u.ID('viewPeopleDiv'), 'specialsTable');
@@ -27,24 +28,28 @@ function CreatePeopleList(event) {
 
 function RefreshAllergenTable(menuTitle) {
     u.ID('specialsTable').innerHTML = "";
-    var cellTitles = ["Person", "Allergens", "Foods", "Morv", "-", "+"]
-    u.CreateRow("specialsTable", "th", cellTitles , ["", "", "", "", "", "addIngRowHeader"], cellWidths, "px");
-    var specials = Dict[3][menuTitle].specials;
+    var cellTitles = ["Person", "Allergens", "Foods", "Morv", "-", "+"];
+    u.CreateRow("specialsTable", "th", cellTitles , ["", "", "", "", "", "addSpecialRowHeader"], cellWidths, "px");
+    var specials = Dict.menus[menuTitle].specials;
     if (specials) {
         Object.keys(specials).forEach(person => {
-            addAllergenRow(person, specials[person])
+            addAllergenRow(person, specials[person]);
         });
     }
     else {
-        addAllergenRow()
+        addAllergenRow();
     }
+    u.ID('addSpecialRowHeader').addEventListener('click',function(){
+      addAllergenRow();
+    });
 }
 
 function addAllergenRow(personName, specialData,rowIndex) {
+  let e = d.Config.enums;
     var i = u.ID('specialsTable').rows.length;
-    var cellContents = ["", "", "", "", "-", "+"]
-    var cellIDs = ["", "", "", "",`agn-${i}`, `agn+${i}`]
-  
+    var cellContents = ["", "", "", "", "-", "+"];
+    var cellIDs = ["", "", "", "",`agn-${i}`, `agn+${i}`];
+
     var newRow = u.CreateRow("specialsTable", "td", cellContents, cellIDs, cellWidths , "px", rowIndex);
 
     var inputConfig = [
@@ -73,7 +78,7 @@ function addAllergenRow(personName, specialData,rowIndex) {
             id:'agnMorv',
             key:'morv'
         }
-    ]
+    ];
     var els = {};
     inputConfig.forEach((obj, ind) => {
         els[obj.key] = u.CreateEl(obj.elementType).type(obj.typeType).id(`${obj.id}${i}`).parent(newRow.children[ind]).end();
@@ -86,49 +91,53 @@ function addAllergenRow(personName, specialData,rowIndex) {
 
             }
             console.log(valArray);
-            tagsInput(els[obj.key], obj.dropdownSource, 'populate', ',', valArray)
+            tagsInput(els[obj.key], obj.dropdownSource, 'populate', ',', valArray);
         }
-    })
-    els.person.setAttribute('list','specialPeople')
-    if(personName) els.person.setAttribute('value',personName)
+    });
+    els.person.setAttribute('list','specialPeople');
+    if(personName) els.person.setAttribute('value',personName);
     var defaultVal = 'morv';
-    if(specialData){defaultVal = specialData.morv}
+    if(specialData){defaultVal = specialData.morv;}
     u.CreateDropdown(els.morv.id,["m","v"],false,undefined,defaultVal);
 
-    u.ID(`agnPerson${i}`).addEventListener('change',selectPersonName)
+    u.ID(`agnPerson${i}`).addEventListener('change',selectPersonName);
 
-    u.ID(`agn+${i}`).addEventListener('click', function () { addAllergenRow() });
+    u.ID(`agn+${i}`).addEventListener('click', function () { addAllergenRow(); });
     u.ID(`agn-${i}`).addEventListener('click', deleteAllergenRow);
 }
 
 function deleteAllergenRow() {
-    let table = u.ID('specialsTable')
-    let i = u.GetNumber(event.target.id)
+  let e = d.Config.enums;
+    let table = u.ID('specialsTable');
+    let i = u.GetNumber(event.target.id);
 
     //remove from dict obj if it exists
     var menuTitle = u.ID('selectPeopleMenu').value;
     var key = u.ID(`agnPerson${i}`).value;
-    if(key && Dict[3][menuTitle].specials[key]){
-        delete Dict[3][menuTitle].specials[key];
-        u.WriteDict(3);    
+    if(key && Dict.menus[menuTitle].specials){
+        if(Dict.menus[menuTitle].specials[key]){
+            delete Dict.menus[menuTitle].specials[key];
+            u.WriteDict(3);    
+        }
     }
 
     table.deleteRow(i);
 
     // renumber the ids of all the rows below the deleted row
-    let len = table.rows.length
+    let len = table.rows.length;
     function replaceIndexes(parent, from, to) {
         Array.prototype.forEach.call(parent.children, cell => {
             cell.id = cell.id.replace(from, to);
-            replaceIndexes(cell, from, to)
-        })
+            replaceIndexes(cell, from, to);
+        });
     }
     for (i; i < len; i++) {
-        replaceIndexes(table.rows[i], i + 1, i)
+        replaceIndexes(table.rows[i], i + 1, i);
     }
 }
 
 function saveAllergens() {
+  let e = d.Config.enums;
     var menuTitle = u.ID('selectPeopleMenu').value;
     var table = u.ID('specialsTable');
     var rowcount = table.rows.length;
@@ -141,7 +150,7 @@ function saveAllergens() {
 
         if (!personName || morv === 'morv' || (!allergens && !foods)) continue;
 
-        Dict[3].changeAllergyType(menuTitle, personName, allergens, foods, morv);
+        Dict.menus.changeAllergyType(menuTitle, personName, allergens, foods, morv);
     }
     u.WriteDict(3);
     RefreshAllergenTable(menuTitle);
@@ -152,11 +161,12 @@ function getArr(id) {
     return thing ? thing.split(",") : undefined;
 }
 
-function selectPersonName(e){
-    var name = e.target.value;
-    var i = u.GetNumber(e.target.id)
-    var specialsEnum = Dict[4].specialsEnum;
-    var specialNames = Object.keys(specialsEnum)
+function selectPersonName(event){
+  let e = d.Config.enums;
+    var name = event.target.value;
+    var i = u.GetNumber(event.target.id);
+    var specialsEnum = e.specialsEnum;
+    var specialNames = Object.keys(specialsEnum);
 
     if(specialNames.indexOf(name)>=0){
         var specialData = specialsEnum[name];

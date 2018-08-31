@@ -1,18 +1,18 @@
-var u = require("./UtilityFunctions.js")
+var u = require("./UtilityFunctions.js");
 
 
 
-function RefreshDropdowns(Dict) {
-    var e = Dict[4]
+function RefreshDropdowns(Dict,Config) {
 
+    var e = Config.enums;
 
     // Create array of menu names
-    var menuValList = u.GetKeysExFns(Dict[3]).sort((a, b) => {
-        return u.Compare(Dict[3][a].startDate, Dict[3][b].startDate)
+    var menuValList = u.GetKeysExFns(Dict.menus).sort((a, b) => {
+        return u.Compare(Dict.menus[a].startDate, Dict.menus[b].startDate);
     });
 
     var menuNameList = menuValList.map(menuTitle => {
-        var menu = Dict[3].getMenu(menuTitle);
+        var menu = Dict.menus.getMenu(menuTitle);
         return menu.startDate ? `${menuTitle} (${u.GetMMMyy(new Date(menu.startDate))})` : menuTitle;
     });
 
@@ -48,7 +48,7 @@ function RefreshDropdowns(Dict) {
             _default: 'morv'
         },
         {
-            source: e.morvEnum,
+            source: e.recipeMorv,
             keys: false,
             ids: ['selectMorvForMenu'],
             _default: 'morv'
@@ -61,7 +61,7 @@ function RefreshDropdowns(Dict) {
             valueOpts: menuValList
         },
         {
-            source: Dict[2],
+            source: Dict.recipes,
             keys: true,
             ids: ['selectRecipeForMenu'],
             _default: 'Recipe',
@@ -70,39 +70,39 @@ function RefreshDropdowns(Dict) {
             source: e,
             keys: true,
             ids: ['selectAdminEnum'],
-            _default: 'Enum'
+            _default: 'Select an Enum'
         }
     ];
-
+    //To Do - validate that the checks for 'default' are all correct. Perhaps exchange with a single string 'default'
 
     dropdownConfig.forEach(x => {
         x.ids.forEach(id => {
-            var _default = x._default;
-            var domObj = u.ID(id);
-            if (domObj != null) {
-                if (domObj.value != null && domObj.value != undefined && domObj.value != "") _default = domObj.value;
-            }
-            u.CreateDropdown(id, x.source, x.keys, x.valueOpts, _default);
-        })
-    })
+            // var _default = x._default;
+            // var domObj = u.ID(id);
+            // if (domObj != null) {
+            //     if (domObj.value != null && domObj.value != undefined && domObj.value != "") _default = domObj.value;
+            // }
+            u.CreateDropdown(id, x.source, x.keys, x.valueOpts,x._default);
+        });
+    });
 }
 
-function RefreshDataLists(Dict) {
+function RefreshDataLists(Dict,Config) {
 
     var dataListConfig = [
         {
             id: 'allergenList',
-            sourceArr: Dict[4].allergenEnum
+            sourceArr: Config.enums.allergenEnum
         },
         {
             id: 'food',
-            sourceArr: u.GetKeysExFns(Dict[1]).sort()
+            sourceArr: u.GetKeysExFns(Dict.foods).sort()
         },
         {
             id:'specialPeople',
-            sourceArr: u.GetKeysExFns(Dict[4].specialsEnum)
+            sourceArr: u.GetKeysExFns(Config.enums.specialsEnum)
         }
-    ]
+    ];
 
     dataListConfig.forEach(obj => {
         var domObj = u.ID(obj.id);
@@ -114,12 +114,12 @@ function RefreshDataLists(Dict) {
         }
         obj.sourceArr.forEach(ea => {
             var newOpt = u.CreateEl('option').parent(domObj).value(ea).end();
-        })
+        });
 
-    })
+    });
 }
 
 module.exports = {
     RefreshDropdowns: RefreshDropdowns, // refreshes all dropdowns
     RefreshDataLists: RefreshDataLists // refreshes all datalists
-}
+};
