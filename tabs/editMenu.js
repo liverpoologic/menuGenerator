@@ -248,21 +248,31 @@ function RefreshEditMenu() {
 
       //give place to input specials numbers if its a special morv
       if(menuRecipe.morv === 'sp'){
-        console.log('recipe morv is sp')
-        CreateSpecialInput(menuTitle,i,j,mealDiv)
+        console.log('recipe morv is sp');
+        CreateSpecialInput(menuTitle,i,j,mealDiv);
       }
 
-//TODO make this so that the event listener is edited / changed / removed - currently is broken
       recipeTitle.addEventListener('click',function(){
+        var div = u.ID('add_comments_div');
+        div.innerHTML = "";
+        
+        u.CreateEl('text').parent(div).className('modal-header').innerText(`Add Comments - ${menuRecipe.recipeTitle}`).end();
+        u.CreateEl('br').parent(div).end();
+        u.CreateEl('br').parent(div).end();
+        var textArea = u.CreateEl('textarea').parent(div).className('comments-textarea').id('add_comments').end();
+        u.CreateEl('br').parent(div).end();
+        var save_button = u.CreateEl('button').id('save_comments').parent(div).innerText('Save Comments').end();
+        
+        var currentComments = Dict.menus.getRecipe(menuTitle,i,j).comments;
+        textArea.value = currentComments ? currentComments : "";
+
         u.ID('editRecipeInMenu').style.display='block';
-        u.ID('save_comments').addEventListener('click',SaveComments);
+        save_button.addEventListener('click',SaveComments);
         function SaveComments(){
-          Dict.menus.addComments(menuTitle,i,j,u.ID('add_comments').value);
+          Dict.menus.addComments(menuTitle,i,j,textArea.value);
           u.WriteDict(3);
           u.ID('editRecipeInMenu').style.display='none';
-          u.ID('add_comments').value = "";
-          u.ID('save_comments').removeEventListener('click',SaveComments);
-        };
+        }
       });
 
       // ["core","veg","starch","sauce","other","dessert c","dessert other"]
@@ -310,7 +320,7 @@ function CreateSpecialInput(menuTitle,mealIndex,recipeIndex,div){
     specialInput.value = currentValue;
   }
   specialInput.addEventListener('change',function(){
-    console.log('special has been input!')
+    console.log('special has been input!');
     Dict.menus.getRecipe(menuTitle,mealIndex,recipeIndex).specialCount = parseInt(specialInput.value);
     u.WriteDict(3);
   });
