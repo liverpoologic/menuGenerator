@@ -16,21 +16,13 @@
         <b>Pigotts menu generator</b>
       </h1>
       <button id="settings_btn" style="float:right; margin:0px">
-        <img src="resources/settings.png" height="42px" width="42px" />
+        <img src="../../resources/settings.png" height="42px" width="42px" />
       </button>
     </div>
     <div id='errors'></div>
-    <div class="htab">
-      <button id="AddFoodTabBtn" class="htablinks">Add Food</button>
-      <button id="AddRecipeTabBtn" class="htablinks">Add Recipe</button>
-      <button id="AddMenuTabBtn" class="htablinks">Add Menu</button>
-      <button id="ViewMenuTabBtn" class="htablinks">View Menu</button>
-      <button id="EditMenuTabBtn" class="htablinks">Edit Menu</button>
-      <button id="ShoppingTabBtn" class="htablinks">Shopping</button>
-      <button id="PeopleTabBtn" class="htablinks">People</button>
-      <button id="AdminTabBtn" class="htablinks">Admin</button>
+    <div class="htab" id='htab_div'>
     </div>
-    <div id="AddFood" class="htabcontent">
+    <div id="addFood" class="htabcontent">
       <h2> Add Food </h2>
       <input type="text" id="foodThing" placeholder="name of food">
       <br>
@@ -47,7 +39,7 @@
       <br>
       <button id="addfood_btn">Add Food</button>
     </div>
-    <div id="AddRecipe" class="htabcontent">
+    <div id="addRecipe" class="htabcontent">
       <h2 id="AddRecipePageTitle"> Add Recipe </h2>
       <div class="flex-container" style="padding:0px">
         <div id="addRecipe_left" style="width:40%; margin:0 20px 0 0">
@@ -80,7 +72,7 @@
         </div>
       </div>
     </div>
-    <div id="AddMenu" class="htabcontent">
+    <div id="addMenu" class="htabcontent">
       <h2> Add Menu </h2>
       <input type="text" id="newMenuTitle" placeholder="Menu Title">
       <br>
@@ -105,7 +97,7 @@
       <div id="viewMenuDiv" class="menu">
       </div>
     </div>
-    <div id="EditMenu" class="htabcontent">
+    <div id="editMenu" class="htabcontent">
       <h2>Edit Menu</h2>
       <select id="selectEditMenu">
         <option>Menu</option>
@@ -118,7 +110,7 @@
       <div id="editMenuDiv" class="editMenu">
       </div>
     </div>
-    <div id="Shopping" class="htabcontent">
+    <div id="shopping" class="htabcontent">
       <h2> Shopping Lists </h2>
       <select id="selectMenuForShopping">
         <option>Menu</option>
@@ -128,7 +120,7 @@
       <br>
       <div id="shoppingbtndiv"></div>
     </div>
-    <div id="People" class="htabcontent">
+    <div id="people" class="htabcontent">
       <h2> People </h2>
       <select id="selectPeopleMenu">
         <option>Menu</option>
@@ -138,7 +130,7 @@
       <br>
       <br>
     </div>
-    <div id="Admin" class="htabcontent" style="padding:0px">
+    <div id="admin" class="htabcontent" style="padding:0px">
       <div class="vtab">
         <button id="AdminTabBtn1" class="vtablinks">Food</button>
         <button id="AdminTabBtn2" class="vtablinks">Recipes</button>
