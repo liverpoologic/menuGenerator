@@ -3,10 +3,8 @@ var tagsInput = require('tags-input');
 var remote = require('electron').remote;
 
 module.exports = function(DATA) {
-   var d = DATA;
-   var Dict = DATA.dict;
-   var Config = DATA.config;
-   var e = Config.enums;
+   var d = DATA.dict;
+   var c = DATA.config;
 
    /** function to clear table, leaving a given number of header rows
     * @param {string} tableID html ID of the table to clear
@@ -38,7 +36,7 @@ module.exports = function(DATA) {
 
          switch (inputType) {
             case 'select':
-               CreateDropdown(el.id, dropdownSource, dropdownKeys, undefined, oldValue);
+               CreateDropdown(el.id, dropdownSource, dropdownKeys, undefined, undefined, oldValue);
                break;
             case 'tags':
                tagsInput(el, dropdownSource, "populate", ",", oldValue);
@@ -60,7 +58,7 @@ module.exports = function(DATA) {
       cell.addEventListener("click", function editCell() {
          cell.innerHTML = "";
          let key = ID(keyID).innerText;
-         let item = d.GetDict(dictID)[key];
+         let item = d.getDict(dictID)[key];
          let oldValue = getProp(item, property);
 
          let input = CreateInput(cell, inputType, oldValue, dropdownSource, dropdownKeys);
@@ -73,9 +71,9 @@ module.exports = function(DATA) {
 
             button.addEventListener("click", function saveNewCell() {
                let newValue = input.value.split(",");
-               d.GetDict(dictID).addAllergens(key, newValue);
-               WriteDict(dictID);
-               WriteConfig();
+               d.getDict(dictID).addAllergens(key, newValue);
+               d.write();
+               c.write();
             });
 
          } else {
@@ -88,7 +86,7 @@ module.exports = function(DATA) {
                } else if (property.length === 3) {
                   item[property[0][property[1][property[2]]]] = newValue;
                }
-               WriteDict(dictID);
+               d.write();
             });
          }
 
@@ -103,7 +101,7 @@ module.exports = function(DATA) {
     * @param {array} valueOpts an array containing strings which should be assigned as values to the corresponding item in the source
     * @param {array} _default a string which is the value and display name of the default option if nothing is currently selected.
     */
-   function CreateDropdown(elementID, source, keys, valueOpts, _default) {
+   function CreateDropdown(elementID, source, keys, valueOpts, _default, currentVal) {
       var select = ID(elementID);
       var populated = false;
       if (select != null) {
@@ -113,13 +111,19 @@ module.exports = function(DATA) {
          }
       }
 
+      //if currentVal is specified then have that as the value
+      if (currentVal) {
+         populated = true;
+         var selectValue = currentVal
+      }
+
       if (select != null) select.innerHTML = "";
       var options = keys ? GetKeysExFns(source).sort() : source;
       if (!valueOpts) {
          valueOpts = options;
       }
       if (_default) {
-         CreateEl('option').parent(select).textContent(_default).value(_default).end();
+         CreateEl('option').parent(select).textContent(_default).value('_default').end();
       }
       options.forEach((option, i) => {
          let displayOpt = option;
@@ -202,16 +206,16 @@ module.exports = function(DATA) {
     */
    function CompareFoodType(a, b) {
 
-      if (typeof Dict.foods[a] === "undefined") {
+      if (typeof d.foods[a] === "undefined") {
          console.log(`${a} needs to be added to the food dictionary`);
          return "error, view console";
       }
-      if (typeof Dict.foods[b] === "undefined") {
+      if (typeof d.foods[b] === "undefined") {
          console.log(`${b} needs to be added to the food dictionary`);
          return "error, view console";
       }
-      let foodtypea = Dict.foods[a].foodType;
-      let foodtypeb = Dict.foods[b].foodType;
+      let foodtypea = d.foods[a].foodType;
+      let foodtypeb = d.foods[b].foodType;
 
       let comparison = 0;
       if (foodtypea > foodtypeb) {
@@ -237,7 +241,7 @@ module.exports = function(DATA) {
     * @param {string} b the key for meal b
     */
    function CompareMeal(a, b) {
-      let e = d.Config.enums;
+      let e = c.enums;
       let aDate = new Date(a.date);
       let bDate = new Date(b.date);
       let comparison = 0;
@@ -261,9 +265,9 @@ module.exports = function(DATA) {
       function isDessert(recipeType) {
          return recipeType === 'dessert c' || recipeType === 'dessert other' ? true : false;
       }
-      let a = Dict.recipes[aName];
-      let b = Dict.recipes[bName];
-      let e = d.Config.enums;
+      let a = d.recipes[aName];
+      let b = d.recipes[bName];
+      let e = c.enums;
 
       if (a.morv === 'sp' && b.morv !== 'sp') {
          if (isDessert(a.recipeType) === isDessert(b.recipeType)) {
@@ -425,20 +429,8 @@ module.exports = function(DATA) {
       ID(`AdminTabContent${tabID}`).style.display = "block";
       ID(`AdminTabBtn${tabID}`).className += " active";
    }
-   /** reads in 'Dict' from Dict.json */
-   function ReadDict(fileName) {
-      let input = JSON.parse(fs.readFileSync("./resources/" + fileName, {
-         encoding: "utf8"
-      }));
-      //read in dicts
-      for (var dictKey in input) {
-         for (var thing in input[dictKey]) {
-            if (input[dictKey].hasOwnProperty(thing)) {
-               Dict[dictKey][thing] = input[dictKey][thing];
-            }
-         }
-      }
-   }
+   /** reads in 'd' from d.json */
+
    /** reads in 'Config' from Config.json */
    function ReadConfig(fileName) {
       let input = JSON.parse(fs.readFileSync("./resources/" + fileName, {
@@ -455,7 +447,7 @@ module.exports = function(DATA) {
    /**renames the 'key' of a dictionary object (e.g. change food name)
     * @param {*} oldKeyName the old key name
     * @param {*} newKeyName the new key name
-    * @param {*} location the location of the key (e.g. Dict.foods)
+    * @param {*} location the location of the key (e.g. d.foods)
     */
    function RenameKey(oldKeyName, newKeyName, location) {
       if (oldKeyName !== newKeyName) {
@@ -499,60 +491,6 @@ module.exports = function(DATA) {
       array[value2] = temp;
    }
 
-   /**writes config to json*/
-   function WriteConfig() {
-      var fileName = remote.getGlobal('sharedObject').fileNames.core.config;
-      fs.writeFileSync(`./resources/${fileName}`, JSON.stringify(Config), {
-         encoding: "utf8"
-      });
-
-      let admin = require("./tabs/admin.js");
-      admin.CreateTable(1);
-      admin.CreateTable(2);
-      admin.CreateTable(3);
-      admin.RefreshEnumTable();
-
-      let shopping = require("./tabs/shopping.js");
-      shopping.RefreshButtons();
-
-      let viewMenu = require("./tabs/viewMenu.js");
-      let editMenu = require("./tabs/editMenu.js");
-      editMenu.RefreshEditMenu();
-      viewMenu.RefreshViewMenu();
-
-      var dropdowns = require('./createDropdowns.js');
-      dropdowns.RefreshDropdowns(Dict, Config);
-      dropdowns.RefreshDataLists(Dict, Config);
-   }
-
-   /**writes a selected dictionary to Dict.json. 'dictID' should be '1,2,3 or 0 to represent all
-    * @param {*} dictID the id of the dictionary (1,2,3) or 0 to write all dictionaries */
-   function WriteDict(dictID) {
-      var fileName = remote.getGlobal('sharedObject').fileNames.core.dict;
-      fs.writeFileSync(`./resources/${fileName}`, JSON.stringify(Dict), {
-         encoding: "utf8"
-      });
-
-      let admin = require("./tabs/admin.js");
-      if (dictID === 0) {
-         admin.CreateTable(1);
-         admin.CreateTable(2);
-         admin.CreateTable(3);
-      } else {
-         admin.CreateTable(dictID);
-      }
-
-      let editMenu = require("./tabs/editMenu.js");
-      editMenu.RefreshEditMenu();
-
-      let viewMenu = require("./tabs/viewMenu.js");
-      viewMenu.RefreshViewMenu();
-
-      var dropdowns = require('./createDropdowns.js');
-      dropdowns.RefreshDropdowns(Dict, Config);
-      dropdowns.RefreshDataLists(Dict, Config);
-   }
-
    /**
     * get the date in the form MMM yy (e.g. Jun 18)
     * @param {date} date
@@ -568,8 +506,8 @@ module.exports = function(DATA) {
    function SaveBackup() {
       console.log('savebackup');
       console.log(remote.getGlobal('sharedObject').fileNames);
-      var dictFileName = remote.getGlobal('sharedObject').fileNames.backup.dict;
-      fs.writeFileSync(`./resources/${dictFileName}`, JSON.stringify(Dict), {
+      var dictFileName = remote.getGlobal('sharedObject').fileNames.backup.d;
+      fs.writeFileSync(`./resources/${dictFileName}`, JSON.stringify(d), {
          encoding: "utf8"
       });
 
@@ -583,22 +521,19 @@ module.exports = function(DATA) {
    }
 
    function RestoreFromBackup() {
-      d.ClearDict(Dict);
-      var dictFileName = remote.getGlobal('sharedObject').fileNames.backup.dict;
-      ReadDict(dictFileName);
+      d.clear();
+      d.read('backup');
+      d.write();
 
-      d.ClearConfig(Config);
-      var configFileName = remote.getGlobal('sharedObject').fileNames.backup.config;
-      ReadConfig(configFileName);
-
-      WriteDict(0);
-      WriteConfig();
+      c.clear();
+      c.read('backup');
+      c.write();
 
       alert('restored');
    }
 
    function CalculateQLarge(menuTitle, mealID, recipe, ingredient) {
-      var menu = Dict.menus[menuTitle];
+      var menu = d.menus[menuTitle];
       var meal = menu.meals[mealID];
       var morv = recipe.morv !== 'b' ? recipe.morv : ingredient.morv;
       var multiplier;
@@ -620,13 +555,13 @@ module.exports = function(DATA) {
             break;
       }
 
-      var serves = Dict.recipes[recipe.recipeTitle].serves;
+      var serves = d.recipes[recipe.recipeTitle].serves;
 
       return (ingredient.quantity / serves) * multiplier;
 
    }
 
-   //     for (var mealKey in Dict.menus[menuTitle].meals) {
+   //     for (var mealKey in d.menus[menuTitle].meals) {
    //         if (this[menuTitle].meals.hasOwnProperty(mealKey)) {
    //             let mModifier = this[menuTitle].meals[mealKey].modifier ? this[menuTitle].meals[mealKey].modifier.meateaters : 0;
    //             let vModifier = this[menuTitle].meals[mealKey].modifier ? this[menuTitle].meals[mealKey].modifier.vegetarians : 0;
@@ -691,15 +626,11 @@ module.exports = function(DATA) {
       ID: ID, // changes 'document.getElementById' to just ID
       OpenHTab: OpenHTab, // opens a horizontal tab (i.e. main navigation)
       OpenVTab: OpenVTab, // opens a vertical tab (i.e. admin table tabs
-      ReadConfig: ReadConfig, //reads in 'Config' from resources
-      ReadDict: ReadDict, // reads in 'Dict' from resources
       RenameKey: RenameKey, // renames the 'key' of a dictionary object (e.g. change food name)
       RestoreFromBackup: RestoreFromBackup, //restores Dicts from backup
       SaveBackup: SaveBackup, //saves a backup of Dicts
       SetValues: SetValues, // sets values for an array of html elements
       ShowElements: ShowElements, // show multiple elements with a given display
       Swap: Swap, // swaps two elements of an array
-      WriteConfig: WriteConfig,
-      WriteDict: WriteDict, // writes a selected dictionary to Dict.json
    };
 }

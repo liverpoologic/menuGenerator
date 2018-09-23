@@ -7,6 +7,10 @@ module.exports = function(DATA) {
       window.addEventListener('update', RefreshDataLists)
    }
 
+   //    u.CreateDropdown("t2TableFilter1input", e.mealTypeEnum, false, undefined, 'all');
+   //    u.CreateDropdown("t2TableFilter2input", e.recipeTypeEnum, false, undefined, 'all');
+   //    u.CreateDropdown("t2TableFilter4input", e.morvEnum, false, undefined, 'all');
+
 
    function RefreshDropdowns(EV) {
       var d = DATA.dict;
@@ -29,16 +33,25 @@ module.exports = function(DATA) {
                return c.enums.shopEnum;
             },
             keys: false,
-            ids: ['selectFoodShop'],
+            ids: ['selectFoodShop', 't1TableFilter2input'],
             _default: 'Shop',
             type: 'config'
+         },
+         {
+            source: function() {
+               return c.enums.allergenEnum;
+            },
+            keys: false,
+            ids: ['t1TableFilter4input'],
+            type: 'config',
+            _default: 'Allergens'
          },
          {
             source: function() {
                return c.enums.foodTypeEnum;
             },
             keys: false,
-            ids: ['selectFoodType'],
+            ids: ['selectFoodType', 't1TableFilter3input'],
             _default: 'Food Type',
             type: 'config'
          },
@@ -47,7 +60,7 @@ module.exports = function(DATA) {
                return c.enums.mealTypeEnum;
             },
             keys: false,
-            ids: ['selectRecipeMealType', 'selectMealTypeForAddMeals'],
+            ids: ['selectRecipeMealType', 'selectMealTypeForAddMeals', 't2TableFilter1input'],
             _default: 'Meal Type',
             type: 'config'
          },
@@ -56,7 +69,7 @@ module.exports = function(DATA) {
                return c.enums.recipeTypeEnum;
             },
             keys: false,
-            ids: ['selectRecipeType'],
+            ids: ['selectRecipeType', 't2TableFilter2input'],
             _default: 'Food Type',
             type: 'config'
          },
@@ -118,22 +131,40 @@ module.exports = function(DATA) {
          },
          {
             source: function() {
+               var ret = [];
+               c.enums.morvEnum.forEach(ea => {
+                  if (ea == null) return;
+                  ret.push(ea);
+               })
                //  var ret = c.enums.morvEnum.splice(-1,2
-               return c.enums.morvEnum
+               return ret;
             },
             keys: false,
             table: 'ingredientTable',
             idPrefix: 'selectIngredientMorv',
             _default: 'M or V',
             type: 'config'
+         },
+         {
+            source: function() {
+               var ret = [];
+               c.enums.morvEnum.forEach(ea => {
+                  if (ea == null) return;
+                  ret.push(ea);
+               })
+               //  var ret = c.enums.morvEnum.splice(-1,2
+               return ret;
+            },
+            keys: false,
+            ids: ['t2TableFilter4input'],
+            _default: 'M or V',
+            type: 'config'
+
          }
       ];
       //To Do - validate that the checks for 'default' are all correct. Perhaps exchange with a single string 'default'
 
-      console.log(EV);
       dropdownConfig.forEach(x => {
-         console.log(x.ids);
-         console.log(x.idPrefix);
          //filter whether we need to update
          if ((EV.detail.global && EV.detail.type === x.type) || EV.detail.table && EV.detail.table === x.table) {
 

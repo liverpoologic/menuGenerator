@@ -236,6 +236,11 @@ Dict.menus = {
    }
 };
 
+Dict.getDict = function(dictID) {
+   var mapping = [null, 'foods', 'recipes', 'menus'];
+   return this[mapping[dictID]];
+}
+
 var update_event = new CustomEvent('update', {
    detail: {
       global: true,
@@ -268,24 +273,23 @@ Dict.write = function(backupFlag) {
    });
    window.dispatchEvent(update_event);
    //
-   // let admin = require("./tabs/admin.js");
-   // if (dictID === 0) {
-   //    admin.CreateTable(1);
-   //    admin.CreateTable(2);
-   //    admin.CreateTable(3);
-   // } else {
-   //    admin.CreateTable(dictID);
-   // }
    //
    // let editMenu = require("./tabs/editMenu.js");
    // editMenu.RefreshEditMenu();
    //
    // let viewMenu = require("./tabs/viewMenu.js");
    // viewMenu.RefreshViewMenu();
-   //
-   // var dropdowns = require('./createDropdowns.js');
-   // dropdowns.RefreshDropdowns(Dict, Config);
-   // dropdowns.RefreshDataLists(Dict, Config);
+   //}
 }
 
+Dict.clear = function() {
+   Object.keys(dict).forEach(dictKey => {
+      let ea = dict[dictKey];
+      Object.keys(dict[dictKey]).forEach(key => {
+         if (typeof ea[key] != 'function') {
+            delete ea[key];
+         }
+      });
+   });
+}
 module.exports = Dict;

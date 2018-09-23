@@ -29,10 +29,8 @@
       <input type="text" id="foodUnit" placeholder="unit">
       <br>
       <select id="selectFoodShop">
-        <option>Shop</option>
       </select>
       <select id="selectFoodType">
-        <option>Food Type</option>
       </select>
       <br>
       <div id="allergenDiv" width="400px"></div>
@@ -46,15 +44,12 @@
           <input type="text" id="recipeTitle" placeholder="Recipe Title">
           <br>
           <select id="selectRecipeMealType">
-            <option>Meal Type</option>
           </select>
           <br>
           <select id="selectRecipeType">
-            <option>Recipe Type</option>
           </select>
           <br>
           <select id="recipeMorv" placeholder="morv">
-            <option>Morv</option>
           </select>
           <br>
           <input type="number" id="recipeServes" placeholder="serves">
@@ -88,10 +83,9 @@
       <br>
       <button id="add_weekend_menu">Add Standard Weekend Menu</button>
     </div>
-    <div id="ViewMenu" class="htabcontent">
+    <div id="viewMenu" class="htabcontent">
       <h2> View Menu </h2>
       <select id="selectViewMenu">
-        <option>Menu</option>
       </select>
       <button id="printMenubtn" style="margin:4px 40px">Print to PDF</button>
       <div id="viewMenuDiv" class="menu">
@@ -100,7 +94,6 @@
     <div id="editMenu" class="htabcontent">
       <h2>Edit Menu</h2>
       <select id="selectEditMenu">
-        <option>Menu</option>
       </select>
       <br>
       <button id="addRecipeToMenu_btn" style="width:200px; display:none">Add Recipe</button>
@@ -113,7 +106,6 @@
     <div id="shopping" class="htabcontent">
       <h2> Shopping Lists </h2>
       <select id="selectMenuForShopping">
-        <option>Menu</option>
       </select>
       <button id="printShoppingbtn" style="margin:4px 40px">Print to PDF</button>
       <br>
@@ -123,7 +115,6 @@
     <div id="people" class="htabcontent">
       <h2> People </h2>
       <select id="selectPeopleMenu">
-        <option>Menu</option>
       </select>
       <div id="viewPeopleDiv">
       </div>
@@ -160,7 +151,7 @@
       </div>
       <div id="AdminTabContent4" class="vtabcontent" style="display:none">
         <h2> Other </h2>
-        <select id="selectAdminEnum"><option>Select an Enum</option></select>
+        <select id="selectAdminEnum"></select>
         <div id="enumTableDiv">
         </div>
       </div>
@@ -190,11 +181,9 @@
           <div class="flex-container" style="width:97%; padding:0">
             <div class="container" style="width:50%">
               <select id="selectDayForAddMeals" style="width:100%">
-                <option>Select Day</option>
               </select>
               <br>
               <select id="selectMealTypeForAddMeals" style="width:100%">
-                <option>Select Meal</option>
               </select>
               <br>
               <br>
@@ -212,11 +201,6 @@
         <div class="modal-content animate">
           <div class="flex-container" style="width:97%">
             <div id='add_comments_div'>
-              <!-- <text class="modal-header">Add Comments</text>
-              <br><br>
-              <textarea id="add_comments" class='comments-textarea'></textarea>
-              <br><br>
-              <button id="save_comments">Save Comments</button> -->
             </div>
           </div>
         </div>
@@ -229,19 +213,15 @@
           <div class="flex-container" style="width:97%">
             <div style="width:400px">
               <select id="selectMenuForNewRecipe" style='width:80%'>
-                <option>Choose Menu</option>
               </select>
               <br>
               <select id="selectMealForMenu" style='width:80%'>
-                <option>Choose Meal</option>
               </select>
               <br>
               <select id="selectRecipeForMenu" style='width:80%'>
-                <option>Choose Recipe</option>
               </select>
               <br>
               <select id="selectMorvForMenu" style='width:80%'>
-                <option>Choose Morv</option>
               </select>
               <br><br>
               <button id="addRecipeToMenu_submit">Add Recipe</button>
@@ -274,7 +254,6 @@
             <text class='modal-title'>Multiply Up</text>
             <br><br>
             <select id="selectMenuForMultiplyUp">
-              <option>Choose Menu</option>
             </select>
             <br>
             <input id="multiplyUpMeateaters" type="number" placeholder="meateaters"></input>

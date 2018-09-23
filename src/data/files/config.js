@@ -52,4 +52,13 @@ Config.read = function(backupFlag) {
    window.dispatchEvent(update_event);
 }
 
+Config.clear = function() {
+   for (var prop in config) {
+      let ea = config[prop];
+      if (typeof ea != 'function') {
+         delete config[prop];
+      }
+   }
+}
+
 module.exports = Config;

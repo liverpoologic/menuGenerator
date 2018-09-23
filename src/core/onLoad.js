@@ -18,6 +18,7 @@ module.exports = function() {
    FWK.dropdowns.Initialise();
 
    //for each tab, call the generator() function
+   console.log(tabs);
    params.tabList.forEach(tab => {
       console.log(tab.id);
       tabs[tab.id].generator();
@@ -25,8 +26,8 @@ module.exports = function() {
 
 
    // Import the dictionary and config
-   d.read();
    c.read();
+   d.read();
 
    console.log(d);
    console.log(c);
@@ -35,22 +36,22 @@ module.exports = function() {
    // when user clicks elsewhere, modals close
    window.onclick = function(click) {
       let t = click.target;
-      if (t.class === 'modal') {
+      if (t.className === 'modal') {
          t.style = "display:none";
       }
    };
    // // create listeners for each tab button
 
-   //
-   // var VtabList = document.getElementsByClassName("vtablinks");
-   // for (let i = 0; i < VtabList.length; i++) {
-   //     let btnID = VtabList[i].id;
-   //     let tabID = btnID.slice(-1);
-   //     u.ID(btnID).addEventListener("click", function () {
-   //         u.OpenVTab(tabID);
-   //     });
-   // }
-   //
+
+   var VtabList = document.getElementsByClassName("vtablinks");
+   for (let i = 0; i < VtabList.length; i++) {
+      let btnID = VtabList[i].id;
+      let tabID = btnID.slice(-1);
+      u.ID(btnID).addEventListener("click", function() {
+         u.OpenVTab(tabID);
+      });
+   }
+
    // // when you change the filepath, write to e
    // u.ID("filepath").addEventListener("change", function () {
    //     Config.filepath = u.ID("filepath").value;

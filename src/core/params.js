@@ -9,8 +9,27 @@ var tabList = [{
    {
       id: 'addMenu',
       label: 'Add Menu'
+   },
+   {
+      id: 'viewMenu',
+      label: 'View Menu'
+   },
+   {
+      id: 'editMenu',
+      label: 'Edit Menu'
+   },
+   {
+      id: 'admin',
+      label: 'Admin'
+   },
+   {
+      id: 'people',
+      label: 'SENCO'
+   }, {
+      id: 'shopping',
+      label: 'Shopping'
    }
-]
+];
 
 module.exports = {
    tabList: tabList

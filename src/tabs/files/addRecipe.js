@@ -29,26 +29,26 @@ module.exports = function(DATA) {
       for (let i = 0; i + 1 < u.ID("ingredientTable").rows.length; i++) {
          let foodName = u.ID(`selectIngredientFood${i}`).value;
          let quantitySmall = parseFloat(u.ID(`ingredientQuantitySmall${i}`).value);
-         if (u.ID(`selectIngredientMorv${i}`).value === "morv" || u.ID(`selectIngredientMorv${i}`).value === "null") {
+         if (u.ID(`selectIngredientMorv${i}`).value === "_default" || u.ID(`selectIngredientMorv${i}`).value === "null") {
             d.recipes.addIngredient(title, foodName, quantitySmall, 'b');
          } else {
             let morv = u.ID(`selectIngredientMorv${i}`).value;
             d.recipes.addIngredient(title, foodName, quantitySmall, morv);
          }
-         u.ID(`selectIngredientFood${i}`).value = "Food";
+         u.ID(`selectIngredientFood${i}`).value = "_default";
          u.ID(`ingredientQuantitySmall${i}`).value = "";
-         u.ID(`selectIngredientMorv${i}`).value = "morv";
+         u.ID(`selectIngredientMorv${i}`).value = "_default";
       }
 
       for (let i = u.ID("ingredientTable").rows.length; i > 2; i--) {
          u.ID("ingredientTable").deleteRow(i - 1);
       }
-      u.WriteDict(2);
+      d.write();
       u.SetValues([
          ["recipeTitle", ""],
-         ["selectRecipeMealType", "Meal Type"],
-         ["selectRecipeType", "Recipe Type"],
-         ["recipeMorv", "morv"],
+         ["selectRecipeMealType", "_default"],
+         ["selectRecipeType", "_default"],
+         ["recipeMorv", "_default"],
          ["recipeServes", ""],
          ["recipeMethod", ""]
       ]);
@@ -86,7 +86,9 @@ module.exports = function(DATA) {
       u.ID(`upbtn${j}`).addEventListener("click", MoveIngredientsRow);
       u.ID(`downbtn${j}`).addEventListener("click", MoveIngredientsRow);
 
-      if (firstTimeFlag.firstTime) return;
+      if (firstTimeFlag) {
+         if (firstTimeFlag.firstTime) return;
+      }
 
       var update_dropdowns = new CustomEvent('update', {
          detail: {
@@ -151,6 +153,8 @@ module.exports = function(DATA) {
    }
 
    return {
-      generator: generator
+      generator: generator,
+      btn: AddRecipeBtn,
+      AddIngredientsRow: AddIngredientsRow
    };
 }
