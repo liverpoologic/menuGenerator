@@ -5,41 +5,40 @@ module.exports = function(DATA) {
    var addRecipe = require('./addRecipe.js')(DATA);
 
    function generator() {
-      // CreateIngredientTable({
-      //    firstTime: true
-      // });
-
       u.ID("ingredientSearchInput").addEventListener("change", function() { // event listener so table is recreated when ingredient filter is changed
          CreateTableContents(2);
       });
+
       u.ID("clearIngredientSearch").addEventListener("click", function() { // event listener to clear table when 'x' is clicked next to ingredient filter
          u.ID("ingredientSearchInput").value = "";
          CreateTableContents(2);
       });
+
       u.ID("selectAdminEnum").addEventListener("change", RefreshEnumTable);
       window.addEventListener('update', RefreshAllTables)
 
       // create event listener for 'save changes' button to support t2 > 'edit recipe' functionality
       u.ID("editRecipe_btn").addEventListener("click", SaveChangesRecipe);
+
+      CreateTable(1);
+      CreateTable(2);
+      CreateTable(3);
+
    }
 
    function RefreshAllTables(EV) {
-      console.log('refresh all tables');
-      console.log(EV);
       if (EV.detail.global) {
          if (EV.detail.type === 'config') {
             RefreshEnumTable();
          }
-         CreateTable(1);
-         CreateTable(2);
-         CreateTable(3);
+         CreateTableContents(1);
+         CreateTableContents(2);
+         CreateTableContents(3);
       }
    }
 
    /** creates / refreshes a given dictionary admin table */
    function CreateTable(tableID) { // create admin table header and filter row, then calls CreateTableContents (clear existing and then create)
-      console.log('creating table');
-      console.log(tableID);
       let table = u.ID(`t${tableID}Table`);
       //collect filters to reapply later
       let filters = table.rows[1];
@@ -68,7 +67,6 @@ module.exports = function(DATA) {
             break;
       }
 
-      CreateTableContents(tableID);
    }
 
    /**create filter row (i.enums. select/text inputs
@@ -84,17 +82,18 @@ module.exports = function(DATA) {
          filterCell.addEventListener("change", function() {
             CreateTableContents(dictID);
          });
-
          if (type === "select") {
-            u.Html(filterCell, `${tableID}Filter${i}`, "", "", `<select id=${tableID}Filter${i}input><option value="All">All</option></select>`);
+            //create select
+            u.CreateEl('select').parent(filterCell).id(`${tableID}Filter${i}input`).value('_default').end()
          } else if (type === "longText") {
-            u.Html(filterCell, `${tableID}Filter${i}`, "", "", `<input id=${tableID}Filter${i}input type='text' style='width:80%'><button id=${tableID}Filter${i}clear class='insideCellBtn'>x</button>`);
+            u.CreateEl('input').type('text').parent(filterCell).id(`${tableID}Filter${i}input`).style('width:80%').end()
+            u.CreateEl('button').className('insideCellBtn').innerText('x').parent(filterCell).id(`${tableID}Filter${i}clear`).style('margin: 10px 0px;').end()
             u.ID(`${tableID}Filter${i}clear`).addEventListener("click", function() {
                u.ID(`${tableID}Filter${i}input`).value = "";
                CreateTableContents(dictID);
             });
          } else if (type !== null) {
-            u.Html(filterCell, `${tableID}Filter${i}`, "", "", `<input id=${tableID}Filter${i}input type='${type}' class='tableTextInput'>`);
+            u.CreateEl('input').type(type).parent(filterCell).id(`${tableID}Filter${i}input`).className('tableTextInput').end()
          }
       });
    }
@@ -102,7 +101,7 @@ module.exports = function(DATA) {
    //TODO configurise properly and put date stuff in a function
    /** Refresh contents of a given admin table
     * @param {number} dictID ID of the table (1,2 or 3). */
-   function CreateTableContents(dictID, filters) {
+   function CreateTableContents(dictID) {
       let table = u.ID(`t${dictID}Table`);
       u.ClearTable(table.id, 2);
       let dictKeys = u.GetKeysExFns(d.getDict(dictID)).sort();
@@ -142,7 +141,7 @@ module.exports = function(DATA) {
             if (filter === false) {
                return;
             }
-            filter = FilterIngredient(i); // c1hecks that ingredient isn't being filtered out
+            filter = FilterIngredient(key); // c1hecks that ingredient isn't being filtered out
             if (filter === false) {
                return;
             }
@@ -152,26 +151,8 @@ module.exports = function(DATA) {
 
             u.CreateEditCellListeners(`t2TableMeal${j}`, "select", `t2TableKey${j}`, 2, "mealType", c.enums.mealTypeEnum, false);
             u.CreateEditCellListeners(`t2TableType${j}`, "select", `t2TableKey${j}`, 2, "recipeType", c.enums.recipeTypeEnum, false);
+            u.CreateEditCellListeners(`t2TableMorv${j}`, "select", `t2TableKey${j}`, 2, "morv", c.enums.morvEnum, false);
 
-            // edit morv cell
-            u.ID(`t2TableMorv${j}`).addEventListener("click", function editCell() {
-               let cell = u.ID(`t2TableMorv${j}`);
-               let key = u.ID(`t2TableKey${j}`).innerText;
-               let oldValue = d.recipes[key].morv;
-               cell.innerHTML = "<select id='Input_t2TableMorv" + j + "'><option>" + oldValue + "</option></select><input type='button' value='✔' id='Save_t2TableMorv" + j + "'>";
-               u.CreateDropdown(`Input_t2TableMorv${j}`, c.enums.morvOpts, false);
-               cell.className = "tableInput";
-               u.ID(`t2TableMorv${j}`).removeEventListener("click", editCell);
-               u.ID(`Save_t2TableMorv${j}`).addEventListener("click", function() {
-                  let newValue = u.ID(`Input_t2TableMorv${j}`).value;
-                  if (newValue === "v / b") {
-                     d.recipes[key].morv = ["v", "b"];
-                  } else {
-                     d.recipes[key].morv = [newValue];
-                  }
-                  d.write();
-               });
-            });
             // create event listener for clicking a recipeTitle in the admin screen and moving to add recipe screen
             u.ID(`t2TableKey${j}`).addEventListener("click", function() {
                let recipe = d.recipes[u.ID(`t2TableKey${j}`).innerText];
@@ -238,12 +219,23 @@ module.exports = function(DATA) {
             u.CreateEditCellListeners(`t3TableEndDate${j}`, "date", `t3TableTitle${j}`, 3, "endDate");
          }
          // event listener to delete row
-         let deleteRowContents = [null, "deleteFood", "deleteRecipe", "deleteMenu"];
          if (u.ID(`t${dictID}RemoveLinebtn${j}`) === null) {
             return;
          }
          u.ID(`t${dictID}RemoveLinebtn${j}`).addEventListener("click", function() {
-            d.getDict(dictID)[deleteRowContents[dictID]](u.ID(`t${dictID}TableKey${j}`).innerText);
+            let keyToDelete = u.ID(`t${dictID}TableKey${j}`).innerText;
+            if (dictID === 1) {
+               if (d.foods[keyToDelete].recipeRefCnt > 0) {
+                  var recipesWithThisFood = Object.keys(d.recipes).filter(recipeKey => {
+                     var recipe = d.recipes[recipeKey]
+                     if (typeof recipe === 'function') return false;
+                     else return recipe.ingredients.map(ing => ing.foodName).indexOf(keyToDelete) > -1
+                  }).map(r => `- ${r}`).join("\n")
+                  window.alert(`You cannot delete this food, it is being used in recipes:\n${recipesWithThisFood}.\nPlease edit these recipe(s) and then try again`)
+                  return;
+               }
+            }
+            d.getDict(dictID).deleteItem(keyToDelete);
             d.write();
          });
          //
@@ -268,44 +260,15 @@ module.exports = function(DATA) {
       let newValue = u.ID(`t1TableFoodNameInput${j}`).value;
       u.RenameKey(oldValue, newValue, d.foods);
       // check whether food is present in any recipes
-      let recipeKeys = Object.keys(d.recipes);
-      var impactedRecipes = [];
-      for (let k = 0; k < recipeKeys.length; k++) {
-         let recipe = d.recipes[recipeKeys[k]];
-         if (typeof recipe === "function") {
-            continue;
-         }
-         let ingredientKeys = Object.keys(recipe.ingredients);
-         for (let x = 0; x < ingredientKeys.length; x++) {
-            if (oldValue === ingredientKeys[x]) {
-               u.RenameKey(oldValue, newValue, recipe.ingredients);
-               impactedRecipes.push(recipeKeys[k]);
+      let recipeKeys = u.GetKeysExFns(d.recipes);
+      recipeKeys.forEach(recipeKey => {
+         let recipe = d.recipes[recipeKey];
+         recipe.ingredients.forEach(ing => {
+            if (ing.foodName === oldValue) {
+               ing.foodName = newValue;
             }
-         }
-      }
-      // check whether food is present in any menus (t3) and change foodName if it is
-      let menuKeys = Object.keys(d.menus).sort();
-      for (let k = 0; k < menuKeys.length; k++) {
-         let menuTitle = menuKeys[k];
-         if (typeof d.menus[menuTitle] === "function") {
-            continue;
-         }
-         let mealKeys = Object.keys(d.menus[menuTitle].meals);
-         for (let x = 0; x < mealKeys.length; x++) {
-            let mealNo = parseInt(mealKeys[x]);
-            let recipeKeys = Object.keys(d.menus[menuTitle].meals[mealNo].recipes);
-            for (let y = 0; y < recipeKeys.length; y++) {
-               let recipeNo = parseInt(recipeKeys[y]);
-               let recipe = d.menus.getRecipe(menuTitle, mealNo, recipeNo);
-               let recipeTitle = recipe.recipeTitle;
-               if (impactedRecipes.indexOf(recipeTitle) > -1) { //is recipe in our array 'impactedRecipes' - if yes, then delete and re-add.
-                  let morv = recipe.morv;
-                  d.menus.deleteRecipe(menuTitle, mealNo, recipeNo);
-                  d.menus.addRecipe(menuTitle, mealNo, recipeTitle, morv);
-               }
-            }
-         }
-      }
+         });
+      });
       d.write();
    }
 
@@ -317,6 +280,9 @@ module.exports = function(DATA) {
 
       let filter = [];
       let filterBool = [];
+
+      //convert to lower case to avoid case mismatches
+      rowKey = rowKey.toLowerCase();
 
       for (let i = 0; i < parameters.length; i++) {
          if (parameters[i] === null) {
@@ -364,16 +330,14 @@ module.exports = function(DATA) {
    }
 
    /** returns false if a recipe doesn't have the 'ingredient filter' string in any of its ingredients
-    * @param {number} i number of the sorted d.recipeskey id for that recipe */
-   function FilterIngredient(i) {
+    * @param {number} recipeKey key for that recipe */
+   function FilterIngredient(recipeKey) {
       let filter = u.ID("ingredientSearchInput").value.toLowerCase();
-      let recipeKeys = Object.keys(d.recipes).sort();
-      let ingredients = d.recipes[recipeKeys[i]].ingredients;
-      let ingredientsKeys = Object.keys(ingredients);
+      let ingredients = d.recipes[recipeKey].ingredients;
       let result = false;
-      for (let j = 0; j < ingredientsKeys.length; j++) {
-         let ingredient = ingredientsKeys[j];
-         if (ingredient.indexOf(filter) > -1) {
+      for (let j = 0; j < ingredients.length; j++) {
+         let ingredientName = ingredients[j].foodName;
+         if (ingredientName.indexOf(filter) > -1) {
             result = true;
             break;
          }
@@ -384,8 +348,8 @@ module.exports = function(DATA) {
    /** saves changes to edited recipe, and returns user to admin screen */
    function SaveChangesRecipe() {
       let recipeTitle = u.ID("recipeTitle").value;
-      d.recipes.deleteRecipe(recipeTitle);
-      addRecipe.btn();
+      d.recipes.deleteItem(recipeTitle);
+      addRecipe.AddRecipeBtn();
 
       d.write();
       u.ID("AddRecipePageTitle").innerText = "Add Recipe"; // change text of title back from 'edit recipe' to 'add recipe'

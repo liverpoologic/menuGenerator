@@ -2,6 +2,7 @@ module.exports = function(DATA) {
    var d = DATA.dict;
    var c = DATA.config
    var u = require("../../utilities")(DATA);
+   var addMenu = require('./addMenu.js')(DATA);
 
 
    var mealTypeFilter, recipeTypeFilter, morvFilter;
@@ -11,7 +12,6 @@ module.exports = function(DATA) {
       u.ID("addRecipeClearFilters").addEventListener("click", ClearFiltersBtn); // clear filters button in add recipe modal
       u.ID("addRecipeToMenu_submit").addEventListener("click", AddRecipeToMenu); // add recipes to menu (submit button)
       u.ID("selectEditMenu").addEventListener("change", RefreshEditMenu); // reload menu when new menuTitle is selected
-      u.ID("selectMenuForNewRecipe").addEventListener("change", RefreshAddRecipeModal); // reload add recipe modal with details from new menuTitle
       u.ID("multiplyUp_submit").addEventListener("click", MultiplyUp); // multiply up a given menu when you press the 'submit' button in the multiply up modal
 
       u.ID("addRecipeToMenu_btn").addEventListener("click", function() { // show add recipe modal and refresh contents when button is clicked
@@ -22,7 +22,7 @@ module.exports = function(DATA) {
          u.ShowElements("multiplyUp", "block");
       });
       u.ID("editMealsEditMenu_btn").addEventListener("click",
-         function() { // show 'edit meals' modal by calling addRecipe code when button is clicked
+         function() { // show 'edit meals' modal by calling addMenu code when button is clicked
             addMenu.CreateAddMealModal(u.ID("selectEditMenu").value);
             u.ShowElements("addMealsToMenu", "block");
          });
@@ -36,29 +36,36 @@ module.exports = function(DATA) {
          u.HideElements("addMealsToMenu");
       });
 
-      u.ID("selectRecipeForMenu").addEventListener("change", function() { // auto-select 'morv=b' for desserts
-         let recipeValue = u.ID("selectRecipeForMenu").value;
-         if (recipeValue === "Choose Recipe") {
+      u.ID("selectRecipeForMenu").addEventListener("change", function() { // auto-select morv for recipes
+         let recipeName = u.ID("selectRecipeForMenu").value;
+         if (recipeName === "_default") {
             return "no recipe selected";
-         }
-         if (d.recipes[recipeValue].recipeType === "dessert c") {
-            u.ID("selectMorvForMenu").value = "b";
+         } else {
+            u.ID("selectMorvForMenu").value = d.recipes[recipeName].morv;
          }
       });
 
-      window.addEventListener('update', UpdateFilters);
+      window.addEventListener('update', RefreshPage);
 
    }
 
-   function UpdateFilters(EV) {
+   function RefreshPage(EV) {
       if (EV.detail.type === 'config') {
          // call function to create filter checkboxes in the 'add recipe' modal
          mealTypeFilter = CreateFilterList(c.enums.mealTypeEnum, "mealTypeCheckbox", "mealTypeFilters");
          recipeTypeFilter = CreateFilterList(c.enums.recipeTypeEnum, "recipeTypeCheckbox", "recipeTypeFilters");
          morvFilter = CreateFilterList(["b", "v", "m"], "morvCheckbox", "morvFilters");
       }
+      if (EV.detail.type === 'dict') {
+         //refresh list of recipes
+         RefreshEditMenu()
+      }
    }
 
+   function RefreshAllModals() {
+      RefreshAddRecipeModal();
+      RefreshMultiplyUpModal();
+   }
    /** function to create list of checkboxes - returns 'newEnum' which is the list of filter options including 'all'
     * @param {array} sourceEnum the enum which you want to generate the filter list from
     * @param {string} checkboxID the id prefix (followed by a number) you want for each checkbox
@@ -140,7 +147,7 @@ module.exports = function(DATA) {
          }
       }
       filteredRecipeKeys.sort();
-      u.CreateDropdown("selectRecipeForMenu", filteredRecipeKeys, false, undefined, "Choose Recipe");
+      u.CreateDropdown("selectRecipeForMenu", filteredRecipeKeys, false, undefined, "_default");
    }
    /** Triggered when the 'clear filters' btn is clicked */
    function ClearFiltersBtn() {
@@ -157,58 +164,60 @@ module.exports = function(DATA) {
          u.ID(`${checkboxID}${i}`).checked = true;
       }
    }
+   /** create select meal dropdown from menu (in edit menu > add recipe) */
+   function RefreshAddRecipeModal() {
+      // create meal enum & dropdown
+      let menuTitle = u.ID('selectEditMenu').value;
+      u.ID("addRecipeToMenuTitle").innerText = 'Add Recipe - ' + menuTitle;
+      let menu = d.menus[menuTitle];
+      let mealEnum = [];
+      menu.meals.forEach(meal => {
+         let day = c.enums.weekday[new Date(meal.date).getDay()];
+         mealEnum.push(`${day} ${meal.mealType}`);
+      });
+      let values = [];
+      for (let i = 0; i < mealEnum.length; i++) {
+         values[i] = i;
+      }
+      u.CreateDropdown("selectMealForMenu", mealEnum, false, values, 'Meal');
+   }
    /** Add a recipe to a menu (using data from addRecipeToMenu modal) */
    function AddRecipeToMenu() {
-      console.log('add recipe to menu');
-      let menuTitle = u.ID("selectMenuForNewRecipe").value;
+      let menuTitle = u.ID("selectEditMenu").value;
       let mealID = parseInt(u.ID("selectMealForMenu").value);
       let recipeTitle = u.ID("selectRecipeForMenu").value;
       let morv = u.ID("selectMorvForMenu").value;
-      console.log(menuTitle);
-      console.log(mealID);
-      console.log(recipeTitle);
-      console.log(morv);
 
       d.menus.addRecipe(menuTitle, mealID, recipeTitle, morv);
       d.write();
       RefreshEditMenu();
       u.SetValues([
-         ["selectMealForMenu", "Choose Meal"],
-         ["selectRecipeForMenu", "Choose Recipe"],
-         ["selectMorvForMenu", "Choose Morv"]
+         ["selectRecipeForMenu", "_default"],
+         ["selectMorvForMenu", "_default"]
       ]);
    }
-   /** create select meal dropdown from menu (in edit menu > add recipe) */
-   function RefreshAddRecipeModal() {
-      // create meal enum & dropdon
-      let menu = d.menus[u.ID("selectMenuForNewRecipe").value];
-      let mealEnum = [];
-      for (let i = 0; i < menu.meals.length; i++) {
-         let day = c.enums.weekday[new Date(menu.meals[i].date).getDay()];
-         mealEnum.push(`${day} ${menu.meals[i].mealType}`);
-      }
-      // creating my own dropdown as needs different displays and values
-      let values = [];
-      for (let i = 0; i < mealEnum.length; i++) {
-         values[i] = i;
-      }
-      u.CreateDropdown("selectMealForMenu", mealEnum, false, values, 'Choose Meal');
-   }
 
+   function RefreshMultiplyUpModal() {
+      //populate meateaters and vegetarians
+      let menuTitle = u.ID('selectEditMenu').value;
+      if (menuTitle === '_default') {
+         return;
+      }
+      u.ID("multiplyUpTitle").innerText = 'Multiply Up - ' + menuTitle;
+
+      u.SetValues([
+         ['multiplyUpMeateaters', d.menus[menuTitle].meateaters],
+         ['multiplyUpVegetarians', d.menus[menuTitle].vegetarians]
+      ]);
+   }
    /** multiply up the menu from inputs in the multiply up modal */
    function MultiplyUp() {
-      let menuTitle = u.ID("selectMenuForMultiplyUp").value;
+      let menuTitle = u.ID("selectEditMenu").value;
       let meateaters = parseInt(u.ID("multiplyUpMeateaters").value);
       let vegetarians = parseInt(u.ID("multiplyUpVegetarians").value);
 
       d.menus.multiplyUp(menuTitle, meateaters, vegetarians);
       d.write();
-      u.SetValues([
-         ["selectMenuForMultiplyUp", "Choose Menu"],
-         ["multiplyUpMeateaters", ""],
-         ["multiplyUpVegetarians", ""],
-         ["selectEditMenu", menuTitle]
-      ]);
       u.HideElements("multiplyUp");
    }
    /** generates a list of meals and recipes */
@@ -218,15 +227,12 @@ module.exports = function(DATA) {
       let menuDiv = u.ID("editMenuDiv");
       menuDiv.innerHTML = "";
       let editBtnIDs = ["addRecipeToMenu_btn", "multiplyUp_btn", "editMealsEditMenu_btn"];
-      if (menuTitle === "Menu") { // clears page (i.c.enums. edit buttons) if no menu is selected and ends function
+      if (menuTitle === "_default") { // clears page (i.c.enums. edit buttons) if no menu is selected and ends function
          u.HideElements(editBtnIDs);
          return "menuTitle not selected";
       }
       u.ShowElements(editBtnIDs, "inline"); // dislay the three edit buttons
-      u.SetValues([
-         ["selectMenuForMultiplyUp", menuTitle],
-         ["selectMenuForNewRecipe", menuTitle]
-      ]); // set menu titles in add recipe modal and multiply up modal
+      RefreshAllModals();
 
       let menu = d.menus.getMenu(menuTitle);
       if (!menu) {
@@ -241,7 +247,6 @@ module.exports = function(DATA) {
          let day = c.enums.weekday[new Date(meal.date).getDay()];
          let mealTitle = u.CreateEl("text").parent(mealTitleBar).id(`editMealTitle${i}`).className("mealTitle").style("display:inline-block").innerText(`${day} ${meal.mealType}`).end();
 
-         // u.Html(mealTitle, `editMealTitle${i}`, "mealTitle", "display:inline-block", "", `${day} ${meal.mealType}`);
          CreateModifierDiv(mealTitleBar, i, menuTitle);
 
          // generate and display the mealDiv where the recipes for that meal will go
@@ -290,15 +295,7 @@ module.exports = function(DATA) {
                   u.ID('editRecipeInMenu').style.display = 'none';
                }
             });
-
-            // ["core","veg","starch","sauce","other","dessert c","dessert other"]
-            let recipeColors = ["#264D9B", "#5E81C5", "#85A2DC", "#B5C9F0", "#CCCCCC", "#23D08A", "#71E6B7"];
-            for (let i = 0; i < c.enums.recipeTypeEnum.length; i++) {
-               if (recipe.recipeType === c.enums.recipeTypeEnum[i] && menuRecipe.morv != 'sp') {
-                  editRecipeTitleDiv.style.backgroundColor = recipeColors[i];
-                  break;
-               }
-            }
+            editRecipeTitleDiv.style.backgroundColor = c.enums.recipeTypeColours[recipe.recipeType]
             if (recipe.recipeType === "core") {
                editRecipeTitleDiv.style.color = "white";
             }

@@ -75,7 +75,7 @@ module.exports = function(DATA) {
          },
          {
             source: function() {
-               return c.enums.morvOpts;
+               return c.enums.morvEnum;
             },
             keys: false,
             ids: ['recipeMorv'],
@@ -96,7 +96,7 @@ module.exports = function(DATA) {
                return menuNameList;
             },
             keys: false,
-            ids: ['selectViewMenu', 'selectEditMenu', 'selectMenuForNewRecipe', 'selectPeopleMenu', 'selectMenuForMultiplyUp', 'selectMenuForShopping'],
+            ids: ['selectViewMenu', 'selectEditMenu', 'selectPeopleMenu', 'selectMenuForShopping'],
             _default: 'Choose Menu',
             valueOpts: menuValList,
             type: 'dict'
@@ -131,13 +131,7 @@ module.exports = function(DATA) {
          },
          {
             source: function() {
-               var ret = [];
-               c.enums.morvEnum.forEach(ea => {
-                  if (ea == null) return;
-                  ret.push(ea);
-               })
-               //  var ret = c.enums.morvEnum.splice(-1,2
-               return ret;
+               return c.enums.morvEnum
             },
             keys: false,
             table: 'ingredientTable',
@@ -147,13 +141,7 @@ module.exports = function(DATA) {
          },
          {
             source: function() {
-               var ret = [];
-               c.enums.morvEnum.forEach(ea => {
-                  if (ea == null) return;
-                  ret.push(ea);
-               })
-               //  var ret = c.enums.morvEnum.splice(-1,2
-               return ret;
+               return c.enums.morvEnum;
             },
             keys: false,
             ids: ['t2TableFilter4input'],

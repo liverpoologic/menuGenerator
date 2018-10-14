@@ -151,8 +151,9 @@ table tr:hover {
 td, th {
     border: 1px solid #dddddd;
     text-align: left;
-    padding: 5px;
+    padding: 5px 10px;
     white-space: nowrap;
+    font-size:14px;
 }
 
 tr:nth-child(even) {
@@ -199,7 +200,7 @@ input[type=text], input[type=number], select {
 /*remove padding for table input fields */
 
 .tableInput {
-    padding: 0 6px;
+    padding: 0;
     margin: 0;
 }
 
@@ -389,13 +390,19 @@ pbr {
     float: right;
     font-weight: bold
 }
+.insideCellElement{
+  margin:0px;
+  border:0px;
+  font-size:14px;
+}
 
 .insideCellBtn {
     background-color: inherit;
     color: black;
     font-weight: bold;
     float: right;
-    padding: 8px 2px;
+    padding: 6px 2px;
+    margin:0;
 }
 
 /* media print stylesheet */

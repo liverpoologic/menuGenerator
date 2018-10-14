@@ -18,7 +18,8 @@ Dict.foods = {
          this[thing] = {
             unit: unit,
             shop: shop,
-            foodType: foodType
+            foodType: foodType,
+            recipeRefCnt: 0
          };
          this.addAllergens(thing, allergens);
       }
@@ -40,7 +41,7 @@ Dict.foods = {
    getFood(x) {
       return this[x];
    },
-   deleteFood(x) {
+   deleteItem(x) {
       delete this[x];
    },
 };
@@ -78,12 +79,13 @@ Dict.recipes = {
       } else if (Config.enums.morvEnum.indexOf(morv) < 0) {
          console.log(`invalid input: ${morv} not in the morv enum`);
       } else {
-         let t1Food = Dict.foods[foodName];
          this[recipeTitle].ingredients.push({
             foodName: foodName,
             morv: morv,
             quantity: quantity
          });
+         //increase the recipe Ref Cnt
+         Dict.foods[foodName].recipeRefCnt++
       }
    },
    getRecipe(x) {
@@ -92,7 +94,10 @@ Dict.recipes = {
    getIngredient(x, y) {
       return this[x].ingredients[y];
    },
-   deleteRecipe(x) {
+   deleteItem(x) {
+      this[x].ingredients.forEach(ingredient => {
+         Dict.foods[ingredient.foodName].recipeRefCnt--
+      });
       delete this[x];
    },
 };
@@ -127,8 +132,7 @@ Dict.menus = {
             this[menuTitle].meals[0] = newMeal;
          } else {
             for (let i = 0; i < this[menuTitle].meals.length; i++) {
-               let u = require("./UtilityFunctions");
-               let compare = u.CompareMeal(newMeal, this[menuTitle].meals[i]);
+               let compare = CompareMeal(newMeal, this[menuTitle].meals[i]);
                if (compare === 0) {
                   console.log("tried to add repeated meal. Meal not added.");
                   break;
@@ -173,9 +177,8 @@ Dict.menus = {
          } else {
             for (let i = 0; i < meal.recipes.length; i++) {
                var existingRecipe = meal.recipes[i];
-               let u = require("./UtilityFunctions");
 
-               let compare = u.CompareRecipe(newRecipe.recipeTitle, existingRecipe.recipeTitle);
+               let compare = CompareRecipe(newRecipe.recipeTitle, existingRecipe.recipeTitle);
 
                if (compare === 1 && i === meal.recipes.length - 1) { // check if the recipe needs to go at the end of the array
                   meal.recipes[i + 1] = newRecipe;
@@ -224,7 +227,7 @@ Dict.menus = {
    getRecipe(x, y, z) {
       return this[x].meals[y].recipes[z];
    },
-   deleteMenu(x) {
+   deleteItem(x) {
       delete this[x];
    },
    // need to add deleteMeal function
@@ -272,14 +275,6 @@ Dict.write = function(backupFlag) {
       encoding: "utf8"
    });
    window.dispatchEvent(update_event);
-   //
-   //
-   // let editMenu = require("./tabs/editMenu.js");
-   // editMenu.RefreshEditMenu();
-   //
-   // let viewMenu = require("./tabs/viewMenu.js");
-   // viewMenu.RefreshViewMenu();
-   //}
 }
 
 Dict.clear = function() {
@@ -292,4 +287,63 @@ Dict.clear = function() {
       });
    });
 }
+
+//---------------- HELPERS ----------------
+function CompareRecipe(aName, bName) {
+   function isDessert(recipeType) {
+      return recipeType === 'dessert c' || recipeType === 'dessert other' ? true : false;
+   }
+   let a = Dict.recipes[aName];
+   let b = Dict.recipes[bName];
+   let e = Config.enums;
+
+   if (a.morv === 'sp' && b.morv !== 'sp') {
+      if (isDessert(a.recipeType) === isDessert(b.recipeType)) {
+         //if they are both desserts or both not desserts, then b goes first.
+         return 1;
+      }
+      if (!isDessert(a.recipeType) && isDessert(b.recipeType)) {
+         //if a is not a dessert, and b is a dessert, then a goes first
+         return -1
+      } else {
+         //else a must be a dessert and b not be a dessert, so b goes first
+         return 1;
+      }
+   } else if (e.recipeTypeEnum.indexOf(a.recipeType) > e.recipeTypeEnum.indexOf(b.recipeType)) {
+      return 1;
+   } else if (e.recipeTypeEnum.indexOf(a.recipeType) < e.recipeTypeEnum.indexOf(b.recipeType)) {
+      return -1;
+   } else if (e.recipeMorv.indexOf(a.morv) > e.recipeMorv.indexOf(b.morv)) {
+      return 1;
+   } else if (e.recipeMorv.indexOf(a.morv) < e.recipeMorv.indexOf(b.morv)) {
+      return -1;
+   } else if (aName > bName) {
+      return 1;
+   } else if (aName < bName) {
+      return -1;
+   } else return 0;
+   // 1 means a is after b, -1 means a should be before b
+}
+
+/**compares meal type to identify if meal[a] is before or after meal[b] (including date and meal type). Returns 1 if a is after b, and -1 if a is before b. Returns 0 if a=b.
+ * @param {string} a the key for meal a
+ * @param {string} b the key for meal b
+ */
+function CompareMeal(a, b) {
+   let e = Config.enums;
+   let aDate = new Date(a.date);
+   let bDate = new Date(b.date);
+   let comparison = 0;
+   if (aDate > bDate) {
+      comparison = 1;
+   } else if (aDate < bDate) {
+      comparison = -1;
+   } else if (e.mealTypeEnum.indexOf(a.mealType) > e.mealTypeEnum.indexOf(b.mealType)) {
+      comparison = 1;
+   } else if (e.mealTypeEnum.indexOf(a.mealType) < e.mealTypeEnum.indexOf(b.mealType)) {
+      comparison = -1;
+   }
+   return comparison; // 1 means a is after b, -1 means a should be before b
+}
+
 module.exports = Dict;

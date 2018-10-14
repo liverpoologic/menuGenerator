@@ -132,6 +132,7 @@
         <h2> All Food </h2>
         <table id="t1Table">
         </table>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       </div>
       <div id="AdminTabContent2" class="vtabcontent" style="display: none;">
         <h2> All Recipes
@@ -140,14 +141,13 @@
         </h2>
         <table id="t2Table">
         </table>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       </div>
       <div id="AdminTabContent3" class="vtabcontent" style="display: none;">
         <h2> All Menus </h2>
         <table id="t3Table">
         </table>
-        <br>
-        <br>
-        <br>
+        <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
       </div>
       <div id="AdminTabContent4" class="vtabcontent" style="display:none">
         <h2> Other </h2>
@@ -168,6 +168,7 @@
             <button id="save_backup">Save backup</button>
             <button id="restore_from_backup" >Restore from backup</button>
             <br>
+            <button id="createRefernceCounts">Create Ref Counts</button>
             <button id="missingItemWizard">run missing Dict items wizard</button>
           </div>
         </div>
@@ -208,13 +209,10 @@
       <div id="addRecipeToMenu" class="modal">
         <div class="modal-content animate">
           <div class='container' style='padding-bottom:0px;'>
-            <text class='modal-title'>Add a Recipe</text>
+            <text class='modal-title' id='addRecipeToMenuTitle'></text>
           </div>
           <div class="flex-container" style="width:97%">
             <div style="width:400px">
-              <select id="selectMenuForNewRecipe" style='width:80%'>
-              </select>
-              <br>
               <select id="selectMealForMenu" style='width:80%'>
               </select>
               <br>
@@ -251,11 +249,8 @@
       <div id="multiplyUp" class="modal">
         <div class="modal-content animate">
           <div class="container">
-            <text class='modal-title'>Multiply Up</text>
+            <text class='modal-title' id='multiplyUpTitle'></text>
             <br><br>
-            <select id="selectMenuForMultiplyUp">
-            </select>
-            <br>
             <input id="multiplyUpMeateaters" type="number" placeholder="meateaters"></input>
             <br>
             <input id="multiplyUpVegetarians" type="number" placeholder="vegetarians"></input>

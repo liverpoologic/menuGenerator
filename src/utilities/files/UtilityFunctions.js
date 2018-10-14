@@ -32,7 +32,7 @@ module.exports = function(DATA) {
 
       function CreateInput(cell, inputType, oldValue, dropdownSource, dropdownKeys) {
          let elType = inputType === 'select' ? 'select' : 'input';
-         let el = CreateEl(elType).type(inputType).parent(cell).id(`input_${cell.id}`).value(oldValue).end();
+         let el = CreateEl(elType).type(inputType).parent(cell).id(`input_${cell.id}`).style('width:80%').value(oldValue).className('insideCellElement').end();
 
          switch (inputType) {
             case 'select':
@@ -236,66 +236,6 @@ module.exports = function(DATA) {
       else return 0;
    }
 
-   /**compares meal type to identify if meal[a] is before or after meal[b] (including date and meal type). Returns 1 if a is after b, and -1 if a is before b. Returns 0 if a=b.
-    * @param {string} a the key for meal a
-    * @param {string} b the key for meal b
-    */
-   function CompareMeal(a, b) {
-      let e = c.enums;
-      let aDate = new Date(a.date);
-      let bDate = new Date(b.date);
-      let comparison = 0;
-      if (aDate > bDate) {
-         comparison = 1;
-      } else if (aDate < bDate) {
-         comparison = -1;
-      } else if (e.mealTypeEnum.indexOf(a.mealType) > e.mealTypeEnum.indexOf(b.mealType)) {
-         comparison = 1;
-      } else if (e.mealTypeEnum.indexOf(a.mealType) < e.mealTypeEnum.indexOf(b.mealType)) {
-         comparison = -1;
-      }
-      return comparison; // 1 means a is after b, -1 means a should be before b
-   }
-
-   /**compares recipe to identify if recipe[a] should be displayed before or after recipe[b] (depending on recipe type and the morv). Returns 1 if a should be after b, and -1 if a should be before b. Returns 0 if a=b.
-    * @param {string} a the key for meal a
-    * @param {string} b the key for meal b
-    */
-   function CompareRecipe(aName, bName) {
-      function isDessert(recipeType) {
-         return recipeType === 'dessert c' || recipeType === 'dessert other' ? true : false;
-      }
-      let a = d.recipes[aName];
-      let b = d.recipes[bName];
-      let e = c.enums;
-
-      if (a.morv === 'sp' && b.morv !== 'sp') {
-         if (isDessert(a.recipeType) === isDessert(b.recipeType)) {
-            //if they are both desserts or both not desserts, then b goes first.
-            return 1;
-         }
-         if (!isDessert(a.recipeType) && isDessert(b.recipeType)) {
-            //if a is not a dessert, and b is a dessert, then a goes first
-            return -1
-         } else {
-            //else a must be a dessert and b not be a dessert, so b goes first
-            return 1;
-         }
-      } else if (e.recipeTypeEnum.indexOf(a.recipeType) > e.recipeTypeEnum.indexOf(b.recipeType)) {
-         return 1;
-      } else if (e.recipeTypeEnum.indexOf(a.recipeType) < e.recipeTypeEnum.indexOf(b.recipeType)) {
-         return -1;
-      } else if (e.recipeMorv.indexOf(a.morv) > e.recipeMorv.indexOf(b.morv)) {
-         return 1;
-      } else if (e.recipeMorv.indexOf(a.morv) < e.recipeMorv.indexOf(b.morv)) {
-         return -1;
-      } else if (aName > bName) {
-         return 1;
-      } else if (aName < bName) {
-         return -1;
-      } else return 0;
-      // 1 means a is after b, -1 means a should be before b
-   }
    /**changes g to kg/ ml to l, and sets decimal places. Puts brackets around qsmall. Returns array ["(qsmall), qlarge, unit]
     *
     * @param {number} quantitySmall the small quantity for this ingredient
@@ -429,20 +369,6 @@ module.exports = function(DATA) {
       ID(`AdminTabContent${tabID}`).style.display = "block";
       ID(`AdminTabBtn${tabID}`).className += " active";
    }
-   /** reads in 'd' from d.json */
-
-   /** reads in 'Config' from Config.json */
-   function ReadConfig(fileName) {
-      let input = JSON.parse(fs.readFileSync("./resources/" + fileName, {
-         encoding: "utf8"
-      }));
-      //read in config
-      for (var thing in input) {
-         if (input.hasOwnProperty(thing)) {
-            Config[thing] = input[thing];
-         }
-      }
-   }
 
    /**renames the 'key' of a dictionary object (e.g. change food name)
     * @param {*} oldKeyName the old key name
@@ -512,10 +438,9 @@ module.exports = function(DATA) {
       });
 
       var configFileName = remote.getGlobal('sharedObject').fileNames.backup.config;
-      fs.writeFileSync(`./resources/${configFileName}`, JSON.stringify(Config), {
+      fs.writeFileSync(`./resources/${configFileName}`, JSON.stringify(c), {
          encoding: "utf8"
       });
-
 
       alert('saved');
    }
@@ -561,49 +486,6 @@ module.exports = function(DATA) {
 
    }
 
-   //     for (var mealKey in d.menus[menuTitle].meals) {
-   //         if (this[menuTitle].meals.hasOwnProperty(mealKey)) {
-   //             let mModifier = this[menuTitle].meals[mealKey].modifier ? this[menuTitle].meals[mealKey].modifier.meateaters : 0;
-   //             let vModifier = this[menuTitle].meals[mealKey].modifier ? this[menuTitle].meals[mealKey].modifier.vegetarians : 0;
-   //             let mCount = Number(this[menuTitle].meateaters) + Number(mModifier);
-   //             let vCount = Number(this[menuTitle].vegetarians) + Number(vModifier);
-   //             for (var recipeKey in this[menuTitle].meals[mealKey].recipes) {
-   //                 if (this.getMeal(menuTitle, mealKey).recipes.hasOwnProperty(recipeKey)) {
-   //                     let recipe = this.getRecipe(menuTitle, mealKey, recipeKey);
-   //                     for (var ingredientKey in recipe.ingredients) {
-   //                         if (recipe.ingredients.hasOwnProperty(ingredientKey)) {
-   //                             let ingredient = this.getIngredient(menuTitle, mealKey, recipeKey, ingredientKey);
-   //                             if (recipe.morv === "m") {
-   //                                 ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * mCount;
-   //                             }
-   //                             else if (recipe.morv === "v") {
-   //                                 ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * vCount;
-   //                             }
-   //                             else if (recipe.morv === "b") {
-   //                                 ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * (vCount + mCount);
-   //                             }
-   //                             else if (recipe.morv === null) {
-   //                                 if (ingredient.morv === "v") {
-   //                                     ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * vCount;
-   //                                 }
-   //                                 else if (ingredient.morv === "m") {
-   //                                     ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * mCount;
-   //                                 }
-   //                                 else if (ingredient.morv === "b") {
-   //                                     ingredient.quantityLarge = (ingredient.quantitySmall / recipe.serves) * (vCount + mCount);
-   //                                 }
-   //                                 else { console.log(`invalid ingredient morv: ${ingredient.morv}`); }
-   //                             }
-   //                             else { console.log(`invalid recipe morv: ${recipe.morv}`); }
-
-   //                         }
-   //                     }
-   //                 }
-   //             }
-   //         }
-   //     }
-   // },
-
    return {
       CalculateQLarge: CalculateQLarge,
       ClearTable: ClearTable, // function to clear table, leaving a given number of header rows
@@ -614,8 +496,6 @@ module.exports = function(DATA) {
       CreateRow: CreateRow, // creates a row with given properties
       Compare: Compare, //compares two numeric values
       CompareFoodType: CompareFoodType, // compares food type to identify if fooda.type is before or after foodb.type
-      CompareMeal: CompareMeal, // compares two meals and identifies whether meal a is before or after meal b
-      CompareRecipe: CompareRecipe, // compares two recipes and identifies whether recipe a is before or after recipe b
       DisplayIngredient: DisplayIngredient, // changes g to kg when relevant, sets decimal places
       GetFormalDate: GetFormalDate, // convert date into 'formal' - e.g 1st, 2nd, 3rd
       GetKeysExFns: GetKeysExFns, //gets keys excluding any functions of a given object

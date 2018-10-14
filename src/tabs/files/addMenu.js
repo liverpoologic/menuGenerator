@@ -81,11 +81,9 @@ module.exports = function(DATA) {
          }
          i++;
       }
-      let dateEnum = [];
-      for (let j = 0; j < dateList.length; j++) {
-         let x = dateList[j];
-         dateEnum[j] = `${e.weekday[x.getDay()]} (${u.GetFormalDate(x)})`;
-      }
+      let dateEnum = dateList.map(d => {
+         return `${c.enums.weekday[d.getDay()]} (${u.GetFormalDate(d)})`
+      })
       u.CreateDropdown("selectDayForAddMeals", dateEnum, false, dateList, 'Select Day');
       CreateMealList();
       u.ID("addMealsToMenu").style = "display: block";
@@ -94,14 +92,14 @@ module.exports = function(DATA) {
    function CreateMealList() { // creates the meal list on the right of the add meal modal, and adds delete buttons that remove a meal and reload the list
       let menuTitle = u.ID("menuTitleForAddMeals").innerHTML;
       u.SetValues([
-         ["selectMealTypeForAddMeals", "Select Meal"]
+         ["selectMealTypeForAddMeals", "_default"]
       ]);
       let mealDiv = u.ID("currentMealList");
       mealDiv.innerHTML = "";
       let menu = d.menus[menuTitle];
       for (let i = 0; i < menu.meals.length; i++) {
          let meal = d.menus.getMeal(menuTitle, i);
-         let day = e.weekday[new Date(meal.date).getDay()];
+         let day = c.enums.weekday[new Date(meal.date).getDay()];
          let mealTitleDiv = u.CreateElement("div", mealDiv, "", "listItem");
          mealTitleDiv.style.width = '300px';
          let mealTitle = u.CreateElement("text", mealTitleDiv, "", "recipeTitle", `${day} ${meal.mealType}`);
@@ -126,6 +124,7 @@ module.exports = function(DATA) {
    }
 
    return {
-      generator: generator
+      generator: generator,
+      CreateAddMealModal: CreateAddMealModal
    };
 }

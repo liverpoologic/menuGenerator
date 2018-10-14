@@ -39,6 +39,7 @@ module.exports = function(DATA) {
    }
 
    return {
-      generator: generator
+      generator: generator,
+      AddFoodBtn: AddFoodBtn
    }
 }

@@ -243,6 +243,7 @@ module.exports = function(DATA) {
    }
 
    return {
-      generator: generator
+      generator: generator,
+      ShowShoppingDiv: ShowShoppingDiv
    };
 }

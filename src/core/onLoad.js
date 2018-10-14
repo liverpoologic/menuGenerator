@@ -1,16 +1,21 @@
 var DATA = require("../data");
 var params = require('./params.js');
-//var Config = d.Config;
-//var e = Config.enums
 var u = require("../utilities")(DATA);
 var tabs = require('../tabs')(DATA);
 var FWK = require('../framework')(DATA);
-//const ipc = require('electron').ipcRenderer;
+var shortcuts = require('./shortcuts.js');
+const ipc = require('electron').ipcRenderer;
 var remote = require('electron').remote;
 
 module.exports = function() {
    var d = DATA.dict;
    var c = DATA.config;
+
+   //makes d and c accessible from the console
+   window.debug = {
+      d: d,
+      c: c
+   };
 
    var isTest = remote.getGlobal('sharedObject').testMode;
 
@@ -23,7 +28,6 @@ module.exports = function() {
       console.log(tab.id);
       tabs[tab.id].generator();
    });
-
 
    // Import the dictionary and config
    c.read();
@@ -71,50 +75,9 @@ module.exports = function() {
    // });
    //
    // // listener to support keyboard shortcuts
-   // document.addEventListener("keydown", KeyPress);
-};
+   document.addEventListener("keydown", shortcuts);
 
-/** executes an action depending on the key pressed */
-// function KeyPress() {
-//     let key = event.keyCode;
-//     var vTabNums = [105,102,99,110];
-//     switch (key) {
-//         case 191: //forward slash key
-//             let j = u.ID("ingredientTable").rows.length - 2;
-//             if (u.ID("AddRecipe").style.display === "block" && u.ID(`selectIngredientFood${j}`).value !== "Food") {
-//                 event.preventDefault();
-//                 addRecipe.AddIngredientsRow();
-//             }
-//             break;
-//         case 13: //enter key
-//             if (u.ID("AddFood").style.display === "block") {
-//                 event.preventDefault();
-//                 addFood.btn();
-//             }
-//             if (u.ID("AddMenu").style.display === "block") {
-//                 event.preventDefault();
-//                 addFood.btn();
-//             }
-//             break;
-//         default:
-//             if (key > 111 && key < 120) {// f1-f8 keys for h tabs
-//                 let HtabList = document.getElementsByClassName("htabcontent");
-//                 let x = key - 112;
-//                 u.OpenHTab(HtabList[x].id);
-//             }
-//             else if (vTabNums.indexOf(key)>=0 && u.ID("Admin").style.display === "block") {// . , 3 , 6 , 9 on numpad for v tabs
-//                 event.preventDefault();
-//                 let VtabList = document.getElementsByClassName("vtabcontent");
-//                 let x = vTabNums.indexOf(key);
-//                 u.OpenVTab(x+1);
-//             }
-//             else if (key > 48 && key < 57 && u.ID("Shopping").style.display === "block") {// 1-7 for shopping tables
-//                 event.preventDefault();
-//                 let x = key - 49;
-//                 shopping.ShowShoppingDiv(x);
-//             }
-//             break;
-//     }
-// }
+
+};
 
 // u.ID('missingItemWizard').addEventListener("click",d.MissingItemWizard);

@@ -9,6 +9,16 @@ module.exports = function(DATA) {
    function generator() {
       u.ID("selectViewMenu").addEventListener("change", RefreshViewMenu);
       u.ID("printMenubtn").addEventListener("click", PrintMenu);
+
+      window.addEventListener('update', RefreshPage);
+
+   }
+
+   function RefreshPage(EV) {
+      if (EV.detail.type === 'dict') {
+         //refresh list of recipes
+         RefreshViewMenu()
+      }
    }
 
    /** Refresh view menu (triggered when menu is selected) */

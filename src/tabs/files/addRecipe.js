@@ -20,11 +20,7 @@ module.exports = function(DATA) {
       let method = u.ID("recipeMethod").value;
       let morvInput = u.ID("recipeMorv").value;
 
-      if (morvInput === "v / b") {
-         d.recipes.addRecipe(title, mealType, ["v", "b"], serves, method, recipeType);
-      } else {
-         d.recipes.addRecipe(title, mealType, [morvInput], serves, method, recipeType);
-      }
+      d.recipes.addRecipe(title, mealType, morvInput, serves, method, recipeType);
 
       for (let i = 0; i + 1 < u.ID("ingredientTable").rows.length; i++) {
          let foodName = u.ID(`selectIngredientFood${i}`).value;
@@ -154,7 +150,7 @@ module.exports = function(DATA) {
 
    return {
       generator: generator,
-      btn: AddRecipeBtn,
+      AddRecipeBtn: AddRecipeBtn,
       AddIngredientsRow: AddIngredientsRow
    };
 }
