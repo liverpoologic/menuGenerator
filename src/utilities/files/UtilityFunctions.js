@@ -32,7 +32,7 @@ module.exports = function(DATA) {
 
       function CreateInput(cell, inputType, oldValue, dropdownSource, dropdownKeys) {
          let elType = inputType === 'select' ? 'select' : 'input';
-         let el = CreateEl(elType).type(inputType).parent(cell).id(`input_${cell.id}`).style('width:80%').value(oldValue).className('insideCellElement').end();
+         let el = CreateEl(elType).type(inputType).parent(cell).id(`input_${cell.id}`).style('width:75%').value(oldValue).className('insideCellElement').end();
 
          switch (inputType) {
             case 'select':
@@ -342,32 +342,30 @@ module.exports = function(DATA) {
    /** opens a horizontal tab (i.e. main navigation)
     * @param {string} tabName the name of the tab you want to open */
    function OpenHTab(tabid) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("htabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
+      let tabcontent = document.getElementsByClassName("htabcontent");
+      for (let i = 0; i < tabcontent.length; i++) {
          tabcontent[i].style.display = "none";
       }
-      tablinks = document.getElementsByClassName("htablinks");
-      for (i = 0; i < tablinks.length; i++) {
+      let tablinks = document.getElementsByClassName("htab_btns");
+      for (let i = 0; i < tablinks.length; i++) {
          tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
-      ID(tabid).style.display = "block";
+      ID(`${tabid}_tab_content`).style.display = "block";
       ID(`${tabid}_tab_btn`).className += " active";
    }
    /** opens a vertical tab (i.e. admin table tabs)
     * @param {string} tabName the id of the tab you want to open */
-   function OpenVTab(tabID) {
-      var i, tabcontent, tablinks;
-      tabcontent = document.getElementsByClassName("vtabcontent");
-      for (i = 0; i < tabcontent.length; i++) {
+   function OpenVTab(vTabId) {
+      let tabcontent = document.getElementsByClassName("vtabcontent");
+      for (let i = 0; i < tabcontent.length; i++) {
          tabcontent[i].style.display = "none";
       }
-      tablinks = document.getElementsByClassName("vtablinks");
-      for (i = 0; i < tablinks.length; i++) {
+      let tablinks = document.getElementsByClassName("vtab_btns");
+      for (let i = 0; i < tablinks.length; i++) {
          tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
-      ID(`AdminTabContent${tabID}`).style.display = "block";
-      ID(`AdminTabBtn${tabID}`).className += " active";
+      ID(`${vTabId}_tab_content`).style.display = "block";
+      ID(`${vTabId}_tab_btn`).className += " active";
    }
 
    /**renames the 'key' of a dictionary object (e.g. change food name)

@@ -1,42 +1,45 @@
-.title {
-    font-family: Arial, Helvetica, sans-serif;
-    background-color: #071C46;
-    color: #ffffff;
+/* Define Colours */
+:root {
+  --very-dark-blue:#080A11;
+    --dark-blue:#071C46;
+    --mid-blue:#63749F;
+    --light-grey:#EDEEf0;
+    --dark-grey:#515253;
+    --mid-grey:#BABAC8;
+    --accent-red:#cb2520;
 }
 
-h1 {
-    display: inline-block;
-    padding: 0px 16px;
-    font-size: 25px;
-}
-
-specials {
-    display:block;
-    padding:2px;
-    font-size: 10px;
-    font-style: italic
-}
+body {background-color: var(--light-grey);}
 
 /* Style the tab */
 
 .htab {
     font-family: Arial, Helvetica, sans-serif;
     overflow: hidden;
-    background-color: #103F9C;
+    background-color: var(--mid-blue);
+    width:980px;
+    text-align: center;
+}
+
+p {
+  font-size:10px;
 }
 
 /* Style the buttons inside the tab */
 
 .htab button {
     background-color: inherit;
-    float: left;
     border: none;
-    margin: 0;
+    margin: 0 auto;
     outline: none;
     cursor: pointer;
     padding: 14px 16px;
     transition: 0.3s;
     font-size: 17px;
+}
+
+.htablinks{
+  margin: 0 auto;
 }
 
 /* Change background color of buttons on hover */
@@ -49,7 +52,7 @@ specials {
 /* Create an active/current tablink class */
 
 .htab button.active {
-    background-color: #071C46;
+  background-color: var(--dark-blue);
     color: #ffffff;
 }
 
@@ -58,10 +61,11 @@ specials {
 .htabcontent {
     font-family: Arial, Helvetica, sans-serif;
     display: none;
-    padding: 12px 12px;
+    padding: 0;
     border-top: none;
     border-bottom: none;
     height: 100%;
+    background-color:var(--light-grey);
 }
 
 /* start of vtab */
@@ -71,9 +75,9 @@ div.vtab {
     padding: 10px, 10px;
     margin-right: 10px;
     border: 0px solid #ccc;
-    background-color: #f1f1f1;
+    background-color: var(--mid-grey);
     width: 130px;
-    height: 100%;
+    height: -webkit-fill-available;
 }
 
 /* Style the buttons inside the tab */
@@ -81,7 +85,7 @@ div.vtab {
 div.vtab button {
     display: block;
     background-color: inherit;
-    color: black;
+    color: var(--dark-grey);
     padding: 16px 16px;
     width: 100%;
     border: none;
@@ -95,13 +99,15 @@ div.vtab button {
 /* Change background color of buttons on hover */
 
 div.vtab button:hover {
-    background-color: #ddd;
+  background-color: var(--light-grey);
+  color:var(--dark-grey);
 }
 
 /* Create an active/current "tab button" class */
 
 div.vtab button.active {
-    background-color: #ccc;
+    background-color: var(--light-grey);
+    color:var(--dark-grey);
 }
 
 /* Style the tab content */
@@ -111,7 +117,9 @@ div.vtab button.active {
     padding: 0px 10px;
     width: 70%;
     border-left: none;
-    height: 300px;
+    height: 1000px;
+    width:840px;
+    overflow: auto;  //code added
 }
 
 .flex-container {
@@ -141,28 +149,33 @@ table {
     border-collapse: collapse;
     width: 100%;
     table-layout: fixed;
-    display: block
+    display: block;
+    background-color:white;
+    color:var(--very-dark-blue);
 }
 
 table tr:hover {
-    background-color: #8DA5D9;
+    background-color: var(--light-grey);
 }
 
 td, th {
-    border: 1px solid #dddddd;
     text-align: left;
     padding: 5px 10px;
     white-space: nowrap;
     font-size:14px;
+    border-bottom: 0.5px solid var(--light-grey);
 }
 
-tr:nth-child(even) {
-    background-color: #bcc6da;
+th{
+  font-size: 15px;
+  padding: 9px;
+  font-weight:600;
 }
 
-tr:nth-child(odd) {
-    background-color: #ffffff;
+td{
+  /* border-top: 0.5px solid var(--light-grey); */
 }
+
 
 tr.sub {
     margin-left: 20px;
@@ -191,6 +204,7 @@ input[type=text], input[type=number], select {
     display: inline-block;
     border: 1px solid #ccc;
     box-sizing: border-box;
+    outline:0px;
 }
 
 .tableTextInput {
@@ -207,7 +221,7 @@ input[type=text], input[type=number], select {
 /* Set a style for all buttons */
 
 button {
-    background-color: #071C46;
+    background-color: var(--mid-blue);
     color: white;
     padding: 8px 8px;
     margin: 4px 0;
@@ -224,20 +238,21 @@ button:hover {
 .cancelbtn {
     width: auto;
     padding: 10px 18px;
-    background-color: #f44336;
+    background-color: var(--accent-red);
 }
 
 /*style for +/- meal and recipe buttons */
 
 .mealbtn {
+  background-color:var(--dark-blue);
     color: #ffffff;
     margin: 2px 35px;
     width: 25px;
 }
 
 .recipebtn {
-    background-color: #ffffff;
-    color: #000000;
+    background-color: white;
+    color: var(--very-dark-blue);
     margin: 2px 20px;
     width: 20px;
 }
@@ -286,12 +301,13 @@ button:hover {
 h3 {
     font-size: 25px;
     font-weight: bold;
-    color: #103F9C;
+    color: var(--dark-blue);
 }
 
 h4 {
     font-size: 16px;
     font-weight: bold;
+    color:var(--very-dark-blue)
 }
 
 .shoppingbtn {
@@ -390,10 +406,20 @@ pbr {
     float: right;
     font-weight: bold
 }
+
+td > select, th > select, td > input[type=text], th > input[type=text]{
+  background-color:inherit !important;
+}
+
+input[type=text].insideCellElement {
+  margin:0 0 0 3px !important;
+}
+
 .insideCellElement{
   margin:0px;
   border:0px;
-  font-size:14px;
+  outline:0px !important;
+  font-size:14px !important;
 }
 
 .insideCellBtn {
@@ -471,7 +497,7 @@ pbr {
     padding: 0 2px;
     background: #FFF;
     border: 1px solid #CCC;
-    width: 16em;
+    width: 90%;
     border-radius: 2px;
     box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1)
 }
@@ -558,4 +584,30 @@ pbr {
 .mealTitleBar{
   margin: 6px;
 padding: 1px;
+}
+
+
+
+specials {
+    display:block;
+    padding:2px;
+    font-size: 10px;
+    font-style: italic
+}
+
+.removeLineBtn {
+  color: var(--accent-red);
+  background-color: white;
+  border: 1px solid var(--accent-red);
+  font-weight: bold;
+  padding: 3px 7px;
+}
+
+.removeLineBtn:hover{
+  background-color: var(--accent-red);
+  color:white
+}
+
+.adminTable{
+  width:825px;
 }

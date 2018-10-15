@@ -24,10 +24,11 @@ module.exports = function() {
 
    //for each tab, call the generator() function
    console.log(tabs);
-   params.tabList.forEach(tab => {
-      console.log(tab.id);
-      tabs[tab.id].generator();
-   });
+   // params.tabList.forEach(tab => {
+   //    console.log(tab.id);
+   //    tabs[tab.id].generator();
+   // });
+   tabs.admin.generator();
 
    // Import the dictionary and config
    c.read();
@@ -36,6 +37,8 @@ module.exports = function() {
    console.log(d);
    console.log(c);
 
+   d.write();
+   c.write();
 
    // when user clicks elsewhere, modals close
    window.onclick = function(click) {

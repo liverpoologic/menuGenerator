@@ -4,29 +4,38 @@ module.exports = function(DATA) {
    var u = require("../../utilities")(DATA);
    var addRecipe = require('./addRecipe.js')(DATA);
 
+
+   // <div id="AdminTabContent2" class="vtabcontent" style="display: none;">
+   //   <h2> All Recipes
+   //     <button id="clearIngredientSearch" class="insideCellBtn" style='float:right'>x</button>
+   //     <input type="text" id="ingredientSearchInput" placeholder="ingredient" style="margin:4px 10px; float:right;"></input>
+   //   </h2>
+   //   <table id="t2Table">
+   //   </table>
+   //   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
+   // </div>
+
    function generator() {
-      u.ID("ingredientSearchInput").addEventListener("change", function() { // event listener so table is recreated when ingredient filter is changed
-         CreateTableContents(2);
-      });
 
-      u.ID("clearIngredientSearch").addEventListener("click", function() { // event listener to clear table when 'x' is clicked next to ingredient filter
-         u.ID("ingredientSearchInput").value = "";
-         CreateTableContents(2);
-      });
+      //
 
-      u.ID("selectAdminEnum").addEventListener("change", RefreshEnumTable);
+      //
+      //  u.ID("selectAdminEnum").addEventListener("change", RefreshEnumTable);
+
       window.addEventListener('update', RefreshAllTables)
 
-      // create event listener for 'save changes' button to support t2 > 'edit recipe' functionality
-      u.ID("editRecipe_btn").addEventListener("click", SaveChangesRecipe);
+      // // create event listener for 'save changes' button to support t2 > 'edit recipe' functionality
+      // u.ID("editRecipe_btn").addEventListener("click", SaveChangesRecipe);
 
       CreateTable(1);
       CreateTable(2);
       CreateTable(3);
+      CreateTable(4);
 
    }
 
    function RefreshAllTables(EV) {
+      console.log('refresh function');
       if (EV.detail.global) {
          if (EV.detail.type === 'config') {
             RefreshEnumTable();
@@ -39,13 +48,18 @@ module.exports = function(DATA) {
 
    /** creates / refreshes a given dictionary admin table */
    function CreateTable(tableID) { // create admin table header and filter row, then calls CreateTableContents (clear existing and then create)
-      let table = u.ID(`t${tableID}Table`);
+      let parentDiv = u.ID(`t${tableID}_tab_content`);
+      //create Heading and then create table
+      let headingMapping = [null, 'Food', 'Recipes', 'Menus', 'Enums'];
+      let heading = u.CreateEl('h2').parent(parentDiv).innerText(`All ${headingMapping[tableID]}`).end()
+      let table = u.CreateEl('table').parent(parentDiv).id(`t${tableID}Table`).className('adminTable').end();
+
       //collect filters to reapply later
       let filters = table.rows[1];
       table.innerHTML = ""; // clear table
       switch (tableID) {
          case 1:
-            u.CreateRow("t1Table", "th", ["Food Name", "Unit", "Shop", "Type", "Allergens", "-"], "", [30, 10, 15, 15, 15, 5], "%");
+            u.CreateRow("t1Table", "th", ["Food Name", "Unit", "Shop", "Type", "Allergens", "-"], "", [30, 10, 12, 13, 20, 5], "%");
             if (filters) table.appendChild(filters);
             else {
                CreateFilterRow(1, ["longText", "longText", "select", "select", "select", null], [true]);
@@ -53,6 +67,19 @@ module.exports = function(DATA) {
             break;
 
          case 2:
+            u.CreateEl('button').id('clearIngredientSearch').className('insideCellBtn').style('float:right').parent(heading).innerText('x').end();
+            let ingredientSearch = u.CreateEl('input').type('text').id('ingredientSearchInput').style('margin:4px 10px; float:right').parent(heading).end();
+            ingredientSearch.placeholder = 'ingredient';
+
+            u.ID("ingredientSearchInput").addEventListener("change", function() { // event listener so table is recreated when ingredient filter is changed
+               CreateTableContents(2);
+            });
+
+            u.ID("clearIngredientSearch").addEventListener("click", function() { // event listener to clear table when 'x' is clicked next to ingredient filter
+               u.ID("ingredientSearchInput").value = "";
+               CreateTableContents(2);
+            });
+
             u.CreateRow("t2Table", "th", ["Recipe Title", "Meal", "Type", "Serves", "Morv", "-"], "", [55, 15, 15, 10, 10, 5], "%");
             if (filters) table.appendChild(filters);
             else {
@@ -64,6 +91,10 @@ module.exports = function(DATA) {
 
             if (filters) table.appendChild(filters);
             else CreateFilterRow(3, ["longText", null, null, null]);
+            break;
+         case 4:
+            u.CreateEl('select').id('selectAdminEnum').parent(parentDiv).end();
+            u.CreateEl('div').id('enumTableDiv').parent(parentDiv).end();
             break;
       }
 
@@ -102,6 +133,7 @@ module.exports = function(DATA) {
    /** Refresh contents of a given admin table
     * @param {number} dictID ID of the table (1,2 or 3). */
    function CreateTableContents(dictID) {
+      console.log('hello worlddd');
       let table = u.ID(`t${dictID}Table`);
       u.ClearTable(table.id, 2);
       let dictKeys = u.GetKeysExFns(d.getDict(dictID)).sort();
@@ -123,7 +155,7 @@ module.exports = function(DATA) {
             let cellIDs = [`t1TableKey${j}`, `t1TableUnit${j}`, `t1TableShop${j}`, `t1TableFoodType${j}`, `t1TableAllergens${j}`, ''];
 
             var allergens = rowItem.allergens ? rowItem.allergens.join(", ") : "";
-            let cellContents = [dictKeys[i], rowItem.unit, rowItem.shop, rowItem.foodType, allergens, `<input type='button' value='-' id=t1RemoveLinebtn${j}>`];
+            let cellContents = [dictKeys[i], rowItem.unit, rowItem.shop, rowItem.foodType, allergens, `<button class='removeLineBtn' id=t1RemoveLinebtn${j}>-</button>`];
             u.CreateRow("t1Table", "td", cellContents, cellIDs);
             u.CreateEditCellListeners(`t1TableUnit${j}`, "text", `t1TableKey${j}`, 1, "unit");
             u.CreateEditCellListeners(`t1TableShop${j}`, "select", `t1TableKey${j}`, 1, "shop", c.enums.shopEnum, false);
@@ -146,7 +178,7 @@ module.exports = function(DATA) {
                return;
             }
             let cellIDs = [`t2TableKey${j}`, `t2TableMeal${j}`, `t2TableType${j}`, `t2TableServes${j}`, `t2TableMorv${j}`, ''];
-            let cellContents = [dictKeys[i], rowItem.mealType, rowItem.recipeType, rowItem.serves, rowItem.morv, `<input type='button' value='-' id=t2RemoveLinebtn${j}>`];
+            let cellContents = [dictKeys[i], rowItem.mealType, rowItem.recipeType, rowItem.serves, rowItem.morv, `<button class='removeLineBtn' id=t2RemoveLinebtn${j}>-</button>`];
             u.CreateRow("t2Table", "td", cellContents, cellIDs);
 
             u.CreateEditCellListeners(`t2TableMeal${j}`, "select", `t2TableKey${j}`, 2, "mealType", c.enums.mealTypeEnum, false);
@@ -212,7 +244,7 @@ module.exports = function(DATA) {
             //
 
             let cellIDs = [`t3TableKey${j}`, `t3TableStartDate${j}`, `t3TableEndDate${j}`, ''];
-            let cellContents = [dictKeys[i], startDate, endDate, `<input type='button' value='-' id=t3RemoveLinebtn${j}>`];
+            let cellContents = [dictKeys[i], startDate, endDate, `<button class='removeLineBtn' id=t3RemoveLinebtn${j}>-</button>`];
             u.CreateRow("t3Table", "td", cellContents, cellIDs);
 
             u.CreateEditCellListeners(`t3TableStartDate${j}`, "date", `t3TableTitle${j}`, 3, "startDate");
@@ -247,10 +279,12 @@ module.exports = function(DATA) {
       let j = u.GetNumber(event.target.id);
       let cell = u.ID(`t1TableKey${j}`);
       let oldValue = cell.innerText;
-      cell.innerHTML = `<input type='text' id='t1TableFoodNameInput${j}' value='${oldValue}'><button id='t1TableFoodNameSave${j}' class='insideCellBtn'>✔</button>`;
+      cell.innerText = "";
       cell.className = "tableInput";
-      u.ID(`t1TableKey${j}`).removeEventListener("click", EditFoodName);
-      u.ID(`t1TableFoodNameSave${j}`).addEventListener("click", function() {
+      u.CreateEl('input').parent(cell).id(`t1TableFoodNameInput${j}`).value(oldValue).className('insideCellElement').type('text').style('width:90%').end();
+      let saveInputBtn = u.CreateEl('button').parent(cell).id(`t1TableFoodNameSave${j}`).className('insideCellBtn').innerText('✔').end()
+      cell.removeEventListener("click", EditFoodName);
+      saveInputBtn.addEventListener("click", function() {
          ChangeFoodName(j, oldValue);
       });
    }
@@ -362,7 +396,7 @@ module.exports = function(DATA) {
    /** displays elements of an enum */
    function RefreshEnumTable() {
       u.ID("enumTableDiv").innerHTML = "";
-      let enumName = u.ID("selectAdminEnum").value;
+      let enumName = u.ID("selectAdminEnum").value ? u.ID("selectAdminEnum").value : '_default';
       let enumObj = c.enums[enumName];
       if (enumName === "_default") {
          return false;
