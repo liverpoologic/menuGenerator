@@ -33,7 +33,7 @@ module.exports = function(DATA) {
                return c.enums.shopEnum;
             },
             keys: false,
-            ids: [ /**'selectFoodShop',*/ 't1TableFilter2input'],
+            ids: ['selectFoodShop', 't1TableFilter2input'],
             _default: 'Shop',
             type: 'config'
          },
@@ -51,104 +51,104 @@ module.exports = function(DATA) {
                return c.enums.foodTypeEnum;
             },
             keys: false,
-            ids: [ /**'selectFoodType', */ 't1TableFilter3input'],
+            ids: ['selectFoodType', 't1TableFilter3input'],
             _default: 'Food Type',
             type: 'config'
          },
-         // {
-         //    source: function() {
-         //       return c.enums.mealTypeEnum;
-         //    },
-         //    keys: false,
-         //    ids: ['selectRecipeMealType', 'selectMealTypeForAddMeals', 't2TableFilter1input'],
-         //    _default: 'Meal Type',
-         //    type: 'config'
-         // },
-         // {
-         //    source: function() {
-         //       return c.enums.recipeTypeEnum;
-         //    },
-         //    keys: false,
-         //    ids: ['selectRecipeType', 't2TableFilter2input'],
-         //    _default: 'Food Type',
-         //    type: 'config'
-         // },
-         // {
-         //    source: function() {
-         //       return c.enums.morvEnum;
-         //    },
-         //    keys: false,
-         //    ids: ['recipeMorv'],
-         //    _default: 'morv',
-         //    type: 'config'
-         // },
-         // {
-         //    source: function() {
-         //       return c.enums.recipeMorv;
-         //    },
-         //    keys: false,
-         //    ids: ['selectMorvForMenu'],
-         //    _default: 'morv',
-         //    type: 'config'
-         // },
-         // {
-         //    source: function() {
-         //       return menuNameList;
-         //    },
-         //    keys: false,
-         //    ids: ['selectViewMenu', 'selectEditMenu', 'selectPeopleMenu', 'selectMenuForShopping'],
-         //    _default: 'Choose Menu',
-         //    valueOpts: menuValList,
-         //    type: 'dict'
-         // },
-         // {
-         //    source: function() {
-         //       return d.recipes;
-         //    },
-         //    keys: true,
-         //    ids: ['selectRecipeForMenu'],
-         //    _default: 'Recipe',
-         //    type: 'dict'
-         // },
-         // {
-         //    source: function() {
-         //       return c.enums;
-         //    },
-         //    keys: true,
-         //    ids: ['selectAdminEnum'],
-         //    _default: 'Select an Enum',
-         //    type: 'config'
-         // },
-         // {
-         //    source: function() {
-         //       return d.foods
-         //    },
-         //    keys: true,
-         //    table: 'ingredientTable',
-         //    idPrefix: 'selectIngredientFood',
-         //    _default: 'Food',
-         //    type: 'dict'
-         // },
-         // {
-         //    source: function() {
-         //       return c.enums.morvEnum
-         //    },
-         //    keys: false,
-         //    table: 'ingredientTable',
-         //    idPrefix: 'selectIngredientMorv',
-         //    _default: 'M or V',
-         //    type: 'config'
-         // },
-         // {
-         //    source: function() {
-         //       return c.enums.morvEnum;
-         //    },
-         //    keys: false,
-         //    ids: ['t2TableFilter4input'],
-         //    _default: 'M or V',
-         //    type: 'config'
-         //
-         // }
+         {
+            source: function() {
+               return c.enums.mealTypeEnum;
+            },
+            keys: false,
+            ids: ['selectRecipeMealType', 'selectMealTypeForAddMeals', 't2TableFilter1input'],
+            _default: 'Meal Type',
+            type: 'config'
+         },
+         {
+            source: function() {
+               return c.enums.recipeTypeEnum;
+            },
+            keys: false,
+            ids: ['selectRecipeType', 't2TableFilter2input'],
+            _default: 'Recipe Type',
+            type: 'config'
+         },
+         {
+            source: function() {
+               return c.enums.morvEnum;
+            },
+            keys: false,
+            ids: ['recipeMorv'],
+            _default: 'morv',
+            type: 'config'
+         },
+         {
+            source: function() {
+               return c.enums.recipeMorv;
+            },
+            keys: false,
+            ids: ['selectMorvForMenu'],
+            _default: 'morv',
+            type: 'config'
+         },
+         {
+            source: function() {
+               return menuNameList;
+            },
+            keys: false,
+            ids: ['selectViewMenu', 'selectEditMenu', 'selectPeopleMenu', 'selectMenuForShopping'],
+            _default: 'Choose Menu',
+            valueOpts: menuValList,
+            type: 'dict'
+         },
+         {
+            source: function() {
+               return d.recipes;
+            },
+            keys: true,
+            ids: ['selectRecipeForMenu'],
+            _default: 'Recipe',
+            type: 'dict'
+         },
+         {
+            source: function() {
+               return c.enums;
+            },
+            keys: true,
+            ids: ['selectAdminEnum'],
+            _default: 'Select an Enum',
+            type: 'config'
+         },
+         {
+            source: function() {
+               return d.foods
+            },
+            keys: true,
+            table: 'ingredientTable',
+            idPrefix: 'selectIngredientFood',
+            _default: 'Food',
+            type: 'dict'
+         },
+         {
+            source: function() {
+               return c.enums.morvEnum
+            },
+            keys: false,
+            table: 'ingredientTable',
+            idPrefix: 'selectIngredientMorv',
+            _default: 'M or V',
+            type: 'config'
+         },
+         {
+            source: function() {
+               return c.enums.morvEnum;
+            },
+            keys: false,
+            ids: ['t2TableFilter4input'],
+            _default: 'M or V',
+            type: 'config'
+
+         }
       ];
       //To Do - validate that the checks for 'default' are all correct. Perhaps exchange with a single string 'default'
 
@@ -158,12 +158,14 @@ module.exports = function(DATA) {
 
             var ids = x.table ? get_ids(x) : x.ids;
             ids.forEach(id => {
-               // var _default = x._default;
-               // var domObj = u.ID(id);
-               // if (domObj != null) {
-               //     if (domObj.value != null && domObj.value != undefined && domObj.value != "") _default = domObj.value;
-               // }
-               u.CreateDropdown(id, x.source(), x.keys, x.valueOpts, x._default);
+               var _default = x._default;
+               var domObj = u.ID(id);
+               if (domObj != null) {
+                  if (domObj.value != null && domObj.value != undefined && domObj.value != "") _default = domObj.value;
+               }
+               if (domObj != null) {
+                  u.CreateDropdown(id, x.source(), x.keys, x.valueOpts, x._default);
+               }
             });
          }
       });

@@ -1,5 +1,6 @@
 module.exports = function(DATA) {
    return {
+      create: require('./files/create.js')(DATA),
       addFood: require('./files/addFood.js')(DATA),
       addRecipe: require('./files/addRecipe.js')(DATA),
       addMenu: require('./files/addMenu.js')(DATA),

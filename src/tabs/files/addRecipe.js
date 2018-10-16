@@ -5,10 +5,53 @@ module.exports = function(DATA) {
    var u = require("../../utilities")(DATA);
 
    function generator() {
-      u.ID("addRecipe_btn").addEventListener("click", AddRecipeBtn);
+
+      var tabcontent = u.ID('addRecipe_tab_content');
+      var els = CreatePageEls(tabcontent, 'add')
+
+      els.save_btn.addEventListener("click", AddRecipeBtn);
       CreateIngredientTable({
          firstTime: true
       });
+   }
+
+   // p is the parent div which the content will be added to
+   function CreatePageEls(parentDiv, mode) {
+
+      var els = {};
+      var titleText = mode === 'add' ? 'Add Recipe' : 'Edit Recipe';
+      var btnText = mode === 'add' ? 'Add Recipe' : 'Save Changes';
+
+      els.heading = u.CreateEl('h2').innerText(titleText).parent(parentDiv).end();
+      els.recipeTitle = u.CreateEl('input').type('text').placeholder('Recipe Title').parent(parentDiv).end();
+
+      els.subBox = u.CreateEl('div').parent(parentDiv).style('height:70px').end();
+
+      els.left = u.CreateEl('div').style('width:350px; margin:0; float:left').parent(els.subBox).end();
+      els.right = u.CreateEl('div').style('width:475px; margin:0; float:right').parent(els.subBox).end();
+
+      u.Br(parentDiv);
+      els.mealType = u.CreateEl('select').id('selectRecipeMealType').parent(els.left).end();
+      u.Br(els.left);
+      els.recipeType = u.CreateEl('select').id('selectRecipeType').parent(els.left).end();
+
+      els.morv = u.CreateEl('select').id('recipeMorv').parent(els.right).end();
+      u.Br(els.right);
+      els.serves = u.CreateEl('input').type('number').placeholder('serves').parent(els.right).end();
+
+      u.Br(parentDiv);
+
+      els.ingredientTable = u.CreateEl('table').id('ingredientTable').style('margin-top:8px;').parent(parentDiv).end();
+      u.Br(parentDiv);
+      els.method = u.CreateEl('textarea').className('taclass').placeholder('method').parent(parentDiv).end();
+      els.method.rows = '15';
+
+      u.Br(parentDiv);
+      els.save_btn = u.CreateEl('button').innerText('Add Recipe').parent(parentDiv).end();
+
+
+      return els;
+
    }
 
    /** onclick of 'add recipe' btn, adds recipe based on values in 'add recipe' tab  */
@@ -52,11 +95,11 @@ module.exports = function(DATA) {
 
    /** creates the ingredient table in the add recipe tab */
    function CreateIngredientTable(firstTimeFlag) {
-      u.CreateRow("ingredientTable", "th", ["Food", "Quantity", "", "Morv", "-", "+"], ["", "", "", "", "", "addIngRowHeader"], [210, 90, 60, 60, 15, 15], "px");
+      u.CreateRow("ingredientTable", "th", ["Food", "Quantity", "", "Morv", "-", "+", "", ""], ["", "", "", "", "", "addIngRowHeader", "", ""], );
       AddIngredientsRow(firstTimeFlag);
       u.ID("addIngRowHeader").addEventListener("click", AddIngredientsRow);
    }
-
+   // tableID, cellType, cellInnerHtml, cellIDs, cellWidth, widthUnit, index
    /** creates a row in the ingredients table, icluding the 'remove row' listener */
    function AddIngredientsRow(firstTimeFlag) {
       console.log('add ingredients row');
@@ -73,7 +116,7 @@ module.exports = function(DATA) {
          "⇩"
       ];
 
-      u.CreateRow("ingredientTable", "td", colhtml, ["", "", `ingredientUnitDisplay${j}`, "", `-ingbtn${j}`, `+ingbtn${j}`, `upbtn${j}`, `downbtn${j}`], [210, 90, 60, 60, 15, 15, 15, 15], "px");
+      u.CreateRow("ingredientTable", "td", colhtml, ["", "", `ingredientUnitDisplay${j}`, "", `-ingbtn${j}`, `+ingbtn${j}`, `upbtn${j}`, `downbtn${j}`], [280, 100, 80, 100, 15, 15, 15, 15], "px", undefined, ["cellWithInput", "cellWithInput", undefined, "cellWithInput"]);
 
       u.ID(`selectIngredientFood${j}`).addEventListener("change", DisplayUnit);
 

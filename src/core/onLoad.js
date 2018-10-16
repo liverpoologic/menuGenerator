@@ -29,6 +29,7 @@ module.exports = function() {
    //    tabs[tab.id].generator();
    // });
    tabs.admin.generator();
+   tabs.create.generator();
 
    // Import the dictionary and config
    c.read();

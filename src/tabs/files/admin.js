@@ -17,9 +17,7 @@ module.exports = function(DATA) {
 
    function generator() {
 
-      //
 
-      //
       //  u.ID("selectAdminEnum").addEventListener("change", RefreshEnumTable);
 
       window.addEventListener('update', RefreshAllTables)
@@ -109,7 +107,7 @@ module.exports = function(DATA) {
       let filterRow = Table.insertRow();
 
       filterType.forEach((type, i) => {
-         let filterCell = u.CreateElement("th", filterRow);
+         let filterCell = u.CreateEl('th').parent(filterRow).className('cellWithInput').end()
          filterCell.addEventListener("change", function() {
             CreateTableContents(dictID);
          });
@@ -118,7 +116,7 @@ module.exports = function(DATA) {
             u.CreateEl('select').parent(filterCell).id(`${tableID}Filter${i}input`).value('_default').end()
          } else if (type === "longText") {
             u.CreateEl('input').type('text').parent(filterCell).id(`${tableID}Filter${i}input`).style('width:80%').end()
-            u.CreateEl('button').className('insideCellBtn').innerText('x').parent(filterCell).id(`${tableID}Filter${i}clear`).style('margin: 10px 0px;').end()
+            u.CreateEl('button').className('insideCellBtn').innerText('x').parent(filterCell).id(`${tableID}Filter${i}clear`).end()
             u.ID(`${tableID}Filter${i}clear`).addEventListener("click", function() {
                u.ID(`${tableID}Filter${i}input`).value = "";
                CreateTableContents(dictID);

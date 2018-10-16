@@ -3,15 +3,15 @@ var tabList = [{
       label: 'Create',
       vtabs: [{
             id: 'addFood',
-            label: 'Add Food'
+            label: 'Foods'
          },
          {
             id: 'addRecipe',
-            label: 'Add Recipe'
+            label: 'Recipes'
          },
          {
             id: 'addMenu',
-            label: 'Add Menu'
+            label: 'Menus'
          },
       ]
    },

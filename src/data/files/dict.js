@@ -5,23 +5,23 @@ var Config = require('./config.js')
 const Dict = {};
 
 Dict.foods = {
-   addFood(thing, unit, shop, foodType, allergens) //add a food to t1
+   addFood(obj) //add a food to t1
    {
       console.log(Config);
-      if (typeof thing != "string") {
+      if (typeof obj.thing != "string") {
          console.log(`invalid input: ${thing} not a string`);
-      } else if (typeof unit != "string" && unit != null) {
-         console.log(`invalid input: ${unit} not a string or null`);
-      } else if (Config.enums.shopEnum.indexOf(shop) < 0) {
+      } else if (typeof obj.unit != "string") {
+         console.log(`invalid input: ${unit} not a string`);
+      } else if (Config.enums.shopEnum.indexOf(obj.shop) < 0) {
          console.log(`invalid input: ${shop} not in the shop enum`);
       } else {
-         this[thing] = {
-            unit: unit,
-            shop: shop,
-            foodType: foodType,
+         this[obj.thing.toLowerCase()] = {
+            unit: obj.unit === "" ? null : obj.unit,
+            shop: obj.shop,
+            foodType: obj.foodType,
             recipeRefCnt: 0
          };
-         this.addAllergens(thing, allergens);
+         this.addAllergens(obj.thing, obj.allergens);
       }
    },
    addAllergens(thing, allergens) {

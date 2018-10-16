@@ -138,7 +138,7 @@ module.exports = function(DATA) {
    }
    /**Create element with dot notation: CreateEl().id('id').type('text').end() */
    function CreateEl(elType) {
-      var props = ['type', 'textContent', 'parent', 'id', 'className', 'innerText', 'innerHTML', 'display', 'value', 'style'];
+      var props = ['type', 'textContent', 'parent', 'id', 'className', 'innerText', 'innerHTML', 'display', 'value', 'style', 'placeholder'];
       var ret = {
          end: function() {
             var v = this.vals; //access this.vals object
@@ -181,7 +181,7 @@ module.exports = function(DATA) {
     * @param {array} cellWidth array of numbers to assign as the cellWidth for each cell from left to right
     * @param {string} widthUnit can be either "%" or "px" . Cannot be blank if cellWidth is populated.
     */
-   function CreateRow(tableID, cellType, cellInnerHtml, cellIDs, cellWidth, widthUnit, index) {
+   function CreateRow(tableID, cellType, cellInnerHtml, cellIDs, cellWidth, widthUnit, index, classes) {
       // EXAMPLE u.CreateRow("t1table","th",["cell1text","cell2text],["id1","id2"],[40,60],"%")
       if (typeof cellWidth === "undefined") {
          cellWidth = "";
@@ -194,6 +194,9 @@ module.exports = function(DATA) {
          Html(newCell, "", "", `width:${cellWidth[i]}${widthUnit}`, cellInnerHtml[i]);
          if (typeof cellIDs === "object") {
             newCell.id = cellIDs[i];
+         }
+         if (typeof classes === 'object') {
+            newCell.className = classes[i]
          }
          newRow.appendChild(newCell);
       }
@@ -484,7 +487,12 @@ module.exports = function(DATA) {
 
    }
 
+   function Br(parent) {
+      CreateEl('br').parent(parent).end();
+   }
+
    return {
+      Br: Br,
       CalculateQLarge: CalculateQLarge,
       ClearTable: ClearTable, // function to clear table, leaving a given number of header rows
       CreateDropdown: CreateDropdown, // create dropdown options
