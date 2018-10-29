@@ -79,7 +79,7 @@ module.exports = function(DATA) {
             },
             keys: false,
             ids: ['recipeMorv'],
-            _default: 'morv',
+            _default: 'M or V',
             type: 'config'
          },
          {

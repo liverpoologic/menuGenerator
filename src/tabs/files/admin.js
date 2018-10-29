@@ -4,21 +4,7 @@ module.exports = function(DATA) {
    var u = require("../../utilities")(DATA);
    var addRecipe = require('./addRecipe.js')(DATA);
 
-
-   // <div id="AdminTabContent2" class="vtabcontent" style="display: none;">
-   //   <h2> All Recipes
-   //     <button id="clearIngredientSearch" class="insideCellBtn" style='float:right'>x</button>
-   //     <input type="text" id="ingredientSearchInput" placeholder="ingredient" style="margin:4px 10px; float:right;"></input>
-   //   </h2>
-   //   <table id="t2Table">
-   //   </table>
-   //   <br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br><br>
-   // </div>
-
    function generator() {
-
-
-      //  u.ID("selectAdminEnum").addEventListener("change", RefreshEnumTable);
 
       window.addEventListener('update', RefreshAllTables)
 
@@ -29,6 +15,9 @@ module.exports = function(DATA) {
       CreateTable(2);
       CreateTable(3);
       CreateTable(4);
+
+      u.ID("selectAdminEnum").addEventListener("change", RefreshEnumTable);
+
 
    }
 
@@ -65,7 +54,8 @@ module.exports = function(DATA) {
             break;
 
          case 2:
-            u.CreateEl('button').id('clearIngredientSearch').className('insideCellBtn').style('float:right').parent(heading).innerText('x').end();
+            let clearIngFilter = u.CreateEl('button').id('clearIngredientSearch').className('insideCellBtn').style('float:right; margin-top: 8px;').parent(heading).end();
+            u.Icon('times', clearIngFilter);
             let ingredientSearch = u.CreateEl('input').type('text').id('ingredientSearchInput').style('margin:4px 10px; float:right').parent(heading).end();
             ingredientSearch.placeholder = 'ingredient';
 
@@ -116,7 +106,8 @@ module.exports = function(DATA) {
             u.CreateEl('select').parent(filterCell).id(`${tableID}Filter${i}input`).value('_default').end()
          } else if (type === "longText") {
             u.CreateEl('input').type('text').parent(filterCell).id(`${tableID}Filter${i}input`).style('width:80%').end()
-            u.CreateEl('button').className('insideCellBtn').innerText('x').parent(filterCell).id(`${tableID}Filter${i}clear`).end()
+            let closeBtn = u.CreateEl('button').className('insideCellBtn').parent(filterCell).id(`${tableID}Filter${i}clear`).end();
+            u.Icon('times', closeBtn);
             u.ID(`${tableID}Filter${i}clear`).addEventListener("click", function() {
                u.ID(`${tableID}Filter${i}input`).value = "";
                CreateTableContents(dictID);
@@ -280,7 +271,8 @@ module.exports = function(DATA) {
       cell.innerText = "";
       cell.className = "tableInput";
       u.CreateEl('input').parent(cell).id(`t1TableFoodNameInput${j}`).value(oldValue).className('insideCellElement').type('text').style('width:90%').end();
-      let saveInputBtn = u.CreateEl('button').parent(cell).id(`t1TableFoodNameSave${j}`).className('insideCellBtn').innerText('✔').end()
+      let saveInputBtn = u.CreateEl('button').parent(cell).id(`t1TableFoodNameSave${j}`).className('insideCellBtn').end();
+      u.Icon('check', saveInputBtn)
       cell.removeEventListener("click", EditFoodName);
       saveInputBtn.addEventListener("click", function() {
          ChangeFoodName(j, oldValue);

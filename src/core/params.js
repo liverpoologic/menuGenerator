@@ -3,15 +3,18 @@ var tabList = [{
       label: 'Create',
       vtabs: [{
             id: 'addFood',
-            label: 'Foods'
+            label: 'Foods',
+            icon: 'lemon'
          },
          {
             id: 'addRecipe',
-            label: 'Recipes'
+            label: 'Recipes',
+            icon: 'book-open'
          },
          {
             id: 'addMenu',
-            label: 'Menus'
+            label: 'Menus',
+            icon: 'utensils'
          },
       ]
    },
@@ -20,18 +23,22 @@ var tabList = [{
       label: 'Edit',
       vtabs: [{
             id: 'viewMenu',
-            label: 'View Menu'
+            label: 'View Menu',
+            icon: 'file-pdf'
          },
          {
             id: 'editMenu',
-            label: 'Edit Menu'
+            label: 'Edit Menu',
+            icon: 'pen'
          },
          {
             id: 'people',
-            label: 'SENCO'
+            label: 'SENCO',
+            icon: 'user'
          }, {
             id: 'shopping',
-            label: 'Shopping'
+            label: 'Shopping',
+            icon: 'shopping-basket'
          }
       ]
    },
@@ -40,19 +47,23 @@ var tabList = [{
       label: 'Admin',
       vtabs: [{
             id: 't1',
-            label: 'Foods'
+            label: 'Foods',
+            icon: 'lemon'
          },
          {
             id: 't2',
-            label: 'Recipes'
+            label: 'Recipes',
+            icon: 'book-open'
          },
          {
             id: 't3',
-            label: 'Menus'
+            label: 'Menus',
+            icon: 'utensils'
          },
          {
             id: 't4',
-            label: 'Other'
+            label: 'Other',
+            icon: 'wrench'
          }
       ]
    },

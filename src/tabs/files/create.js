@@ -10,7 +10,7 @@ module.exports = function(DATA) {
    function generator() {
       addFood.generator();
       addRecipe.generator();
-      //  addMenu.generator();
+      addMenu.generator();
    }
 
    return {

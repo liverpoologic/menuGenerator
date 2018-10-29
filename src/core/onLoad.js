@@ -17,6 +17,9 @@ module.exports = function() {
       c: c
    };
 
+   //initialise fontawesome
+   require("../../node_modules/@fortawesome/fontawesome-free/js/all.js");
+
    var isTest = remote.getGlobal('sharedObject').testMode;
 
    FWK.navigation.Initialise(params.tabList, isTest);
@@ -24,12 +27,11 @@ module.exports = function() {
 
    //for each tab, call the generator() function
    console.log(tabs);
-   // params.tabList.forEach(tab => {
-   //    console.log(tab.id);
-   //    tabs[tab.id].generator();
-   // });
-   tabs.admin.generator();
-   tabs.create.generator();
+   params.tabList.forEach(tab => {
+      console.log(tab.id);
+      tabs[tab.id].generator();
+   });
+
 
    // Import the dictionary and config
    c.read();

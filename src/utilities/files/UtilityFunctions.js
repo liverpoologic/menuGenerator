@@ -6,6 +6,10 @@ module.exports = function(DATA) {
    var d = DATA.dict;
    var c = DATA.config;
 
+   function Icon(iconName, parent) {
+      return CreateEl('i').className(`fas fa-${iconName}`).parent(parent).end();
+   }
+
    /** function to clear table, leaving a given number of header rows
     * @param {string} tableID html ID of the table to clear
     * @param {number} numberOfRowsToKeep how many rows should be left untouched (can be 0 to clear whole table)*/
@@ -14,6 +18,28 @@ module.exports = function(DATA) {
       for (let i = table.rows.length; i > numberOfRowsToKeep; i--) {
          table.deleteRow(i - 1);
       }
+   }
+
+   function ClearVals(els) {
+      Object.values(els).forEach(el => {
+         switch (el.type) {
+            case 'text':
+            case 'textarea':
+            case 'date':
+            case 'number':
+               el.value = "";
+               break;
+            case 'select-one':
+               el.value = '_default';
+               break;
+            default:
+               console.log('not clearing for type:');
+               console.log(el.type);
+               console.log(el);
+               break;
+         }
+      });
+      return;
    }
    /** function to create listeners which allow user to edit cells (currently used in the admin tables)
     * @param {string} cellID the ID of the cell you want to create a listener on
@@ -27,7 +53,9 @@ module.exports = function(DATA) {
    function CreateEditCellListeners(cellID, inputType, keyID, dictID, property, dropdownSource, dropdownKeys) {
 
       function CreateButton(cell, inputType) {
-         return CreateEl('button').parent(cell).id(`save_${cell.id}`).className('insideCellBtn').innerHTML('✔').end();
+         let btn = CreateEl('button').parent(cell).id(`save_${cell.id}`).className('insideCellBtn').end();
+         Icon('check', btn);
+         return btn;
       }
 
       function CreateInput(cell, inputType, oldValue, dropdownSource, dropdownKeys) {
@@ -294,6 +322,7 @@ module.exports = function(DATA) {
     * @param {string} input the id which you want to extract the number from
     */
    function GetNumber(input) {
+      console.log(input);
       return parseInt(input.match(/\d+$/)[0]);
    }
    /** hide element with given ID(s)
@@ -353,7 +382,7 @@ module.exports = function(DATA) {
       for (let i = 0; i < tablinks.length; i++) {
          tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
-      ID(`${tabid}_tab_content`).style.display = "block";
+      ID(`${tabid}_tab_content`).style.display = "inline-block";
       ID(`${tabid}_tab_btn`).className += " active";
    }
    /** opens a vertical tab (i.e. admin table tabs)
@@ -367,7 +396,7 @@ module.exports = function(DATA) {
       for (let i = 0; i < tablinks.length; i++) {
          tablinks[i].className = tablinks[i].className.replace(" active", "");
       }
-      ID(`${vTabId}_tab_content`).style.display = "block";
+      ID(`${vTabId}_tab_content`).style.display = "inline-block";
       ID(`${vTabId}_tab_btn`).className += " active";
    }
 
@@ -492,9 +521,11 @@ module.exports = function(DATA) {
    }
 
    return {
+      Icon: Icon,
       Br: Br,
       CalculateQLarge: CalculateQLarge,
       ClearTable: ClearTable, // function to clear table, leaving a given number of header rows
+      ClearVals: ClearVals,
       CreateDropdown: CreateDropdown, // create dropdown options
       CreateEditCellListeners: CreateEditCellListeners, // creates listener to enable 'edit cell' (currently used in admin tables)
       CreateEl: CreateEl, // creates an element using dot notation

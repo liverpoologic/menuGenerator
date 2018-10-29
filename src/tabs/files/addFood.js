@@ -10,7 +10,7 @@ module.exports = function(DATA) {
       var tabContent = u.ID('addFood_tab_content');
 
       els.heading = u.CreateEl('h2').innerText('Add Food').parent(tabContent).end();
-      var p = u.CreateEl('div').parent(tabContent).style('width:400px').className('tabcontent').end();
+      var p = u.CreateEl('div').parent(tabContent).style('width:430px').className('tabcontent').end();
 
       els.thing = u.CreateEl('input').type('text').placeholder('name of food').parent(p).end();
       u.Br(p);
@@ -38,22 +38,15 @@ module.exports = function(DATA) {
    /** adds a food to d.foods based on the info in the add food tab */
    function AddFoodBtn(els) {
       var toCreate = {};
-      ['thing', 'unit', 'shop', 'foodType', 'allergens'].forEach(prop => {
+      Object.keys(els).forEach(prop => {
          toCreate[prop] = els[prop].value;
       });
       //split allergens into an array
       toCreate.allergens = toCreate.allergens.split(" ");
 
-      console.log(keys);
-
       d.foods.addFood(toCreate);
 
-      u.SetValues([
-         ["foodThing", ""],
-         ["foodUnit", ""],
-         ["selectFoodShop", "_default"],
-         ["selectFoodType", "_default"]
-      ]);
+      u.ClearVals(els);
 
       tagsInput(u.ID('allergenInput'), "", "clear", " ");
 

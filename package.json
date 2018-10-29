@@ -15,6 +15,7 @@
   "author": "Lisa Karlin",
   "license": "CC0-1.0",
   "devDependencies": {
+    "@fortawesome/fontawesome-free": "^5.4.2",
     "chai": "^4.1.2",
     "chai-as-promised": "^7.1.1",
     "electron": "^2.0.3",

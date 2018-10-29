@@ -300,7 +300,7 @@ module.exports = function(DATA) {
                editRecipeTitleDiv.style.color = "white";
             }
 
-            let deleteRecipeFromMenu = u.CreateElement("button", editRecipeTitleDiv, `editDeleteRecipe${i}${j}`, "removeRecipe", "x");
+            let deleteRecipeFromMenu = u.CreateElement("button", editRecipeTitleDiv, `editDeleteRecipe${i}${j}`, "removeListItem", "x");
             deleteRecipeFromMenu.addEventListener("click", function() {
                d.menus.deleteRecipe(menuTitle, i, j);
                d.write();

@@ -46,28 +46,30 @@ Dict.foods = {
    },
 };
 Dict.recipes = {
-   addRecipe(recipeTitle, mealType, morv, serves, method, recipeType) {
-      if (typeof recipeTitle != "string") {
-         console.log(`invalid input: ${recipeTitle} not a string`);
-      } else if (Config.enums.mealTypeEnum.indexOf(mealType) < 0) {
-         console.log(`invalid input: ${mealType} not in the mealType enum`);
-      } else if (Config.enums.recipeTypeEnum.indexOf(recipeType) < 0) {
-         console.log(`invalid input: ${recipeType} not in the recipeType enum`);
-      } else if (typeof morv != "object") {
-         console.log(`invalid input: ${morv} not an object`);
-      } else if (typeof method != "string") {
-         console.log(`invalid input: ${method} not a string`);
-      } else if (typeof serves != "number") {
-         console.log(`invalid input: ${serves} not a number`);
+
+   addRecipe(obj) {
+      console.log(obj);
+      if (typeof obj.recipeTitle != "string") {
+         console.log(`invalid input: ${obj.recipeTitle} not a string`);
+      } else if (Config.enums.mealTypeEnum.indexOf(obj.mealType) < 0) {
+         console.log(`invalid input: ${obj.mealType} not in the mealType enum`);
+      } else if (Config.enums.recipeTypeEnum.indexOf(obj.recipeType) < 0) {
+         console.log(`invalid input: ${obj.recipeType} not in the recipeType enum`);
+      } else if (typeof obj.morv != "string") {
+         console.log(`invalid input: ${obj.morv} not a string`);
+      } else if (typeof obj.method != "string") {
+         console.log(`invalid input: ${obj.method} not a string`);
       } else {
-         this[recipeTitle] = {
-            mealType: mealType,
-            morv: morv,
-            serves: serves,
-            method: method,
-            recipeType: recipeType,
-            ingredients: []
-         };
+         var newRecipe = {};
+         ['mealType', 'morv', 'method', 'recipeType'].forEach(prop => {
+            newRecipe[prop] = obj[prop];
+         });
+         newRecipe.serves = parseInt(obj.serves);
+         newRecipe.ingredients = [];
+         console.log(newRecipe);
+
+         this[obj.recipeTitle] = newRecipe;
+         console.log(this[obj.recipeTitle])
       }
    },
    addIngredient(recipeTitle, foodName, quantity, morv) {

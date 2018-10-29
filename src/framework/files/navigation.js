@@ -20,7 +20,9 @@ module.exports = function(DATA) {
          //create vtab div
          var vtab_div = u.CreateEl('div').parent(div).className('vtab').id(`${tabConfig.id}_vtab_div`).end();
          tabConfig.vtabs.forEach(vTabConfig => {
-            var btn = u.CreateEl('button').parent(vtab_div).className('vtab_btns').id(`${vTabConfig.id}_tab_btn`).innerText(vTabConfig.label).end();
+            var btn = u.CreateEl('button').parent(vtab_div).className('vtab_btns').id(`${vTabConfig.id}_tab_btn`).end();
+            u.Icon(vTabConfig.icon, btn);
+            u.CreateEl('span').innerText(vTabConfig.label).parent(btn).style('margin-left:8px').end();
             var v_div = u.CreateEl('div').parent(div).className('vtabcontent').id(`${vTabConfig.id}_tab_content`).end();
             v_div.style.display = 'none';
             btn.addEventListener('click', function() {
@@ -30,7 +32,8 @@ module.exports = function(DATA) {
 
       });
 
-      let settingsbtn = u.CreateEl('button').parent(htab_div).id('settings_btn').style('float:right; margin:0px').innerHTML('<img src="../../resources/settings.png" height="15px" width="15px"/>').end()
+      let settingsbtn = u.CreateEl('button').parent(htab_div).id('settings_btn').style('float:right; margin:0px').end()
+      u.Icon('cog', settingsbtn);
 
       // create event listener for 'settings' button
       settingsbtn.addEventListener("click", function() {
