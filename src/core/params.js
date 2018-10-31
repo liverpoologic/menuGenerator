@@ -4,17 +4,20 @@ var tabList = [{
       vtabs: [{
             id: 'addFood',
             label: 'Foods',
-            icon: 'lemon'
+            icon: 'lemon',
+            title: 'Add Food'
          },
          {
             id: 'addRecipe',
             label: 'Recipes',
-            icon: 'book-open'
+            icon: 'book-open',
+            title: 'Add Recipe'
          },
          {
             id: 'addMenu',
             label: 'Menus',
-            icon: 'utensils'
+            icon: 'utensils',
+            title: 'Add Menu'
          },
       ]
    },
@@ -24,21 +27,25 @@ var tabList = [{
       vtabs: [{
             id: 'viewMenu',
             label: 'View Menu',
-            icon: 'file-pdf'
+            icon: 'eye',
+            title: 'View Menu'
          },
          {
             id: 'editMenu',
             label: 'Edit Menu',
-            icon: 'pen'
+            icon: 'pen',
+            title: 'Edit Menu'
          },
          {
             id: 'people',
             label: 'SENCO',
-            icon: 'user'
+            icon: 'user',
+            title: 'Special Dietary Requirements'
          }, {
             id: 'shopping',
             label: 'Shopping',
-            icon: 'shopping-basket'
+            icon: 'shopping-basket',
+            title: 'Shopping Lists'
          }
       ]
    },
@@ -48,22 +55,26 @@ var tabList = [{
       vtabs: [{
             id: 't1',
             label: 'Foods',
-            icon: 'lemon'
+            icon: 'lemon',
+            title: 'All Foods'
          },
          {
             id: 't2',
             label: 'Recipes',
-            icon: 'book-open'
+            icon: 'book-open',
+            title: 'All Recipes'
          },
          {
             id: 't3',
             label: 'Menus',
-            icon: 'utensils'
+            icon: 'utensils',
+            title: 'All Menus'
          },
          {
             id: 't4',
             label: 'Other',
-            icon: 'wrench'
+            icon: 'wrench',
+            title: 'All Enums'
          }
       ]
    },

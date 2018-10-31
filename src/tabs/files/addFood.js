@@ -8,8 +8,6 @@ module.exports = function(DATA) {
    function generator() {
       var els = {};
       var tabContent = u.ID('addFood_tab_content');
-
-      els.heading = u.CreateEl('h2').innerText('Add Food').parent(tabContent).end();
       var p = u.CreateEl('div').parent(tabContent).style('width:430px').className('tabcontent').end();
 
       els.thing = u.CreateEl('input').type('text').placeholder('name of food').parent(p).end();

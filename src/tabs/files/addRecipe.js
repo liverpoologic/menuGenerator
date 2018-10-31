@@ -25,7 +25,6 @@ module.exports = function(DATA) {
       var titleText = mode === 'add' ? 'Add Recipe' : 'Edit Recipe';
       var btnText = mode === 'add' ? 'Add Recipe' : 'Save Changes';
 
-      els.heading = u.CreateEl('h2').innerText(titleText).parent(parentDiv).end();
       els.recipeTitle = u.CreateEl('input').type('text').placeholder('Recipe Title').parent(parentDiv).end();
 
       els.subBox = u.CreateEl('div').parent(parentDiv).style('height:70px').end();
@@ -95,9 +94,18 @@ module.exports = function(DATA) {
 
    /** creates the ingredient table in the add recipe tab */
    function CreateIngredientTable(firstTimeFlag) {
-      u.CreateRow("ingredientTable", "th", ["Food", "Quantity", "", "Morv", "-", "+", "", ""], ["", "", "", "", "", "addIngRowHeader", "", ""], );
+      //add title row
+      u.CreateRow("ingredientTable", "th", ["Food", "Quantity", "", "Morv", "", "", ""], ["", "", "", "", "", "", ""], [280, 100, 80, 100, 15, 15, 15], "px");
+
+      //add 'plus' row
+      let plusRow = u.ID('ingredientTable').insertRow();
+      // plusRow.className = 'addItemRow';
+      let plusCell = u.CreateEl('td').parent(plusRow).className('addItemCell').end();
+      let plusButton = u.CreateEl('button').parent(plusCell).className('ingredientTableButton').end();
+      u.Icon('plus', plusButton)
+
       AddIngredientsRow(firstTimeFlag);
-      u.ID("addIngRowHeader").addEventListener("click", AddIngredientsRow);
+      plusButton.addEventListener("click", AddIngredientsRow);
    }
    // tableID, cellType, cellInnerHtml, cellIDs, cellWidth, widthUnit, index
    /** creates a row in the ingredients table, icluding the 'remove row' listener */
@@ -105,39 +113,34 @@ module.exports = function(DATA) {
       var ingredientsTable = u.ID('ingredientTable');
       console.log('add ingredients row');
       console.log(firstTimeFlag);
-      let j = ingredientsTable.rows.length - 1;
+      let j = ingredientsTable.rows.length - 2;
 
       var rowEls = {}
       //create new rows
-      let newRow = ingredientsTable.insertRow();
+      let numberOfRows = ingredientsTable.rows;
+      let newRow = ingredientsTable.insertRow(j + 1);
 
-      rowEls.selectFood = u.CreateEl('select').id(`selectIngredientFood${j}`).end();
+      rowEls.selectFood = u.CreateEl('select').id(`selectIngredientFood${j}`).style('width:80%').end();
       rowEls.selectQuantity = u.CreateEl('input').type('number').id(`ingredientQuantitySmall${j}`).style('width:100%').end();
       rowEls.unit = u.CreateEl('span').id(`ingredientUnitDisplay${j}`).end();
       rowEls.selectMorv = u.CreateEl('select').id(`selectIngredientMorv${j}`).end();
 
-      rowEls.minus = u.CreateEl('button').id(`-ingbtn${j}`).end();
+      rowEls.minus = u.CreateEl('button').id(`-ingbtn${j}`).className('removeIngredient').end();
       u.Icon('minus', rowEls.minus);
 
-      rowEls.plus = u.CreateEl('button').id(`+ingbtn${j}`).end();
-      u.Icon('plus', rowEls.plus);
-
-      rowEls.up = u.CreateEl('button').id(`upbtn${j}`).end();
+      rowEls.up = u.CreateEl('button').id(`upbtn${j}`).className('ingredientTableButton').end();
       u.Icon('chevron-up', rowEls.up);
 
-      rowEls.down = u.CreateEl('button').id(`downbtn${j}`).end();
+      rowEls.down = u.CreateEl('button').id(`downbtn${j}`).className('ingredientTableButton').end();
       u.Icon('chevron-down', rowEls.down);
 
       Object.values(rowEls).forEach(el => {
-         let cell = u.CreateEl('td').parent(newRow).end();
+         let cell = u.CreateEl('td').parent(newRow).className('cellWithInput').end();
          cell.appendChild(el);
       })
 
-      // u.CreateRow("ingredientTable", "td", colhtml, ["", "", `ingredientUnitDisplay${j}`, "", `-ingbtn${j}`, `+ingbtn${j}`, `upbtn${j}`, `downbtn${j}`], [280, 100, 80, 100, 15, 15, 15, 15], "px", undefined, ["cellWithInput", "cellWithInput", undefined, "cellWithInput"]);
-
       u.ID(`selectIngredientFood${j}`).addEventListener("change", DisplayUnit);
 
-      u.ID(`+ingbtn${j}`).addEventListener("click", AddIngredientsRow);
       u.ID(`-ingbtn${j}`).addEventListener("click", DeleteIngredientsRow);
       u.ID(`upbtn${j}`).addEventListener("click", MoveIngredientsRow);
       u.ID(`downbtn${j}`).addEventListener("click", MoveIngredientsRow);
@@ -163,16 +166,16 @@ module.exports = function(DATA) {
       let i = u.GetNumber(event.target.id) + 1;
       u.ID("ingredientTable").deleteRow(i);
       // renumber the ids of all the rows below the deleted row
-      let len = u.ID("ingredientTable").rows.length;
+      let len = u.ID("ingredientTable").rows.length - 1;
       for (i; i < len; i++) {
          u.ID(`selectIngredientFood${i}`).id = `selectIngredientFood${i-1}`;
          u.ID(`ingredientQuantitySmall${i}`).id = `ingredientQuantitySmall${i-1}`;
          u.ID(`ingredientUnitDisplay${i}`).id = `ingredientUnitDisplay${i-1}`;
          u.ID(`selectIngredientMorv${i}`).id = `selectIngredientMorv${i-1}`;
          u.ID(`-ingbtn${i}`).id = `-ingbtn${i-1}`;
-         u.ID(`+ingbtn${i}`).id = `+ingbtn${i-1}`;
+         u.ID(`upbtn${i}`).id = `upbtn${i-1}`;
+         u.ID(`downbtn${i}`).id = `downbtn${i-1}`;
       }
-
    }
    /** Displays unit of food[j] in ingredientTable */
    function DisplayUnit(i) {
@@ -194,6 +197,10 @@ module.exports = function(DATA) {
          j = i - 1;
       } else {
          j = i + 1;
+      }
+      //check that request is valid
+      if (j == -1 || j == u.ID('ingredientTable').rows.length - 2) {
+         return;
       }
       let rowContents = [u.ID(`selectIngredientFood${i}`).value, u.ID(`ingredientQuantitySmall${i}`).value, u.ID(`selectIngredientMorv${i}`).value];
       u.SetValues([

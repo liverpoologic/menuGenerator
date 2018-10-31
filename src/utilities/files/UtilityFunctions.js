@@ -12,6 +12,7 @@ module.exports = function(DATA) {
 
    /** function to clear table, leaving a given number of header rows
     * @param {string} tableID html ID of the table to clear
+
     * @param {number} numberOfRowsToKeep how many rows should be left untouched (can be 0 to clear whole table)*/
    function ClearTable(tableID, numberOfRowsToKeep) {
       let table = ID(tableID);
@@ -325,6 +326,32 @@ module.exports = function(DATA) {
       console.log(input);
       return parseInt(input.match(/\d+$/)[0]);
    }
+
+   function GroupBy(obj, prop) {
+      let groupedObj = {};
+      GetKeysExFns(obj).forEach(key => {
+         let item = obj[key];
+         item.key = key;
+         let groupVal = item[prop];
+         if (!groupedObj[groupVal]) {
+            groupedObj[groupVal] = {};
+         }
+         groupedObj[groupVal][key] = item;
+      });
+      return groupedObj;
+   }
+
+   function ObjToArr(obj) {
+      var output = [];
+      Object.keys(obj).forEach(key => {
+         let item = {};
+         item.key = key;
+         item.val = obj[key]
+         output.push(item);
+      });
+      return output;
+   }
+
    /** hide element with given ID(s)
     * @param {object} ids either a single ID or an array ["id1","id2"] of the html DOM objects you want to hide
     */
@@ -385,19 +412,19 @@ module.exports = function(DATA) {
       ID(`${tabid}_tab_content`).style.display = "inline-block";
       ID(`${tabid}_tab_btn`).className += " active";
    }
-   /** opens a vertical tab (i.e. admin table tabs)
+   /** opens a vertical tab
     * @param {string} tabName the id of the tab you want to open */
-   function OpenVTab(vTabId) {
-      let tabcontent = document.getElementsByClassName("vtabcontent");
-      for (let i = 0; i < tabcontent.length; i++) {
-         tabcontent[i].style.display = "none";
-      }
-      let tablinks = document.getElementsByClassName("vtab_btns");
-      for (let i = 0; i < tablinks.length; i++) {
-         tablinks[i].className = tablinks[i].className.replace(" active", "");
-      }
-      ID(`${vTabId}_tab_content`).style.display = "inline-block";
-      ID(`${vTabId}_tab_btn`).className += " active";
+   function OpenVTab(tabConfig, vTabConfig) {
+      //get tab contents for this hTab
+      tabConfig.vtabs.forEach(vtab => {
+         ID(`${vtab.id}_tab_content`).style.display = 'none';
+         ID(`${vtab.id}_tab_btn`).className = ID(`${vtab.id}_tab_btn`).className.replace(" active", "");
+      })
+      //populate the page title text
+      ID(`${tabConfig.id}_page_title`).innerHTML = vTabConfig.title;
+
+      ID(`${vTabConfig.id}_tab_content`).style.display = "inline-block";
+      ID(`${vTabConfig.id}_tab_btn`).className += " active";
    }
 
    /**renames the 'key' of a dictionary object (e.g. change food name)
@@ -538,9 +565,11 @@ module.exports = function(DATA) {
       GetKeysExFns: GetKeysExFns, //gets keys excluding any functions of a given object
       GetMMMyy: GetMMMyy, // convert date into MMM yy (Jun 18)
       GetNumber: GetNumber, // returns the number in a string (ignores letters)
+      GroupBy: GroupBy,
       HideElements: HideElements, // hide element with given ID
       Html: Html, // set attributes of an html object: id, classname, style, innerHTML and innerText
       ID: ID, // changes 'document.getElementById' to just ID
+      ObjToArr: ObjToArr,
       OpenHTab: OpenHTab, // opens a horizontal tab (i.e. main navigation)
       OpenVTab: OpenVTab, // opens a vertical tab (i.e. admin table tabs
       RenameKey: RenameKey, // renames the 'key' of a dictionary object (e.g. change food name)

@@ -8,8 +8,6 @@ var remote = require('electron').remote;
 
 module.exports = function(event) {
    let key = event.keyCode;
-   console.log(key);
-   console.log('hello')
    var vTabNums = [105, 102, 99, 110];
    switch (key) {
       // case 191: //forward slash key

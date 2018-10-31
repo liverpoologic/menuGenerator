@@ -7,6 +7,8 @@
     --dark-grey:#515253;
     --mid-grey:#BABAC8;
     --accent-red:#cb2520;
+    --dark-green:#289682;
+    --dark-purple:#7B60B5;
 }
 
 body {
@@ -27,6 +29,7 @@ body {
     width:990px;
     text-align: center;
     position:fixed;
+    z-index:200;
 }
 
 p {
@@ -71,10 +74,24 @@ p {
     margin-top: 48px;
 }
 
+.htabcontentdiv{
+  float:left;
+  position:fixed;
+  z-index:200;
+  margin-left:170px;
+  background-color:inherit;
+  width:820px
+}
+
+.htabcontentdiv button {
+  margin-top:8px;
+}
 /* start of vtab */
 
 div.vtab {
   position:fixed;
+  z-index:200;
+
     float: left;
     padding: 10px, 10px;
     margin-right: 10px;
@@ -123,8 +140,10 @@ div.vtab button.active {
     border-left: none;
     height: 1000px;
     width:820px;
-    /* overflow: auto;  //code added */
     margin-left: 160px;
+    margin-top:70px;
+    background-color:inherit;
+    display:none;
 }
 
 .flex-container {
@@ -188,26 +207,54 @@ tr.sub {
     margin-left: 20px;
 }
 
-.ingredientTable button {
-  background-color:inherit;
-  color:var(--mid-blue);
-  border:var(--mid-blue) 1px solid;
-  font-size:10px;
-  /* padding:4px; */
+.filterSelect{
+  color:var(--dark-grey)
+}
+
+.filterTextInput{
+  color:var(--dark-grey)
+}
+
+.filterTextInput:placeholder:{
+  color:var(--dark-grey)
 }
 
 .recipeIngredientTable {
       border-radius: 11px;
 }
 
-.editMenu {
-    margin-left: 5px;
-    font-size: 18px;
-    width:470px;
+.ingredientTable button {
+  background-color:inherit;
+  font-size:10px;
+  padding: 6px;
 }
 
-.mealTitleBar{
-  width:400px;
+.ingredientTableButton{
+  color:var(--mid-blue);
+  border:var(--mid-blue) 1px solid;
+}
+
+.ingredientTableButton:hover{
+  color:white;
+  background-color:var(--mid-blue);
+}
+
+.removeIngredient{
+  color:var(--accent-red);
+  border:var(--accent-red) 1px solid;
+}
+
+.removeIngredient:hover{
+  color:white;
+  background-color:var(--accent-red);
+}
+
+.addItemCell:hover {
+  background-color:white;
+}
+
+.addItemCell{
+  border:0px
 }
 
 /* Full-width input fields */
@@ -244,6 +291,8 @@ td > input, td > select {
   border: white 6px solid;
 }
 
+
+
 /*remove padding for table input fields */
 
 .tableInput {
@@ -266,6 +315,10 @@ button:hover {
     opacity: 0.8;
 }
 
+button > * {
+  pointer-events: none;
+}
+
 /* Extra styles for the cancel button */
 
 .cancelbtn {
@@ -285,8 +338,13 @@ font-size: 9px;
 color: var(--dark-blue);
 }
 
-.mealbtn:hover, .recipebtn:hover{
+.mealbtn:hover{
   background-color: var(--dark-blue);
+  color:var(--light-grey);
+}
+
+.recipebtn:hover{
+  background-color: var(--very-dark-blue);
   color:var(--light-grey);
 }
 
@@ -300,7 +358,7 @@ color: var(--dark-blue);
 .mealTitle {
     font-size: 16px;
     font-weight: bold;
-    margin: 6px;
+    margin: 3px;
 }
 
 .recipeTitle {
@@ -320,7 +378,7 @@ color: var(--dark-blue);
     /* Hidden by default */
     position: fixed;
     /* Stay in place */
-    z-index: 1;
+    z-index: 300;
     /* Sit on top */
     left: 0;
     top: 0;
@@ -329,9 +387,6 @@ color: var(--dark-blue);
     height: 100%;
     /* Full height */
     overflow: auto;
-    /* Enable scroll if needed */
-    background-color: rgb(0, 0, 0);
-    /* Fallback color */
     background-color: rgba(0, 0, 0, 0.4);
     /* Black w/ opacity */
     padding-top: 60px;
@@ -341,30 +396,35 @@ color: var(--dark-blue);
 /* Modal Content/Box */
 
 .modal-content {
-    background-color: var(--dark-grey);
-    color:var(--light-grey);
+    background-color: var(--light-grey);
+    color:var(--dark-purple);
     margin: 5% auto 25% auto;
     width: 600px;
 }
 
 .modal-content select, .modal-content input{
   color:var(--dark-grey);
-  background-color:var(--light-grey)
-
+  background-color:white;
 }
 
 .modal-content .listItem {
   background-color:inherit;
-  border:var(--light-grey) 1px solid;
+  border:var(--dark-purple) 1px solid;
+  color:var(--dark-purple)
 }
 
 .modal-content .removeListItem{
-  color:var(--light-grey)
+  color:var(--dark-purple);
+  background-color:var(--light-grey) !important;
 }
 
-/* .modal-content button{
-  background-color: var(--dark-blue)
-} */
+.modal-content button{
+  background-color: var(--dark-purple)
+}
+
+.modal-content .recipeTitle {
+  color:var(--dark-purple);
+}
 
 h3 {
     font-size: 25px;
@@ -379,37 +439,6 @@ h4 {
     margin: 15px 0;
 }
 
-.shoppingbtn {
-    background-color: #B5C9F0;
-    color: black;
-    margin: 0px 7px 20px 0px;
-    border-radius: 4px;
-    height: 35px;
-    font-size: 16px;
-}
-
-.shoppingbtn-active {
-    margin: 0px 7px 20px 0px;
-    border-radius: 4px;
-    height: 35px;
-    font-size: 16px;
-}
-
-.shoppingbtn-empty {
-    background-color: #cccccc;
-    margin: 0px 7px 20px 0px;
-    border-radius: 4px;
-    height: 35px;
-    font-size: 16px;
-}
-
-.shoppingbtn-active-empty {
-    background-color: #666666;
-    margin: 0px 7px 20px 0px;
-    border-radius: 4px;
-    height: 35px;
-    font-size: 16px;
-}
 
 
 .listItem {
@@ -421,15 +450,84 @@ h4 {
     display: inline-block;
 }
 
+
+.shoppingBtnDiv{
+  padding:10px 0 0 0;
+  position:fixed;
+  width:-webkit-fill-available;
+  z-index:100;
+  background-color:inherit;
+}
+
+.shoppingBtnDiv button{
+  background-color: inherit;
+  color:var(--dark-blue);
+  border:var(--dark-blue) 1px dotted;
+  border-bottom:0px;
+  margin: 0 7px 0 0;
+  border-top-right-radius: 4px;
+  border-top-left-radius: 4px;
+  height: 35px;
+  font-size: 15px;
+  display:none;
+}
+
+.shoppingbtn:hover{
+  background-color:var(--dark-blue);
+  color:white;
+}
+
+.shoppingbtn-empty:hover{
+  background-color:var(--dark-grey);
+  color:white !important;
+}
+
+.shoppingbtn-active {
+  background-color:white !important;
+}
+
+.shoppingbtn-empty {
+  color:var(--dark-grey) !important;
+  border-color:var(--dark-grey) !important;
+}
+
+.shoppingbtn-active-empty {
+  color:var(--light-grey) !important;
+  background-color: var(--dark-grey) !important;
+}
+
+.shoppingTableDiv{
+      margin-top: 44px;
+      background-color:white;
+      padding:10px 0px 20px 10px;
+      position: relative;
+      z-index:2;
+      border:var(--dark-blue) 1px dotted;
+}
+
 .shoppingTable {
     font-family: "Trebuchet MS", Arial, Helvetica, sans-serif;
     border-collapse: collapse;
     width: 100%;
+    position: relative;
 }
 
 .shoppingTable td {
     padding: 8px;
+    border-top: 0px;
+    border-bottom: 1.5px dotted var(--mid-blue);
 }
+
+/* .shoppingTable table tr td:nth-child(1){
+  width: 220px
+}
+.shoppingTable table tr td:nth-child(2){
+  width: 40px
+}
+.shoppingTable table tr td:nth-child(3){
+  width: 80px */
+}
+
 
 .shoppingTable th {
     padding: 8px;
@@ -473,7 +571,7 @@ table input, table select {
 }
 
 .cellWithInput{
-  padding: 9px 5px 9px 0;
+  padding: 9px 9px 9px 0;
 }
 
 .insideCellElement{
@@ -554,16 +652,20 @@ table input, table select {
 .tags-input {
     display: inline-block;
     background: #FFF;
-    border-radius: 2px;
-    box-shadow: inset 0 1px 2px rgba(0, 0, 0, .1);
     width:inherit;
     margin: 8px 0;
+    border:0;
 }
 
 td > .tags-input{
   width:90%;
-  padding: 0 2px;
+  padding: 0;
   margin:0px;
+  height: 28px;
+}
+
+td > .tags-input input{
+  padding: 10px 6px 6px 6px;
 }
 
 .tags-input .tag {
@@ -624,6 +726,7 @@ td > .tags-input{
     width:55px;
     height:25px;
     margin: 3px 0 !important;
+    background:inherit;
 }
 
 .modifierText{
@@ -632,7 +735,8 @@ td > .tags-input{
 }
 .comments-textarea{
   height:100px;
-  width:400px;
+  width:-webkit-fill-available;
+  font-family:sans-serif;
 }
 .modal-title{
    font-size: 16px;
@@ -646,14 +750,7 @@ td > .tags-input{
   margin: 3px 0 !important;
 }
 
-.mealTitleBar{
-  margin: 6px;
-padding: 1px;
-}
-
-
-
-specials {
+notes {
     display:block;
     padding:3px 0;
     font-size: 10px;
@@ -664,8 +761,8 @@ specials {
   color: var(--accent-red);
   background-color: white;
   border: 1px solid var(--accent-red);
-  font-weight: bold;
-  padding: 3px 7px;
+  padding: 7px;
+  font-size:9px;
 }
 
 .removeLineBtn:hover{
@@ -675,4 +772,60 @@ specials {
 
 .adminTable{
   width:820px;
+}
+
+
+/* edit menu */
+
+.editButtonDiv button{
+  width:160px;
+  margin-right:10px;
+  margin-bottom:15px;
+}
+
+.editButtonDiv{
+  display:none;
+  position:fixed;
+  background-color:inherit;
+  width:820px;
+  z-index:200;
+}
+
+.editMenu {
+margin-top: 50px;
+    font-size: 18px;
+    width:470px;
+}
+
+.mealTitleBar{
+  margin: 14px 0 0 0;
+width:460px;
+}
+
+.editMenuRecipe{
+width: 485px;
+background-color: white;
+color: var(--dark-blue);
+font-weight: bold;
+font-size: 12px;
+padding: 6px 8px;
+margin: 4px 0;
+display: inline-block;
+}
+
+.editMenuRecipe button{
+  padding:0;
+  color:inherit;
+}
+
+table button {
+  background-color:inherit;
+}
+
+.ingredientSearchDiv{
+  height: 50px;
+margin-top: -53px;
+z-index: 500;
+position: fixed;
+right: 80px;
 }

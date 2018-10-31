@@ -13,6 +13,18 @@ const url = require('url');
 // be closed automatically when the JavaScript object is garbage collected.
 let mainWindow;
 
+require('electron-context-menu')({
+   prepend: (params, browserWindow) => [{
+      label: 'Rainbow',
+      // Only show it when right-clicking images
+      visible: params.mediaType === 'image'
+   }]
+});
+
+app.on('ready', () => {
+   mainWindow = new BrowserWindow();
+});
+
 function createWindow() {
    // Create the browser window.
    mainWindow = new BrowserWindow({

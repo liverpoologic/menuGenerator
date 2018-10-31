@@ -1,3 +1,5 @@
+// TODO: make comments box show specials above it. Make into a proper modal which clears on submit
+
 module.exports = function(DATA) {
    var d = DATA.dict;
    var c = DATA.config
@@ -5,48 +7,87 @@ module.exports = function(DATA) {
    var addMenu = require('./addMenu.js')(DATA);
 
 
-   var mealTypeFilter, recipeTypeFilter, morvFilter;
+   var mealTypeFilter, recipeTypeFilter, morvFilter, ELS;
 
-   function generator() {
-      u.ID("addRecipeApplyFilters").addEventListener("click", ApplyFilters); // apply filters button in add recipe modal
-      u.ID("addRecipeClearFilters").addEventListener("click", ClearFiltersBtn); // clear filters button in add recipe modal
-      u.ID("addRecipeToMenu_submit").addEventListener("click", AddRecipeToMenu); // add recipes to menu (submit button)
-      u.ID("selectEditMenu").addEventListener("change", RefreshEditMenu); // reload menu when new menuTitle is selected
-      u.ID("multiplyUp_submit").addEventListener("click", MultiplyUp); // multiply up a given menu when you press the 'submit' button in the multiply up modal
+   function generator(hTabEls) {
 
-      u.ID("addRecipeToMenu_btn").addEventListener("click", function() { // show add recipe modal and refresh contents when button is clicked
-         RefreshAddRecipeModal();
-         u.ShowElements("addRecipeToMenu", "block");
-      });
-      u.ID("multiplyUp_btn").addEventListener("click", function() { // show multiple up modal when button is clicked
-         u.ShowElements("multiplyUp", "block");
-      });
-      u.ID("editMealsEditMenu_btn").addEventListener("click",
-         function() { // show 'edit meals' modal by calling addMenu code when button is clicked
-            addMenu.CreateAddMealModal(u.ID("selectEditMenu").value);
-            u.ShowElements("addMealsToMenu", "block");
-         });
-      u.ID("addRecipeCancel_btn").addEventListener("click", function() { // hide add recipe modal when cancel button is pressed
-         u.HideElements('addRecipeToMenu');
-      });
-      u.ID("multiplyUpCancel_btn").addEventListener("click", function() { // hide multiply up modal when cancel button is pressed
-         u.HideElements("multiplyUp");
-      });
-      u.ID("close_addMeals_modal_btn").addEventListener("click", function() { // hide close meals when cancel button is pressed
-         u.HideElements("addMealsToMenu");
-      });
+      var tabcontent = u.ID('editMenu_tab_content');
+      ELS = CreatePageEls(tabcontent);
+      ELS.selectMenu = hTabEls.selectMenu;
+      ELS.printMenu = hTabEls.printMenu;
 
-      u.ID("selectRecipeForMenu").addEventListener("change", function() { // auto-select morv for recipes
-         let recipeName = u.ID("selectRecipeForMenu").value;
-         if (recipeName === "_default") {
-            return "no recipe selected";
-         } else {
-            u.ID("selectMorvForMenu").value = d.recipes[recipeName].morv;
-         }
-      });
+      ELS.selectMenu.addEventListener('change', RefreshEditMenu);
 
-      window.addEventListener('update', RefreshPage);
+      // u.ID("addRecipeApplyFilters").addEventListener("click", ApplyFilters); // apply filters button in add recipe modal
+      // u.ID("addRecipeClearFilters").addEventListener("click", ClearFiltersBtn); // clear filters button in add recipe modal
+      // u.ID("addRecipeToMenu_submit").addEventListener("click", AddRecipeToMenu); // add recipes to menu (submit button)
+      // u.ID("selectEditMenu").addEventListener("change", RefreshEditMenu); // reload menu when new menuTitle is selected
+      // u.ID("multiplyUp_submit").addEventListener("click", MultiplyUp); // multiply up a given menu when you press the 'submit' button in the multiply up modal
+      //
+      // u.ID("addRecipeToMenu_btn").addEventListener("click", function() { // show add recipe modal and refresh contents when button is clicked
+      //    RefreshAddRecipeModal();
+      //    u.ShowElements("addRecipeToMenu", "block");
+      // });
+      // u.ID("multiplyUp_btn").addEventListener("click", function() { // show multiple up modal when button is clicked
+      //    u.ShowElements("multiplyUp", "block");
+      // });
+      // u.ID("editMealsEditMenu_btn").addEventListener("click",
+      //    function() { // show 'edit meals' modal by calling addMenu code when button is clicked
+      //       addMenu.CreateAddMealModal(u.ID("selectEditMenu").value);
+      //       u.ShowElements("addMealsToMenu", "block");
+      //    });
+      // u.ID("addRecipeCancel_btn").addEventListener("click", function() { // hide add recipe modal when cancel button is pressed
+      //    u.HideElements('addRecipeToMenu');
+      // });
+      // u.ID("multiplyUpCancel_btn").addEventListener("click", function() { // hide multiply up modal when cancel button is pressed
+      //    u.HideElements("multiplyUp");
+      // });
+      // u.ID("close_addMeals_modal_btn").addEventListener("click", function() { // hide close meals when cancel button is pressed
+      //    u.HideElements("addMealsToMenu");
+      // });
+      //
+      // u.ID("selectRecipeForMenu").addEventListener("change", function() { // auto-select morv for recipes
+      //    let recipeName = u.ID("selectRecipeForMenu").value;
+      //    if (recipeName === "_default") {
+      //       return "no recipe selected";
+      //    } else {
+      //       u.ID("selectMorvForMenu").value = d.recipes[recipeName].morv;
+      //    }
+      // });
+      //
+      // window.addEventListener('update', RefreshPage);
 
+   }
+
+   function CreatePageEls(parentDiv) {
+      let els = {};
+
+      els.btnDiv = u.CreateEl('div').parent(parentDiv).className('editButtonDiv').end();
+
+      els.addRecipeBtn = u.CreateEl('button').parent(els.btnDiv).id('addRecipeToMenu_btn').innerText('Add Recipe').end();
+      els.addRecipeBtn = u.CreateEl('button').parent(els.btnDiv).id('multiplyUp_btn').innerText('Multiply Up').end();
+      els.addRecipeBtn = u.CreateEl('button').parent(els.btnDiv).id('editMealsEditMenu_btn').innerText('Edit Meals').end();
+
+      els.menuDiv = u.CreateEl('div').className('editMenu').parent(parentDiv).end();
+
+      els.commentsModal = CreateCommentsModal();
+
+      return els;
+   }
+
+   function CreateCommentsModal() {
+      let els = {};
+      els.modal = u.CreateEl('div').id('Comments Modal').className('modal').parent(u.ID('modals')).end();
+      els.modalContent = u.CreateEl('div').className('modal-content animate').parent(els.modal).end();
+      els.titleContainer = u.CreateEl('div').className('container').style('padding-bottom:0px').parent(els.modalContent).end();
+      els.title = u.CreateEl('text').className('modal-title').innerText('Add Comments to: ').parent(els.titleContainer).end();
+      els.menuTitle = u.CreateEl('text').className('modal-title').parent(els.titleContainer).end();
+      els.content = u.CreateEl('div').className('container').parent(els.modalContent).end();
+      els.comments = u.CreateEl('textarea').parent(els.content).className('comments-textarea').end();
+      u.Br(els.content);
+      els.saveBtn = u.CreateEl('button').parent(els.content).innerText('Save Comments').end();
+
+      return els;
    }
 
    function RefreshPage(EV) {
@@ -63,8 +104,8 @@ module.exports = function(DATA) {
    }
 
    function RefreshAllModals() {
-      RefreshAddRecipeModal();
-      RefreshMultiplyUpModal();
+      //    RefreshAddRecipeModal();
+      //  RefreshMultiplyUpModal();
    }
    /** function to create list of checkboxes - returns 'newEnum' which is the list of filter options including 'all'
     * @param {array} sourceEnum the enum which you want to generate the filter list from
@@ -223,9 +264,8 @@ module.exports = function(DATA) {
    /** generates a list of meals and recipes */
    function RefreshEditMenu() {
       console.log('refresh edit menu');
-      let menuTitle = u.ID("selectEditMenu").value;
-      let menuDiv = u.ID("editMenuDiv");
-      menuDiv.innerHTML = "";
+      let menuTitle = ELS.selectMenu.value;
+      ELS.menuDiv.innerHTML = "";
       let editBtnIDs = ["addRecipeToMenu_btn", "multiplyUp_btn", "editMealsEditMenu_btn"];
       if (menuTitle === "_default") { // clears page (i.c.enums. edit buttons) if no menu is selected and ends function
          u.HideElements(editBtnIDs);
@@ -243,68 +283,64 @@ module.exports = function(DATA) {
       for (let i = 0; i < menu.meals.length; i++) {
          // generate and display meal title c.enums.g. Friday Dinner
          let meal = d.menus.getMeal(menuTitle, i);
-         let mealTitleBar = u.CreateEl('div').parent(menuDiv).className('mealTitleBar').end();
+         let mealTitleBar = u.CreateEl('div').parent(ELS.menuDiv).className('mealTitleBar').end();
          let day = c.enums.weekday[new Date(meal.date).getDay()];
          let mealTitle = u.CreateEl("text").parent(mealTitleBar).id(`editMealTitle${i}`).className("mealTitle").style("display:inline-block").innerText(`${day} ${meal.mealType}`).end();
 
          CreateModifierDiv(mealTitleBar, i, menuTitle);
 
          // generate and display the mealDiv where the recipes for that meal will go
-         let mealDiv = u.CreateElement("div", menuDiv, `editMealDiv${i}`);
+         let mealDiv = u.CreateElement("div", ELS.menuDiv, `editMealDiv${i}`);
 
          meal.recipes.forEach((menuRecipe, j) => {
             let recipe = d.recipes[menuRecipe.recipeTitle];
-            let editRecipeTitleDiv = u.CreateElement("div", mealDiv, `editRecipeTitleDiv${i}${j}`, "listItem");
-            let recipeTitle = u.CreateElement("text", editRecipeTitleDiv, `editRecipeTitle${i}${j}`, "recipeTitle");
-            if (recipe === null) {
-               return;
-            }
-
-            if (menuRecipe.morv === "b") {
-               recipeTitle.innerText = `${menuRecipe.recipeTitle}`;
+            let editRecipeTitleDiv = u.CreateElement("div", mealDiv, `editRecipeTitleDiv${i}${j}`, "editMenuRecipe");
+            let recipeTitle = u.CreateElement("text", editRecipeTitleDiv, `editRecipeTitle${i}${j}`);
+            if (!recipe) {
+               recipeTitle.innerText = `Missing Recipe: ${menuRecipe.recipeTitle}`
             } else {
-               recipeTitle.innerText = `${menuRecipe.recipeTitle} - ${menuRecipe.morv}`;
-            }
 
-            //give place to input specials numbers if its a special morv
-            if (menuRecipe.morv === 'sp') {
-               console.log('recipe morv is sp');
-               CreateSpecialInput(menuTitle, i, j, mealDiv);
-            }
-
-            recipeTitle.addEventListener('click', function() {
-               var div = u.ID('add_comments_div');
-               div.innerHTML = "";
-
-               u.CreateEl('text').parent(div).className('modal-header').innerText(`Add Comments - ${menuRecipe.recipeTitle}`).end();
-               u.CreateEl('br').parent(div).end();
-               u.CreateEl('br').parent(div).end();
-               var textArea = u.CreateEl('textarea').parent(div).className('comments-textarea').id('add_comments').end();
-               u.CreateEl('br').parent(div).end();
-               var save_button = u.CreateEl('button').id('save_comments').parent(div).innerText('Save Comments').end();
-
-               var currentComments = d.menus.getRecipe(menuTitle, i, j).comments;
-               textArea.value = currentComments ? currentComments : "";
-
-               u.ID('editRecipeInMenu').style.display = 'block';
-               save_button.addEventListener('click', SaveComments);
-
-               function SaveComments() {
-                  d.menus.addComments(menuTitle, i, j, textArea.value);
-                  d.write();
-                  u.ID('editRecipeInMenu').style.display = 'none';
+               if (menuRecipe.morv === "b") {
+                  recipeTitle.innerText = `${menuRecipe.recipeTitle}`;
+               } else {
+                  recipeTitle.innerText = `${menuRecipe.recipeTitle} - ${menuRecipe.morv}`;
                }
-            });
-            editRecipeTitleDiv.style.backgroundColor = c.enums.recipeTypeColours[recipe.recipeType]
-            if (recipe.recipeType === "core") {
-               editRecipeTitleDiv.style.color = "white";
-            }
 
-            let deleteRecipeFromMenu = u.CreateElement("button", editRecipeTitleDiv, `editDeleteRecipe${i}${j}`, "removeListItem", "x");
+               //give place to input specials numbers if its a special morv
+               if (menuRecipe.morv === 'sp') {
+                  console.log('recipe morv is sp');
+                  CreateSpecialInput(menuTitle, i, j, mealDiv);
+               }
+
+               editRecipeTitleDiv.style.color = c.enums.recipeTypeColours[recipe.recipeType]
+            }
+            let deleteRecipeFromMenu = u.CreateElement("button", editRecipeTitleDiv, `editDeleteRecipe${i}${j}`, "removeListItem");
+            u.Icon('times', deleteRecipeFromMenu);
             deleteRecipeFromMenu.addEventListener("click", function() {
                d.menus.deleteRecipe(menuTitle, i, j);
                d.write();
             });
+
+            let editRecipeComments = u.CreateElement("button", editRecipeTitleDiv, `editRecipeComments${i}${j}`, "removeListItem");
+            u.Icon('pen', editRecipeComments);
+            editRecipeComments.style = 'margin-right:5px'
+            editRecipeComments.addEventListener("click", function() {
+               ELS.commentsModal.menuTitle.innerText = menuRecipe.recipeTitle;
+
+               var currentComments = d.menus.getRecipe(menuTitle, i, j).comments;
+               ELS.commentsModal.comments.value = currentComments ? currentComments : "";
+
+               ELS.commentsModal.modal.style.display = 'block';
+               ELS.commentsModal.saveBtn.addEventListener('click', SaveComments);
+
+               function SaveComments(e) {
+                  ELS.commentsModal.modal.style.display = 'none';
+                  d.menus.addComments(menuTitle, i, j, ELS.commentsModal.comments.value);
+                  d.write();
+                  e.target.removeEventListener('click', SaveComments);
+               }
+            });
+
          });
       }
    }

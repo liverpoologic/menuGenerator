@@ -25,8 +25,6 @@ module.exports = function(DATA) {
    function CreatePageEls(parentDiv) {
       var els = {};
 
-      els.heading = u.CreateEl('h2').innerText('Add Menu').parent(parentDiv).end();
-
       els.subBox = u.CreateEl('div').parent(parentDiv).style('height:70px; width:430px;').end();
       els.menuTitle = u.CreateEl('input').type('text').placeholder('Menu Title').parent(els.subBox).end();
       u.Br(els.subBox);

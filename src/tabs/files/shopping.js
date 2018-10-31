@@ -1,18 +1,37 @@
 const ipc = require('electron').ipcRenderer;
 
+// TODO: click on something in shopping list and see where the ingredient comes from
+
 module.exports = function(DATA) {
    var d = DATA.dict;
    var c = DATA.config
    var u = require("../../utilities")(DATA);
 
    var shopBtnStatus = [];
+   var ELS;
 
+   function generator(hTabEls) {
 
-   function generator() {
-      u.ID("selectMenuForShopping").addEventListener("change", RefreshLists);
-      u.ID("printShoppingbtn").addEventListener('click', PrintShopping);
-      window.addEventListener('update', UpdateListener)
+      var tabcontent = u.ID('shopping_tab_content');
+      ELS = CreatePageEls(tabcontent);
+      ELS.selectMenu = hTabEls.selectMenu;
+      ELS.printMenu = hTabEls.printMenu;
 
+      ELS.selectMenu.addEventListener("change", RefreshLists);
+      ELS.printMenu.addEventListener("click", PrintShopping);
+
+      window.addEventListener('update', UpdateListener);
+
+   }
+
+   function CreatePageEls(parentDiv) {
+      var els = {};
+
+      els.btnDiv = u.CreateEl('div').parent(parentDiv).className('editButtonDiv').end();
+      els.shoppingBtnDiv = u.CreateEl('div').className('shoppingBtnDiv').parent(parentDiv).end();
+      els.shoppingDiv = u.CreateEl('div').parent(parentDiv).end();
+
+      return els;
    }
 
    function UpdateListener(EV) {
@@ -25,36 +44,38 @@ module.exports = function(DATA) {
    }
    /** refreshes the buttons in the 'shopping' tab */
    function RefreshButtons() {
-      var shoppingDiv = u.ID("shopping");
-      var shoppingBtnDiv = u.ID("shoppingbtndiv");
-      shoppingBtnDiv.innerHTML = "";
+      ELS.shoppingBtnDiv.innerHTML = "";
+      ELS.shoppingDiv.innerHTML = "";
 
-      for (let i = 0; i < c.enums.shopEnum.length; i++) { // initialise buttons
+      c.enums.shopEnum.forEach((shop, i) => {
          shopBtnStatus[i] = {
-            shopName: c.enums.shopEnum[i],
+            shopName: shop,
             empty: false,
             active: false
          };
-      }
-      console.log(shoppingDiv);
+      });
 
-      for (let i = 0; i < c.enums.shopEnum.length; i++) { // create buttons
-         let shop = c.enums.shopEnum[i];
-         let btnid = shop.replace(' ', '_');
-         let btn = u.CreateElement("button", shoppingBtnDiv, `shoppingbtn${btnid}`, "shoppingbtn", shop, "none");
-      }
-      for (let i = 0; i < c.enums.shopEnum.length; i++) { // create divs and tables
-         let shop = c.enums.shopEnum[i];
-         let div = u.CreateElement("div", shoppingDiv, `shoppingdiv${shop}`, "", "", "none");
-         let shoppingTable = u.CreateElement("table", div, `shoppingtable${shop}`, "shoppingTable");
-      }
-      for (let i = 0; i < c.enums.shopEnum.length; i++) { // add event listeners to show/hide divs on button click
-         let btnid = c.enums.shopEnum[i].replace(' ', '_');
-         u.ID(`shoppingbtn${btnid}`).addEventListener("click", function() {
+      ELS.btns = [];
+      ELS.divs = [];
+      ELS.tables = [];
+
+      //work out btn width. 827 for 820 width plus margin at far right
+      var btnWidth = 827 / c.enums.shopEnum.length - 7;
+
+      c.enums.shopEnum.forEach((shop, i) => {
+         let btn = u.CreateEl('button').parent(ELS.shoppingBtnDiv).className('shoppingbtn').style(`width:${btnWidth}px`).innerText(shop).end();
+         ELS.btns.push(btn);
+         let div = u.CreateEl('div').parent(ELS.shoppingDiv).style('display:none').className('shoppingTableDiv').end();
+         ELS.divs.push(div);
+         let shoppingTable = u.CreateEl('table').parent(div).className('shoppingTable').end();
+         ELS.tables.push(shoppingTable);
+
+         btn.addEventListener("click", function() {
             ShowShoppingDiv(i);
          });
-      }
-      RefreshLists();
+
+         RefreshLists();
+      });
    }
 
    /** prints the shopping list as shown on shopping tab */
@@ -127,107 +148,75 @@ module.exports = function(DATA) {
 
    /** refresh shopping lists in response to new menu */
    function RefreshLists() {
-      console.log('in refresh lists')
-      console.log(u.ID("selectMenuForShopping"));
-      let btns = [];
-      for (let i = 0; i < c.enums.shopEnum.length; i++) { // create list of button IDs
-         let btnid = c.enums.shopEnum[i].replace(' ', '_');
-         btns.push(`shoppingbtn${btnid}`);
-      }
-      let menuTitle = u.ID("selectMenuForShopping").value;
-      console.log(u.ID("selectMenuForShopping").value);
+      let menuTitle = ELS.selectMenu.value;
       if (menuTitle === "_default" || !menuTitle) {
-         u.HideElements(btns);
+         ELS.btns.forEach(btn => btn.style.display = 'none')
          return "error - no menuTitle present";
       }
-      console.log(btns);
-      u.ShowElements(btns, "inline");
-      for (let i = 0; i < c.enums.shopEnum.length; i++) {
-         let shop = c.enums.shopEnum[i];
-         u.ClearTable(`shoppingtable${shop}`, 0);
-         let rowNumber = 0;
-         let menu = d.menus.getMenu(menuTitle);
-         menu.meals.forEach((meal, meal_index) => {
-            meal.recipes.forEach(menuRecipe => {
-               let recipe = d.recipes[menuRecipe.recipeTitle];
-               recipe.ingredients.forEach(ingredient => {
-                  let food = d.foods[ingredient.foodName];
-                  var qLarge = u.CalculateQLarge(menuTitle, meal_index, menuRecipe, ingredient);
-                  if (food.shop === shop) {
-                     let numberOfRows = u.ID(`shoppingtable${shop}`).rows.length;
-                     if (numberOfRows === 0) {
-                        let cellIDs = [];
-                        for (let x = 0; x < 3; x++) { // add list of ids to an array
-                           cellIDs[x] = `${shop}row${rowNumber}col${x}`;
-                        }
-                        u.CreateRow(`shoppingtable${shop}`, "td", [ingredient.foodName, qLarge, food.unit], cellIDs, [220, 40, 80], "px");
-                        rowNumber++;
-                     } else {
-                        for (let m = 0; m < numberOfRows; m++) {
-                           if (u.ID(`${shop}row${m}col0`).innerText === ingredient.foodName) {
-                              let currentValue = parseFloat(u.ID(`${shop}row${m}col1`).innerText);
-                              let newValue = currentValue + qLarge;
-                              u.ID(`${shop}row${m}col1`).innerText = newValue;
-                              break;
-                           } else if (m === numberOfRows - 1) {
-                              let cellIDs = [];
-                              for (let x = 0; x < 3; x++) {
-                                 cellIDs[x] = `${shop}row${rowNumber}col${x}`;
-                              }
-                              u.CreateRow(`shoppingtable${shop}`, "td", [ingredient.foodName, qLarge, food.unit], cellIDs);
-                              rowNumber++;
-                           } else {
-                              continue;
-                           }
-                        }
-                     }
+      ELS.btns.forEach(btn => btn.style.display = 'inline')
+      ELS.tables.forEach(table => table.innerHTML = "");
+
+      //create an objects where each key is one ingredient.
+      var indexedIngredients = {};
+
+      let menu = d.menus.getMenu(menuTitle);
+      menu.meals.forEach((meal, meal_index) => {
+         meal.recipes.forEach(menuRecipe => {
+            let recipe = d.recipes[menuRecipe.recipeTitle];
+            recipe.ingredients.forEach(ingredient => {
+               let food = d.foods[ingredient.foodName];
+               var qLarge = u.CalculateQLarge(menuTitle, meal_index, menuRecipe, ingredient);
+               if (Object.keys(indexedIngredients).indexOf(ingredient.foodName) > -1) {
+                  indexedIngredients[ingredient.foodName].quantity = indexedIngredients[ingredient.foodName].quantity + qLarge;
+               } else {
+                  indexedIngredients[ingredient.foodName] = {
+                     quantity: qLarge,
+                     unit: food.unit,
+                     shop: food.shop
                   }
-               });
-            });
+               }
+            })
          });
-         let numberOfRows = u.ID(`shoppingtable${shop}`).rows.length;
+      });
+
+      c.enums.shopEnum.forEach((shop, i) => {
+         //create the table
+         Object.keys(indexedIngredients).sort().forEach(foodName => {
+            let food = indexedIngredients[foodName];
+            if (food.shop == shop) {
+               let thisRow = u.CreateEl('tr').parent(ELS.tables[i]).end();
+               // work out display unit
+               let display = u.DisplayIngredient(null, food.quantity, food.unit);
+               [foodName, display[1], display[2]].forEach((ea, x) => {
+                  u.CreateEl('td').parent(thisRow).innerText(ea).end();
+               });
+            }
+         });
+
+         let numberOfRows = ELS.tables[i].rows.length;
          if (numberOfRows === 0) {
             shopBtnStatus[i].empty = true;
-            continue;
+            return;
          }
          shopBtnStatus[i].empty = false;
-         for (let n = 0; n < numberOfRows; n++) {
-            let col = [];
-            for (let x = 0; x < 3; x++) { // col is now an array with the three cells.
-               col[x] = u.ID(`${shop}row${n}col${x}`);
-            }
-            let unit = null;
-            let quantityLarge = parseFloat(col[1].innerText);
-            if (col[2].innerText !== null) {
-               unit = col[2].innerText;
-            }
-            let display = u.DisplayIngredient(null, quantityLarge, unit);
-            col[1].innerText = display[1];
-            col[2].innerText = display[2];
-         }
-      }
+      });
       SetButtonColour();
-   }
+   };
 
    /** show a given shopping div and hide the rest
     * @param {number} i the number of the shop (0=bakers, etc.) */
    function ShowShoppingDiv(i) {
-      for (let j = 0; j < c.enums.shopEnum.length; j++) {
-         if (i === j) {
-            u.ShowElements(`shoppingdiv${c.enums.shopEnum[j]}`, "block");
-            shopBtnStatus[j].active = true;
-         } else {
-            u.HideElements(`shoppingdiv${c.enums.shopEnum[j]}`);
-            shopBtnStatus[j].active = false;
-         }
-      }
+      ELS.divs.forEach(div => div.style.display = 'none')
+      shopBtnStatus.forEach(btnStatus => btnStatus.active = false);
+      ELS.divs[i].style = 'display:block';
+      shopBtnStatus[i].active = true;
+
       SetButtonColour();
    }
 
    function SetButtonColour() {
       for (let i = 0; i < shopBtnStatus.length; i++) {
-         let btnid = c.enums.shopEnum[i].replace(' ', '_');
-         let btn = u.ID(`shoppingbtn${btnid}`);
+         let btn = ELS.btns[i];
          if (shopBtnStatus[i].active) {
             if (shopBtnStatus[i].empty) {
                btn.className = "shoppingbtn-active-empty";

@@ -6,25 +6,85 @@ module.exports = function(DATA) {
    var c = DATA.config
    var u = require("../../utilities")(DATA);
 
-   var cellWidths = [60, 150, 150, 20, 15, 15];
+   var ELS;
 
-   function generator() {
+   function generator(hTabEls) {
+
+      var tabcontent = u.ID('people_tab_content');
+      ELS = CreatePageEls(tabcontent);
+      ELS.selectMenu = hTabEls.selectMenu;
+      ELS.selectMenu.addEventListener("change", CreatePeopleList);
+
       //event listener to load people list page when menu is selected
-      u.ID("selectPeopleMenu").addEventListener("change", CreatePeopleList);
-      u.CreateElement("table", u.ID('viewPeopleDiv'), 'specialsTable');
+      ELS.saveBtn.addEventListener('click', saveAllergens);
 
-      var saveBtn = u.CreateEl('button').id('saveAllergens').parent(u.ID('viewPeopleDiv')).innerText('Save').end();
-      saveBtn.addEventListener('click', saveAllergens);
+      ELS.plusButton.addEventListener("click", addAllergenRow);
+
+      //  window.addEventListener('update', UpdateListener);
+
+   }
+
+   function CreatePageEls(parentDiv) {
+      console.log('creating people page els')
+      var els = {};
+      els.peopleDiv = u.CreateEl('div').parent(parentDiv).style('display:none').end();
+      els.peopleTable = u.CreateEl('table').parent(els.peopleDiv).className('ingredientTable').style('margin-top:15px').id('specialsTable').end();
+      els.peopleTableHeader = u.CreateEl('tr').parent(els.peopleTable).end();
+
+      var cells = [{
+            title: 'Person',
+            width: 60
+         },
+         {
+            title: 'Allergens',
+            width: 200
+         }, {
+            title: 'Foods',
+            width: 300
+         }, {
+            title: 'Morv',
+            width: 40
+         }, {
+            title: '',
+            width: 15
+         },
+      ];
+
+      cells.forEach(ea => {
+         u.CreateEl('th').parent(els.peopleTableHeader).innerText(ea.title).style(`width:${ea.width}px`).end();
+      })
+
+      //add 'plus' row
+      let plusRow = els.peopleTable.insertRow();
+      console.log(plusRow);
+
+      // plusRow.className = 'addItemRow';
+      let plusCell = u.CreateEl('td').parent(plusRow).className('addItemCell').end();
+      els.plusButton = u.CreateEl('button').parent(plusCell).className('ingredientTableButton').end();
+      u.Icon('plus', els.plusButton)
+
+      u.Br(els.peopleDiv);
+      els.saveBtn = u.CreateEl('button').parent(els.peopleDiv).innerText('Save').end();
+
+      return els;
    }
 
    function CreatePeopleList(event) {
       RefreshAllergenTable(event.target.value);
+      if (ELS.selectMenu.value != '_default') {
+         ELS.peopleDiv.style = 'display:block'
+      } else {
+         ELS.peopleDiv.style = 'display:none'
+      }
    }
 
    function RefreshAllergenTable(menuTitle) {
-      u.ID('specialsTable').innerHTML = "";
-      var cellTitles = ["Person", "Allergens", "Foods", "Morv", "-", "+"];
-      u.CreateRow("specialsTable", "th", cellTitles, ["", "", "", "", "", "addSpecialRowHeader"], cellWidths, "px");
+
+      //clear everything that isn't the header row or the last 'plus' row
+      for (var i = 1; i < ELS.peopleTable.rows.length - 1;) {
+         ELS.peopleTable.deleteRow(i);
+      }
+
       var specials = d.menus[menuTitle].specials;
       if (specials) {
          Object.keys(specials).forEach(person => {
@@ -33,47 +93,52 @@ module.exports = function(DATA) {
       } else {
          addAllergenRow();
       }
-      u.ID('addSpecialRowHeader').addEventListener('click', function() {
-         addAllergenRow();
-      });
+      // u.ID('addSpecialRowHeader').addEventListener('click', function() {
+      //    addAllergenRow();
+      // });
    }
 
    function addAllergenRow(personName, specialData, rowIndex) {
-      var i = u.ID('specialsTable').rows.length;
-      var cellContents = ["", "", "", "", "-", "+"];
-      var cellIDs = ["", "", "", "", `agn-${i}`, `agn+${i}`];
+      if (typeof personName != 'string') personName = undefined;
+      var i = ELS.peopleTable.rows.length;
 
-      var newRow = u.CreateRow("specialsTable", "td", cellContents, cellIDs, cellWidths, "px", rowIndex);
+      rowIndex = rowIndex ? rowIndex : i - 1;
+      var newRow = ELS.peopleTable.insertRow(rowIndex);
 
       var inputConfig = [{
             elementType: 'input',
             type: 'text',
-            id: 'agnPerson',
             key: 'person'
          },
          {
             elementType: 'input',
             type: 'tags',
-            id: 'agnAllergen',
             dropdownSource: 'allergenList',
             key: 'allergens'
          },
          {
             elementType: 'input',
             type: 'tags',
-            id: 'agnFoods',
             dropdownSource: 'food',
             key: 'foods'
          },
          {
             elementType: 'select',
-            id: 'agnMorv',
-            key: 'morv'
+            key: 'morv',
+            id: 'peopleMorv'
+         },
+         {
+            elementType: 'button',
+            key: 'minus',
+            id: '-person',
+            className: 'removeLineBtn'
          }
       ];
-      var els = {};
+      let els = {};
       inputConfig.forEach((obj, ind) => {
-         els[obj.key] = u.CreateEl(obj.elementType).type(obj.typeType).id(`${obj.id}${i}`).parent(newRow.children[ind]).end();
+         let inputId = obj.id ? `${obj.id}${i-1}` : undefined;
+         let cell = u.CreateEl('td').parent(newRow).className('cellWithInput').end();
+         els[obj.key] = u.CreateEl(obj.elementType).id(inputId).className(obj.className).type(obj.type).parent(cell).end();
          if (obj.type === 'tags') {
             var valArray = [];
             try {
@@ -81,33 +146,37 @@ module.exports = function(DATA) {
             } catch (e) {
 
             }
-            console.log(valArray);
             tagsInput(els[obj.key], obj.dropdownSource, 'populate', ',', valArray);
+         } else if (obj.elementType === 'button') {
+            u.Icon('minus', els[obj.key])
          }
       });
+
       els.person.setAttribute('list', 'specialPeople');
       if (personName) els.person.setAttribute('value', personName);
-      var defaultVal = 'morv';
+
+      //TODO: fix this!
+      var defaultVal = 'M or V';
+
+      console.log(els.morv.id);
+      u.CreateDropdown(els.morv.id, ["m", "v"], false, undefined, 'M or V');
+
       if (specialData) {
-         defaultVal = specialData.morv;
+         els.morv.value = specialData.morv;
       }
-      u.CreateDropdown(els.morv.id, ["m", "v"], false, undefined, defaultVal);
 
-      u.ID(`agnPerson${i}`).addEventListener('change', selectPersonName);
+      els.person.addEventListener('change', selectPersonName);
 
-      u.ID(`agn+${i}`).addEventListener('click', function() {
-         addAllergenRow();
-      });
-      u.ID(`agn-${i}`).addEventListener('click', deleteAllergenRow);
+      els.minus.addEventListener('click', deleteAllergenRow);
    }
 
    function deleteAllergenRow() {
-      let table = u.ID('specialsTable');
+      let table = ELS.peopleTable;
       let i = u.GetNumber(event.target.id);
 
       //remove from dict obj if it exists
-      var menuTitle = u.ID('selectPeopleMenu').value;
-      var key = u.ID(`agnPerson${i}`).value;
+      var menuTitle = ELS.selectMenu.value;
+      var key = ELS.peopleTable.rows[i].cells[0].value;
       if (key && d.menus[menuTitle].specials) {
          if (d.menus[menuTitle].specials[key]) {
             delete d.menus[menuTitle].specials[key];
@@ -132,8 +201,8 @@ module.exports = function(DATA) {
    }
 
    function saveAllergens() {
-      var menuTitle = u.ID('selectPeopleMenu').value;
-      var table = u.ID('specialsTable');
+      var menuTitle = ELS.selectMenu.value;
+      let table = ELS.peopleTable;
       var rowcount = table.rows.length;
 
       for (let i = 1; i < rowcount; i++) {
@@ -163,7 +232,7 @@ module.exports = function(DATA) {
 
       if (specialNames.indexOf(name) >= 0) {
          var specialData = specialsEnum[name];
-         u.ID('specialsTable').deleteRow(i);
+         ELS.peopleTable.deleteRow(i);
          addAllergenRow(name, specialData, i);
       }
    }

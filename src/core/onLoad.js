@@ -17,6 +17,37 @@ module.exports = function() {
       c: c
    };
 
+   window.debug.export_recipes = function() {
+
+      var grpdRecipes = u.GroupBy(d.recipes, 'mealType');
+      Object.keys(grpdRecipes).forEach(mealType => {
+         let grp = grpdRecipes[mealType];
+         grpdRecipes[mealType] = u.GroupBy(grp, 'recipeType');
+      });
+      var markdown = u.ObjToArr(grpdRecipes)
+         .sort(x => c.enums.mealTypeEnum.indexOf(x.key))
+         .map(mealTypeGrp => {
+
+            var recipeTypeContents = u.ObjToArr(mealTypeGrp.val)
+               //   .sort(x => c.enums.recipeTypeEnum.indexOf(x.key))
+               .map(recipeTypeGrp => {
+                  var recipeList = u.ObjToArr(recipeTypeGrp.val).sort((a, b) => u.Compare(a.key, b.key)).map(recipe => {
+                     let ingTable = recipe.val.ingredients.map(ingredient => {
+                        return [ingredient.foodName, ingredient.quantity, d.foods[ingredient.foodName].unit].join("|");
+                     }).join("\n");
+                     return `### ${recipe.key}\n*Serves ${recipe.val.serves}*\n - | - | - \n----|----|----\n${ingTable}\n${recipe.val.method}`
+                  }).join("\n\n");
+                  return `## ${recipeTypeGrp.key}\n${recipeList}`;
+               }).join("\n");
+
+            return `# ${mealTypeGrp.key}\n${recipeTypeContents}`;
+
+         }).join("\n");
+      let fs = require('fs');
+      fs.writeFileSync('./resources/recipe_book.md', markdown);
+      console.log(markdown)
+   }
+
    //initialise fontawesome
    require("../../node_modules/@fortawesome/fontawesome-free/js/all.js");
 

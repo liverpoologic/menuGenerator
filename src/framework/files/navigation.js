@@ -19,6 +19,12 @@ module.exports = function(DATA) {
 
          //create vtab div
          var vtab_div = u.CreateEl('div').parent(div).className('vtab').id(`${tabConfig.id}_vtab_div`).end();
+
+         //create htabcontentdiv - place to put content visible across all vtabs...
+         var htabcontentdiv = u.CreateEl('div').parent(div).className('htabcontentdiv').id(`${tabConfig.id}_tab_content_div`).end();
+         //create page title
+         var pgTitle = u.CreateEl('h2').id(`${tabConfig.id}_page_title`).parent(htabcontentdiv).end();
+
          tabConfig.vtabs.forEach(vTabConfig => {
             var btn = u.CreateEl('button').parent(vtab_div).className('vtab_btns').id(`${vTabConfig.id}_tab_btn`).end();
             u.Icon(vTabConfig.icon, btn);
@@ -26,7 +32,8 @@ module.exports = function(DATA) {
             var v_div = u.CreateEl('div').parent(div).className('vtabcontent').id(`${vTabConfig.id}_tab_content`).end();
             v_div.style.display = 'none';
             btn.addEventListener('click', function() {
-               u.OpenVTab(vTabConfig.id);
+               window.scrollTo(0, 0);
+               u.OpenVTab(tabConfig, vTabConfig);
             });
          });
 

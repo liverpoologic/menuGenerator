@@ -36,9 +36,8 @@ module.exports = function(DATA) {
    /** creates / refreshes a given dictionary admin table */
    function CreateTable(tableID) { // create admin table header and filter row, then calls CreateTableContents (clear existing and then create)
       let parentDiv = u.ID(`t${tableID}_tab_content`);
+      let fullFilterDiv = u.CreateEl('div').parent(parentDiv).className('ingredientSearchDiv').end();
       //create Heading and then create table
-      let headingMapping = [null, 'Food', 'Recipes', 'Menus', 'Enums'];
-      let heading = u.CreateEl('h2').parent(parentDiv).innerText(`All ${headingMapping[tableID]}`).end()
       let table = u.CreateEl('table').parent(parentDiv).id(`t${tableID}Table`).className('adminTable').end();
 
       //collect filters to reapply later
@@ -46,17 +45,18 @@ module.exports = function(DATA) {
       table.innerHTML = ""; // clear table
       switch (tableID) {
          case 1:
-            u.CreateRow("t1Table", "th", ["Food Name", "Unit", "Shop", "Type", "Allergens", "-"], "", [30, 10, 12, 13, 20, 5], "%");
+            u.CreateRow("t1Table", "th", ["Food Name", "Unit", "Shop", "Type", "Allergens", ""], "", [30, 10, 12, 13, 20, 5], "%");
             if (filters) table.appendChild(filters);
             else {
-               CreateFilterRow(1, ["longText", "longText", "select", "select", "select", null], [true]);
+               CreateFilterRow(1, ["longText", "longText", "select", "select", "select", null], ['Food Name', 'Unit']);
             }
             break;
 
          case 2:
-            let clearIngFilter = u.CreateEl('button').id('clearIngredientSearch').className('insideCellBtn').style('float:right; margin-top: 8px;').parent(heading).end();
+            fullFilterDiv.style = 'height:50px';
+            let clearIngFilter = u.CreateEl('button').id('clearIngredientSearch').className('insideCellBtn').style('margin-top: 8px; color:var(--dark-grey)').parent(fullFilterDiv).end();
             u.Icon('times', clearIngFilter);
-            let ingredientSearch = u.CreateEl('input').type('text').id('ingredientSearchInput').style('margin:4px 10px; float:right').parent(heading).end();
+            let ingredientSearch = u.CreateEl('input').type('text').id('ingredientSearchInput').style('margin:4px 10px;').parent(fullFilterDiv).end();
             ingredientSearch.placeholder = 'ingredient';
 
             u.ID("ingredientSearchInput").addEventListener("change", function() { // event listener so table is recreated when ingredient filter is changed
@@ -68,17 +68,17 @@ module.exports = function(DATA) {
                CreateTableContents(2);
             });
 
-            u.CreateRow("t2Table", "th", ["Recipe Title", "Meal", "Type", "Serves", "Morv", "-"], "", [55, 15, 15, 10, 10, 5], "%");
+            u.CreateRow("t2Table", "th", ["Recipe Title", "Meal", "Type", "Serves", "Morv", ""], "", [55, 15, 15, 10, 10, 5], "%");
             if (filters) table.appendChild(filters);
             else {
-               CreateFilterRow(2, ["longText", "select", "select", null, "select", null]);
+               CreateFilterRow(2, ["longText", "select", "select", null, "select", null], ['Recipe Title']);
             }
             break;
          case 3:
-            u.CreateRow("t3Table", "th", ["Menu Title", "Start Date", "End Date", "-"], "", [40, 30, 30, 10], "%");
+            u.CreateRow("t3Table", "th", ["Menu Title", "Start Date", "End Date", ""], "", [40, 30, 30, 10], "%");
 
             if (filters) table.appendChild(filters);
-            else CreateFilterRow(3, ["longText", null, null, null]);
+            else CreateFilterRow(3, ["longText", null, null, null], ['Menu Title']);
             break;
          case 4:
             u.CreateEl('select').id('selectAdminEnum').parent(parentDiv).end();
@@ -90,8 +90,10 @@ module.exports = function(DATA) {
 
    /**create filter row (i.enums. select/text inputs
     * @param {number} dictID id of dictionary (1,2 or 3)
-    * @param {array} filterType array including each filter type from left to right c.enums.g. ["longText,"text","number","select",null] - null means no input required. */
-   function CreateFilterRow(dictID, filterType) {
+    * @param {array} filterType array including each filter type from left to right c.enums.g. ["longText,"text","number","select",null] - null means no input required.
+    * @param {array} placeholders array including any placeholder text required
+    */
+   function CreateFilterRow(dictID, filterType, placeholders) {
       let tableID = `t${dictID}Table`;
       let Table = u.ID(tableID);
       let filterRow = Table.insertRow();
@@ -103,17 +105,17 @@ module.exports = function(DATA) {
          });
          if (type === "select") {
             //create select
-            u.CreateEl('select').parent(filterCell).id(`${tableID}Filter${i}input`).value('_default').end()
+            u.CreateEl('select').parent(filterCell).id(`${tableID}Filter${i}input`).value('_default').className('filterSelect').end()
          } else if (type === "longText") {
-            u.CreateEl('input').type('text').parent(filterCell).id(`${tableID}Filter${i}input`).style('width:80%').end()
-            let closeBtn = u.CreateEl('button').className('insideCellBtn').parent(filterCell).id(`${tableID}Filter${i}clear`).end();
+            u.CreateEl('input').type('text').parent(filterCell).id(`${tableID}Filter${i}input`).style('width:80%').className('filterTextInput').placeholder(placeholders[i]).end()
+            let closeBtn = u.CreateEl('button').className('insideCellBtn').parent(filterCell).id(`${tableID}Filter${i}clear`).style('color:var(--dark-grey)').end();
             u.Icon('times', closeBtn);
             u.ID(`${tableID}Filter${i}clear`).addEventListener("click", function() {
                u.ID(`${tableID}Filter${i}input`).value = "";
                CreateTableContents(dictID);
             });
          } else if (type !== null) {
-            u.CreateEl('input').type(type).parent(filterCell).id(`${tableID}Filter${i}input`).className('tableTextInput').end()
+            u.CreateEl('input').type(type).parent(filterCell).id(`${tableID}Filter${i}input`).className('filterTextInput').placeholder(placeholders[i]).end()
          }
       });
    }
@@ -122,7 +124,6 @@ module.exports = function(DATA) {
    /** Refresh contents of a given admin table
     * @param {number} dictID ID of the table (1,2 or 3). */
    function CreateTableContents(dictID) {
-      console.log('hello worlddd');
       let table = u.ID(`t${dictID}Table`);
       u.ClearTable(table.id, 2);
       let dictKeys = u.GetKeysExFns(d.getDict(dictID)).sort();
@@ -144,12 +145,14 @@ module.exports = function(DATA) {
             let cellIDs = [`t1TableKey${j}`, `t1TableUnit${j}`, `t1TableShop${j}`, `t1TableFoodType${j}`, `t1TableAllergens${j}`, ''];
 
             var allergens = rowItem.allergens ? rowItem.allergens.join(", ") : "";
-            let cellContents = [dictKeys[i], rowItem.unit, rowItem.shop, rowItem.foodType, allergens, `<button class='removeLineBtn' id=t1RemoveLinebtn${j}>-</button>`];
+            let cellContents = [dictKeys[i], rowItem.unit, rowItem.shop, rowItem.foodType, allergens, `<button class='removeLineBtn' id=t1RemoveLinebtn${j}></button>`];
             u.CreateRow("t1Table", "td", cellContents, cellIDs);
             u.CreateEditCellListeners(`t1TableUnit${j}`, "text", `t1TableKey${j}`, 1, "unit");
             u.CreateEditCellListeners(`t1TableShop${j}`, "select", `t1TableKey${j}`, 1, "shop", c.enums.shopEnum, false);
             u.CreateEditCellListeners(`t1TableFoodType${j}`, "select", `t1TableKey${j}`, 1, "foodType", c.enums.foodTypeEnum, false);
             u.CreateEditCellListeners(`t1TableAllergens${j}`, "tags", `t1TableKey${j}`, 1, "allergens", 'allergenList');
+
+            u.Icon('minus', u.ID(`t1RemoveLinebtn${j}`))
 
             // add listener to enable edit food name
             u.ID(`t1TableKey${j}`).addEventListener("click", EditFoodName);
@@ -167,12 +170,14 @@ module.exports = function(DATA) {
                return;
             }
             let cellIDs = [`t2TableKey${j}`, `t2TableMeal${j}`, `t2TableType${j}`, `t2TableServes${j}`, `t2TableMorv${j}`, ''];
-            let cellContents = [dictKeys[i], rowItem.mealType, rowItem.recipeType, rowItem.serves, rowItem.morv, `<button class='removeLineBtn' id=t2RemoveLinebtn${j}>-</button>`];
+            let cellContents = [dictKeys[i], rowItem.mealType, rowItem.recipeType, rowItem.serves, rowItem.morv, `<button class='removeLineBtn' id=t2RemoveLinebtn${j}></button>`];
             u.CreateRow("t2Table", "td", cellContents, cellIDs);
 
             u.CreateEditCellListeners(`t2TableMeal${j}`, "select", `t2TableKey${j}`, 2, "mealType", c.enums.mealTypeEnum, false);
             u.CreateEditCellListeners(`t2TableType${j}`, "select", `t2TableKey${j}`, 2, "recipeType", c.enums.recipeTypeEnum, false);
             u.CreateEditCellListeners(`t2TableMorv${j}`, "select", `t2TableKey${j}`, 2, "morv", c.enums.morvEnum, false);
+
+            u.Icon('minus', u.ID(`t2RemoveLinebtn${j}`))
 
             // create event listener for clicking a recipeTitle in the admin screen and moving to add recipe screen
             u.ID(`t2TableKey${j}`).addEventListener("click", function() {
@@ -233,11 +238,14 @@ module.exports = function(DATA) {
             //
 
             let cellIDs = [`t3TableKey${j}`, `t3TableStartDate${j}`, `t3TableEndDate${j}`, ''];
-            let cellContents = [dictKeys[i], startDate, endDate, `<button class='removeLineBtn' id=t3RemoveLinebtn${j}>-</button>`];
+            let cellContents = [dictKeys[i], startDate, endDate, `<button class='removeLineBtn' id=t3RemoveLinebtn${j}></button>`];
             u.CreateRow("t3Table", "td", cellContents, cellIDs);
 
             u.CreateEditCellListeners(`t3TableStartDate${j}`, "date", `t3TableTitle${j}`, 3, "startDate");
             u.CreateEditCellListeners(`t3TableEndDate${j}`, "date", `t3TableTitle${j}`, 3, "endDate");
+
+            u.Icon('minus', u.ID(`t3RemoveLinebtn${j}`))
+
          }
          // event listener to delete row
          if (u.ID(`t${dictID}RemoveLinebtn${j}`) === null) {
