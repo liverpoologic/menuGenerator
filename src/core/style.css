@@ -597,6 +597,10 @@ table input, table select {
     margin:0;
 }
 
+.insideCellBtn.left{
+  float:left;
+}
+
 /* media print stylesheet */
 
 @media print {
@@ -797,7 +801,7 @@ notes {
   display:none;
   position:fixed;
   background-color:inherit;
-  width:820px;
+  width:460px;
   z-index:200;
 }
 
@@ -847,4 +851,26 @@ left: 790px;
 }
 .secretTable td {
   padding-left:0;
+}
+
+/* Filter Controls */
+
+.filter-control{
+  height:35px;
+  padding:0;
+  margin:5px 0;
+}
+
+.filter_button{
+  background-color:var(--mid-grey);
+  margin-right: 0px;
+  margin-left: 4px;
+}
+
+
+.filter_button.selected{
+  background-color:var(--dark-purple);
+}
+
+.recipeToAdd{
 }

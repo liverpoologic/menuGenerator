@@ -2,13 +2,34 @@
 
 module.exports = function(DATA) {
    var d = DATA.dict;
-   var c = DATA.config
+   var c = DATA.config;
+   var s = DATA.state;
    var u = require("../../utilities")(DATA);
    const els = DATA.els.edit.editMenu;
    var addMenu = require('./addMenu.js')(DATA);
 
-
    var mealTypeFilter, recipeTypeFilter, morvFilter;
+
+   var filterConfig = [{
+         _enum: 'recipeTypeEnum',
+         id: 'recipeType',
+         title: 'Recipe Type'
+      },
+      {
+         _enum: 'mealTypeEnum',
+         id: 'mealType',
+         title: 'Meal Type'
+      },
+      {
+         _enum: 'morvEnum',
+         id: 'morv',
+         title: 'Morv'
+      },
+      {
+         id: 'recipeTitle',
+         title: 'Recipe Title'
+      }
+   ];
 
    function generator() {
 
@@ -58,7 +79,7 @@ module.exports = function(DATA) {
       //    }
       // });
       //
-      // window.addEventListener('update', RefreshPage);
+      window.addEventListener('update', RefreshPage);
    }
 
    function CreatePageEls(parentDiv) {
@@ -70,7 +91,15 @@ module.exports = function(DATA) {
       els.subBox = u.CreateEl('div').parent(parentDiv).end();
 
       els.menuDiv = u.CreateEl('div').className('editMenu').style('width:430px; float:left').parent(els.subBox).end();
-      els.addRecipeDiv = u.CreateEl('div').style('width:300px; margin:0; float:right').parent(els.subBox).end();
+
+      els.addRecipeDiv = u.CreateEl('div').style('width:360px; position:fixed; margin-left: 460px;').parent(els.subBox).end();
+
+      els.morvSelectionModal = u.CreateModalFramework('select morv', 'Adding Recipe', 'recipeTitle')
+      els.morvSelectionModal.selectMorv = u.CreateEl('select').id('selectMorvForAddRecipe').parent(els.morvSelectionModal.content).end();
+      u.Br(els.morvSelectionModal.content);
+      els.morvSelectionModal.addBtn = u.CreateEl('button').innerText('Add').parent(els.morvSelectionModal.content).end();
+
+      els.morvSelectionModal.addBtn.addEventListener('click', AddRecipeToMenu);
 
       CreateCommentsModal();
       CreateMultiplyUpModal();
@@ -114,177 +143,156 @@ module.exports = function(DATA) {
 
       CreateFilterControl();
 
+      els.recipeDiv = u.CreateEl('div').style('padding:15px 0 0 23px').parent(els.addRecipeDiv).end();
+
 
    }
 
    function CreateFilterControl() {
+      els.filters = {};
 
-      var filterConfig = [{
-            enum: 'recipeTypeEnum',
-            id: 'recipeType',
-            title: 'Recipe Type'
-         },
-         {
-            enum: 'mealTypeEnum',
-            id: 'mealType',
-            title: 'Meal Type'
-         },
-         {
-            enum: 'morvEnum',
-            id: 'morv',
-            title: 'Morv'
+      filterConfig.forEach(f => {
+         els.filters[f.id] = {};
+         els.filters[f.id].div = u.CreateEl('div').className('filter-control').parent(els.filterDiv).end();
+      });
+   }
+
+   function InitialiseRecipeFilterState() {
+      s.recipeFilters = {};
+      filterConfig.forEach(f => {
+         if (f._enum) {
+            s.recipeFilters[f.id] = {};
+            c.enums[f._enum].forEach(o => {
+               s.recipeFilters[f.id][o] = true;
+            });
+         } else {
+            s.recipeFilters[f.id] = '';
          }
-      ]
+      })
+   }
 
+   function RefreshFilterControl() {
+      //check whether this has happened before
+      if (!s.recipeFilters) InitialiseRecipeFilterState();
+      console.log('refresh filter control');
+      console.log(s.recipeFilters);
+      filterConfig.forEach(f => {
+         let thisDiv = els.filters[f.id].div;
+         thisDiv.innerHTML = "";
 
+         if (f._enum) {
+            els.filters[f.id].selectAll = u.CreateEl('button').className('insideCellBtn left').style('margin-top:7px').parent(thisDiv).end();
+            u.Icon('check-circle', els.filters[f.id].selectAll);
+            els.filters[f.id].selectAll.filter_id = f.id
+            els.filters[f.id].selectAll.addEventListener('click', SelectAllFilters)
+
+            let numberOfButtons = c.enums[f._enum].length;
+            let buttonWidth = ((325 - (numberOfButtons * 4)) / numberOfButtons).toString();
+            c.enums[f._enum].forEach(o => {
+               let ourClass = s.recipeFilters[f.id][o] ? 'filter_button selected' : 'filter_button';
+               let btn = u.CreateEl('button').innerText(o).className(ourClass).style(`width:${buttonWidth}px`).parent(thisDiv).end();
+               btn.filter_id = f.id
+               btn.addEventListener('click', SelectFilterBtn);
+            });
+         } else {
+            els.filters[f.id].input = u.CreateEl('input').type('text').placeholder(f.title).style('width:321px; margin: 4px 0 0 22px;').value(s.recipeFilters[f.id]).parent(thisDiv).end();
+            els.filters[f.id].input.addEventListener('change', RefreshRecipes);
+         }
+         els.filters[f.id].clear = u.CreateEl('button').className('insideCellBtn').style('margin-top:7px').parent(thisDiv).end();
+         u.Icon('times', els.filters[f.id].clear);
+         els.filters[f.id].clear.filter_id = f.id;
+         els.filters[f.id].clear.addEventListener('click', ClearFilters);
+      });
+   }
+
+   function ClearFilters(e) {
+      if (e.target.filter_id === 'recipeTitle') {
+         s.recipeFilters[e.target.filter_id] = "";
+      } else {
+         Object.keys(s.recipeFilters[e.target.filter_id]).forEach(key => {
+            s.recipeFilters[e.target.filter_id][key] = false;
+         });
+      }
+      RefreshFilterControl();
+      RefreshRecipes();
+   }
+
+   function SelectAllFilters(e) {
+      Object.keys(s.recipeFilters[e.target.filter_id]).forEach(key => {
+         s.recipeFilters[e.target.filter_id][key] = true;
+      });
+      RefreshFilterControl();
+      RefreshRecipes();
+   }
+
+   function SelectFilterBtn(e) {
+      let notSelected = e.target.className == 'filter_button';
+      s.recipeFilters[e.target.filter_id][e.target.innerText] = notSelected;
+      e.target.className = notSelected ? 'filter_button selected' : 'filter_button';
+      RefreshRecipes();
    }
 
    function RefreshPage(EV) {
       if (EV.detail.type === 'config') {
-         // call function to create filter checkboxes in the 'add recipe' modal
-         mealTypeFilter = CreateFilterList(c.enums.mealTypeEnum, "mealTypeCheckbox", "mealTypeFilters");
-         recipeTypeFilter = CreateFilterList(c.enums.recipeTypeEnum, "recipeTypeCheckbox", "recipeTypeFilters");
-         morvFilter = CreateFilterList(["b", "v", "m"], "morvCheckbox", "morvFilters");
+         RefreshFilterControl();
       }
       if (EV.detail.type === 'dict') {
          //refresh list of recipes
-         RefreshEditMenu()
+         RefreshEditMenu();
+         RefreshRecipes();
       }
    }
 
-   /** function to create list of checkboxes - returns 'newEnum' which is the list of filter options including 'all'
-    * @param {array} sourceEnum the enum which you want to generate the filter list from
-    * @param {string} checkboxID the id prefix (followed by a number) you want for each checkbox
-    * @param {string} divID the id of the div which these filter boxes are being added to
-    */
-   function CreateFilterList(sourceEnum, checkboxID, divID) {
-      // populate newEnum
-      let newEnum = [];
-      newEnum[0] = "All";
-      for (let i = 0; i < sourceEnum.length; i++) {
-         newEnum[i + 1] = sourceEnum[i];
-      }
-      // create checkboxes
-      for (let i = 0; i < newEnum.length; i++) {
-         let checklist = u.ID(divID);
-         let checkbox = u.CreateElement("input", checklist, `${checkboxID}${i}`);
-         let checkboxLabel = u.CreateElement("label", checklist, "", "filterLabel", newEnum[i]);
-         checkbox.setAttribute("type", "checkbox");
-         checkbox.setAttribute("checked", "true");
-         u.CreateElement("br", checklist);
-      }
-      // check everything on an 'all' box
-      u.ID(`${checkboxID}0`).addEventListener("change", function() {
-         if (this.checked) {
-            for (let i = 1; i < newEnum.length; i++) {
-               u.ID(`${checkboxID}${i}`).checked = true;
-            }
-         } else {
-            for (let i = 1; i < newEnum.length; i++) {
-               u.ID(`${checkboxID}${i}`).checked = false;
-            }
+   function RefreshRecipes() {
+      console.log('refreshing recipes');
+      els.recipeDiv.innerHTML = "";
+      let maxRecipes = 10;
+      let recipesDisplayed = 0;
+      //get recipe list
+      var recipeList = u.GetKeysExFns(d.recipes).sort();
+      let stringFilter = els.filters.recipeTitle.input.value.toLowerCase();
+      for (let i = 0; i < recipeList.length; i++) {
+         if (recipesDisplayed > maxRecipes) {
+            break;
          }
-      });
-      return newEnum;
-   }
-   /** function to create an array of all permitted values (as per filters) at a particular point in time
-    * @param {array} filterArray Array with all the checkbox names, usually created by the 'CreateFilterList' function
-    * @param {string} checkboxID String which prefixes a number which is the ID of each checkbox (id1, id2 etc.)
-    */
-   function CreateFilterArray(filterArray, checkboxID) {
-      let result = [];
-      for (let i = 1; i < filterArray.length; i++) {
-         if (u.ID(`${checkboxID}${i}`).checked === true) {
-            result.push(filterArray[i]);
-         }
-      }
-      return result;
-   }
-   /** Apply Filters to add recipe modal (so only filtered recipes are shown in the dropdown) */
-   function ApplyFilters() {
-      // create recipe keys list
-      let oldRecipeKeys = Object.keys(d.recipes);
-      let filteredRecipeKeys = [];
-      let filteredMealTypeArray = CreateFilterArray(mealTypeFilter, "mealTypeCheckbox");
-      let filteredRecipeTypeArray = CreateFilterArray(recipeTypeFilter, "recipeTypeCheckbox");
-      let filteredMorvArray = CreateFilterArray(morvFilter, "morvCheckbox");
+         let recipeTitle = recipeList[i];
+         let recipe = d.recipes[recipeTitle];
+         let isFiltered = false;
+         console.log('check 1')
+         for (let j = 0; j < filterConfig.length; j++) {
+            let f = filterConfig[j];
+            if (f._enum) {
+               if (!s.recipeFilters[f.id][recipe[f.id]]) {
+                  isFiltered = true;
+                  //failed filters - this recipe property is 'false'
+                  break;
+               }
+            } else {
 
-      // check if mealType is correct
-      for (let i = 0; i < oldRecipeKeys.length; i++) {
-         if (typeof d.recipes[oldRecipeKeys[i]] === "function") {
-            continue;
-         }
-         let mealType = d.recipes[oldRecipeKeys[i]].mealType;
-         let recipeType = d.recipes[oldRecipeKeys[i]].recipeType;
-         let morv = d.recipes[oldRecipeKeys[i]].morv;
-
-         let filteredMorv = null;
-         for (let j = 0; j < morv.length; j++) {
-            if (filteredMorvArray.indexOf(morv[j]) > -1) { // check whether morv is present in morv array. If yes, filteredMorv = true
-               filteredMorv = true;
+               if (stringFilter !== "" && recipeTitle.toLowerCase().indexOf(stringFilter) === -1) {
+                  isFiltered = true;
+                  //failed filters - this recipe title doesn't match the string
+                  break;
+               }
             }
          }
-         if (
-            filteredMealTypeArray.indexOf(mealType) > -1 && // if recipe fulfils all three criteria, add to filteredRecipeKeys
-            filteredRecipeTypeArray.indexOf(recipeType) > -1 &&
-            filteredMorv === true
-         ) {
-            filteredRecipeKeys.push(oldRecipeKeys[i]);
+         if (!isFiltered) {
+            let recipeDiv = u.CreateEl('div').style('width:304px').className('editMenuRecipe').parent(els.recipeDiv).innerText(recipeTitle).end();
+            //GET COLOR
+            recipeDiv.style.color = c.enums.recipeTypeColours[recipe.recipeType];
+            recipeDiv.draggable = true;
+            recipeDiv.addEventListener('dragstart', function(ev) {
+               ev.dataTransfer.effectAllowed = 'move';
+               ev.dataTransfer.setData("recipeTitle", recipeTitle);
+               console.log(ev.dataTransfer);
+            });
+            recipesDisplayed++;
          }
       }
-      filteredRecipeKeys.sort();
-      u.CreateDropdown("selectRecipeForMenu", filteredRecipeKeys, false, undefined, "_default");
-   }
-   /** Triggered when the 'clear filters' btn is clicked */
-   function ClearFiltersBtn() {
-      ClearFilters(mealTypeFilter, "mealTypeCheckbox");
-      ClearFilters(recipeTypeFilter, "recipeTypeCheckbox");
-      ClearFilters(morvFilter, "morvCheckbox");
-   }
-   /** Clears the Filters for a given filterEnum
-    * @param {array} filterEnum this is the enum with the list of options including 'all'
-    * @param {string} checkboxID this is the ID of each checkbox (followed by a number)
-    */
-   function ClearFilters(filterEnum, checkboxID) {
-      for (let i = 0; i < filterEnum.length; i++) {
-         u.ID(`${checkboxID}${i}`).checked = true;
-      }
-   }
-   /** create select meal dropdown from menu (in edit menu > add recipe) */
-   function RefreshAddRecipeModal() {
-      // create meal enum & dropdown
-      let menuTitle = u.ID('selectEditMenu').value;
-      u.ID("addRecipeToMenuTitle").innerText = 'Add Recipe - ' + menuTitle;
-      let menu = d.menus[menuTitle];
-      let mealEnum = [];
-      menu.meals.forEach(meal => {
-         let day = c.enums.weekday[new Date(meal.date).getDay()];
-         mealEnum.push(`${day} ${meal.mealType}`);
-      });
-      let values = [];
-      for (let i = 0; i < mealEnum.length; i++) {
-         values[i] = i;
-      }
-      u.CreateDropdown("selectMealForMenu", mealEnum, false, values, 'Meal');
-   }
-   /** Add a recipe to a menu (using data from addRecipeToMenu modal) */
-   function AddRecipeToMenu() {
-      let menuTitle = u.ID("selectEditMenu").value;
-      let mealID = parseInt(u.ID("selectMealForMenu").value);
-      let recipeTitle = u.ID("selectRecipeForMenu").value;
-      let morv = u.ID("selectMorvForMenu").value;
-
-      d.menus.addRecipe(menuTitle, mealID, recipeTitle, morv);
-      d.write();
-      RefreshEditMenu();
-      u.SetValues([
-         ["selectRecipeForMenu", "_default"],
-         ["selectMorvForMenu", "_default"]
-      ]);
    }
 
    function ShowMultiplyUpModal() {
-      let menuTitle = DATA.els.edit.selectMenu.value
+      let menuTitle = DATA.els.edit.selectMenu.value;
       els.multiplyUpModal.menuTitle = menuTitle;
       els.multiplyUpModal.meateaters.value = d.menus[menuTitle].meateaters;
       els.multiplyUpModal.vegetarians.value = d.menus[menuTitle].vegetarians;
@@ -299,6 +307,44 @@ module.exports = function(DATA) {
       d.menus.multiplyUp(menuTitle, meateaters, vegetarians);
       d.write();
       els.multiplyUpModal.modal.style.display = 'none';
+   }
+
+   function CreateEvListeners(div) {
+      div.addEventListener('dragover', function(ev) {
+         ev.preventDefault();
+         div.style.opacity = 0.6;
+      });
+      div.addEventListener('dragleave', function(ev) {
+         ev.preventDefault();
+         div.style.opacity = 1;
+      })
+      div.addEventListener('drop', function(ev) {
+         ev.preventDefault();
+         div.style.opacity = 1;
+         ShowMorvSelectionModal(ev, div.meal_id);
+      });
+   }
+
+   function ShowMorvSelectionModal(ev, mealID) {
+      els.morvSelectionModal.selectMorv.value = 'b';
+      let recipeTitle = ev.dataTransfer.getData("recipeTitle");
+      els.morvSelectionModal.recipeTitle.innerText = recipeTitle;
+      els.morvSelectionModal.modal.style.display = 'block';
+      els.morvSelectionModal.addBtn.meal_id = mealID;
+   }
+
+   function AddRecipeToMenu(ev) {
+      let mealID = ev.target.meal_id;
+      let menuTitle = DATA.els.edit.selectMenu.value;
+      let recipeTitle = els.morvSelectionModal.recipeTitle.innerText;
+      let morv = els.morvSelectionModal.selectMorv.value;
+
+      d.menus.addRecipe(menuTitle, mealID, recipeTitle, morv);
+      d.write();
+
+      els.morvSelectionModal.selectMorv.value = 'b';
+      els.morvSelectionModal.modal.style.display = 'none';
+
    }
    /** generates a list of meals and recipes */
    function RefreshEditMenu() {
@@ -320,15 +366,19 @@ module.exports = function(DATA) {
       }
       for (let i = 0; i < menu.meals.length; i++) {
          // generate and display meal title c.enums.g. Friday Dinner
+         let overallMealDiv = u.CreateEl('div').parent(els.menuDiv).end();
+         overallMealDiv.meal_id = i;
+         CreateEvListeners(overallMealDiv);
+
          let meal = d.menus.getMeal(menuTitle, i);
-         let mealTitleBar = u.CreateEl('div').parent(els.menuDiv).className('mealTitleBar').end();
+         let mealTitleBar = u.CreateEl('div').parent(overallMealDiv).className('mealTitleBar').end();
          let day = c.enums.weekday[new Date(meal.date).getDay()];
          let mealTitle = u.CreateEl("text").parent(mealTitleBar).id(`editMealTitle${i}`).className("mealTitle").style("display:inline-block").innerText(`${day} ${meal.mealType}`).end();
 
          CreateModifierDiv(mealTitleBar, i, menuTitle);
 
          // generate and display the mealDiv where the recipes for that meal will go
-         let mealDiv = u.CreateElement("div", els.menuDiv, `editMealDiv${i}`);
+         let mealDiv = u.CreateElement("div", overallMealDiv, `editMealDiv${i}`);
 
          meal.recipes.forEach((menuRecipe, j) => {
             let recipe = d.recipes[menuRecipe.recipeTitle];

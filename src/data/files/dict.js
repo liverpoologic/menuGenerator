@@ -184,7 +184,7 @@ Dict.menus = {
             for (let i = 0; i < meal.recipes.length; i++) {
                var existingRecipe = meal.recipes[i];
 
-               let compare = CompareRecipe(newRecipe.recipeTitle, existingRecipe.recipeTitle);
+               let compare = CompareRecipe(newRecipe, existingRecipe);
 
                if (compare === 1 && i === meal.recipes.length - 1) { // check if the recipe needs to go at the end of the array
                   meal.recipes[i + 1] = newRecipe;
@@ -297,18 +297,18 @@ Dict.clear = function() {
 
 //---------------- HELPERS ----------------
 /**compares recipes type to identify if recipe[a] is before or after recipe[b] (including recipe type and whether its special or not). Returns 1 if a is after b, and -1 if a is before b. Returns 0 if a=b.
- * @param {string} a the name of recipe a
- * @param {string} b the name of recipe b
+ * @param {string} recipeA the name of recipe a
+ * @param {string} recipeB the name of recipe b
  */
-function CompareRecipe(aName, bName) {
+function CompareRecipe(recipeA, recipeB) {
    function isDessert(recipeType) {
-      return recipeType === 'dessert c' || recipeType === 'dessert other' ? true : false;
+      return recipeType === 'dessert' ? true : false;
    }
-   let a = Dict.recipes[aName];
-   let b = Dict.recipes[bName];
+   let a = Dict.recipes[recipeA.recipeTitle];
+   let b = Dict.recipes[recipeB.recipeTitle];
    let e = Config.enums;
 
-   if (a.morv === 'sp' && b.morv !== 'sp') {
+   if (recipeA.morv === 'sp' && recipeB.morv !== 'sp') {
       if (isDessert(a.recipeType) === isDessert(b.recipeType)) {
          //if they are both desserts or both not desserts, then b goes first.
          return 1;
@@ -324,13 +324,13 @@ function CompareRecipe(aName, bName) {
       return 1;
    } else if (e.recipeTypeEnum.indexOf(a.recipeType) < e.recipeTypeEnum.indexOf(b.recipeType)) {
       return -1;
-   } else if (e.recipeMorv.indexOf(a.morv) > e.recipeMorv.indexOf(b.morv)) {
+   } else if (e.recipeMorv.indexOf(recipeA.morv) > e.recipeMorv.indexOf(recipeB.morv)) {
       return 1;
-   } else if (e.recipeMorv.indexOf(a.morv) < e.recipeMorv.indexOf(b.morv)) {
+   } else if (e.recipeMorv.indexOf(recipeA.morv) < e.recipeMorv.indexOf(recipeB.morv)) {
       return -1;
-   } else if (aName > bName) {
+   } else if (recipeA.recipeTitle > recipeB.recipeTitle) {
       return 1;
-   } else if (aName < bName) {
+   } else if (recipeA.recipeTitle < recipeB.recipeTitle) {
       return -1;
    } else return 0;
    // 1 means a is after b, -1 means a should be before b

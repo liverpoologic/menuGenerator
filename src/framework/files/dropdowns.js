@@ -87,7 +87,7 @@ module.exports = function(DATA) {
                return c.enums.recipeMorv;
             },
             keys: false,
-            ids: ['selectMorvForMenu'],
+            ids: ['selectMorvForAddRecipe'],
             _default: 'morv',
             type: 'config'
          },

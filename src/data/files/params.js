@@ -41,7 +41,8 @@ var tabList = [{
             label: 'SENCO',
             icon: 'user',
             title: 'Special Dietary Requirements'
-         }, {
+         },
+         {
             id: 'shopping',
             label: 'Shopping',
             icon: 'shopping-basket',

@@ -34,6 +34,7 @@ Config.write = function(backupFlag) {
    fs.writeFileSync(`./resources/${fileName}`, JSON.stringify(Config), {
       encoding: "utf8"
    });
+   console.log('writing config');
    window.dispatchEvent(update_event);
 }
 
