@@ -1,0 +1,518 @@
+<style>:root {
+    --very-dark-blue:#080A11;
+      --dark-blue:#071C46;
+      --mid-blue:#63749F;
+      --light-grey:#EDEEf0;
+      --dark-grey:#515253;
+      --mid-grey:#BABAC8;
+      --accent-red:#cb2520;
+      --dark-green:#289682;
+      --dark-purple:#7B60B5;
+    --pigotts-blue:#00a0bc;
+    --pigotts-maroon:#82002f;
+  }
+  
+
+body{
+    font-family:sans-serif;
+    padding:20px;
+    color:var(--dark-grey);
+    position: relative; 
+}
+
+h1{
+    page-break-before: always;
+    color:var(--pigotts-maroon);
+    border-bottom:1px var(--pigotts-maroon) solid;
+    position:relative;
+}
+
+h2{
+    margin-top:30px;
+    color:var(--dark-grey);
+    page-break-after:avoid;
+    position:relative;
+
+}
+
+h3{
+    color:var(--pigotts-blue);
+    margin-top:30px;
+    margin-bottom:2px;
+    page-break-before: auto; 
+    page-break-after:avoid;
+    position:relative;
+}
+
+p{
+    font-size:12px;
+    margin-top: 8px;
+   page-break-inside: avoid;
+   page-break-before:avoid;
+   position:relative;
+}
+
+thead{
+    page-break-before: avoid;
+    display:none;
+}
+
+td {
+    border-top: 1px dashed var(--dark-grey);
+    border-bottom: 1px dashed var(--dark-grey);
+    padding:4px;
+}
+
+table tr:first-child td {
+  border-top: 0;
+}
+table tr:last-child td {
+  border-bottom: 0;
+}
+
+table{
+    background-color:var(--light-grey);
+    border-collapse:collapse;
+    font-size:12px;
+    border-radius: 5px;
+    page-break-inside: avoid;
+    page-break-before: avoid;
+    position:relative;
+}
+
+a{
+    color:inherit;
+    font-style:normal;
+    text-decoration:none;
+    padding:3px;
+}
+
+list1{
+    font-weight:bold;
+    font-size:16px;
+    color:var(--pigotts-maroon);
+    margin-top:16px;
+    display: block;
+}
+list2{
+    margin-top:8px;
+    font-size:14px;
+    color:var(--dark-grey);
+    display: block;
+    padding-left:20px;
+}
+list3{
+    display: block;
+    margin-top:2px;
+    font-size:12px;
+    font-weight:normal;
+    color:var(--pigotts-blue);
+    padding-left:40px;
+}
+
+ul{
+    padding-left:0;
+    list-style:none;
+}
+ul ul{
+    padding-left:20px;
+}
+body>ul>li {
+    font-weight:bold;
+    font-size:16px;
+    color:var(--pigotts-maroon);
+    margin-top:16px;
+}
+
+ul li li {
+    margin-top:8px;
+    font-size:14px;
+    color:var(--dark-grey);
+
+}
+
+ul li li li {
+    margin-top:2px;
+    font-size:12px;
+    font-weight:normal;
+    color:var(--pigotts-blue);
+}
+
+
+ul li>a:hover{
+    color:white;
+    background-color:var(--pigotts-maroon);
+}
+
+ul li li>a:hover{
+    color:white;
+    background-color:var(--dark-grey);
+}
+
+ul li li li>a:hover{
+    color:white;
+    background-color:var(--pigotts-blue);
+}
+
+
+
+
+@media print {
+
+    body{
+        font-family:sans-serif;
+        padding:20px;
+        color:var(--dark-grey);
+        position: relative; 
+    }
+    
+    h1{
+        page-break-before: always;
+        color:var(--pigotts-maroon);
+        border-bottom:1px var(--pigotts-maroon) solid;
+        position:relative;
+    }
+    
+    h2{
+        margin-top:30px;
+        color:var(--dark-grey);
+        page-break-after:avoid;
+        position:relative;
+    
+    }
+    
+    h3{
+        color:var(--pigotts-blue);
+        margin-top:30px;
+        margin-bottom:2px;
+        position:relative;
+    }
+    
+    p{
+        font-size:12px;
+        margin-top: 8px;
+       position:relative;
+    }
+    
+    thead{
+        display:none;
+    }
+    
+    td {
+        border-top: 1px dashed var(--dark-grey);
+        border-bottom: 1px dashed var(--dark-grey);
+        padding:4px;
+    }
+    
+    table tr:first-child td {
+      border-top: 0;
+    }
+    table tr:last-child td {
+      border-bottom: 0;
+    }
+    
+    table{
+        background-color:var(--light-grey);
+        border-collapse:collapse;
+        font-size:12px;
+        border-radius: 5px;
+    }
+
+    .recipe{
+        page-break-inside:avoid;
+        position:relative;
+    }
+ }</style><h1>Table Of Contents</h1><list1>Breakfast</list1><list2>Core</list2><list3>Bacon</list3><list3>Boiled Eggs</list3><list3>Fried Eggs</list3><list3>Pancakes</list3><list3>Scrambled Eggs</list3><list3>Standard Breakfast</list3><list1>Snack</list1><list2>Core</list2><list3>Flapjack (nick jones)</list3><list3>Flapjack (seedy)</list3><list1>Lunch</list1><list2>Core</list2><list3>Aubergine and Chickpea Stew</list3><list3>Butternut & Sweet Potato Soup</list3><list3>Carrot Soup with Toasted Chickpeas</list3><list3>Filled Peppers (feta + pine nuts)</list3><list3>Filled Peppers (leek and chorizo)</list3><list3>Filled Peppers (leek and tomato)</list3><list3>Gravadlax</list3><list3>Leek, butter bean and chorizo gratin</list3><list3>Shakshuka</list3><list3>Sweet Potato Skins</list3><list3>Veg Shepherds pie</list3><list2>Veg</list2><list3>Asparagus salad</list3><list3>Aubergine roast with turmeric yoghurt</list3><list3>Baba Ganoush</list3><list3>Broccoli Slaw</list3><list3>Butternut (with beet and tahini)</list3><list3>Carrots (feta and pine nuts)</list3><list3>Chickpea and Lentil salad</list3><list3>Green Beans (garlic and chilli flakes)</list3><list3>Green Salad (cucumber and green pepper)</list3><list3>Green Salad (cucumber and walnuts)</list3><list3>Pickled Cucumbers</list3><list3>Salad (beetroot, spinach and goat's cheese)</list3><list3>Salad (beetroot, spinach, tomatoes and goat's cheese)</list3><list3>Sweet Potato (with pecans and feta)</list3><list3>Sweet potato with cherries and goat's cheese</list3><list3>Turkish Cauliflower</list3><list2>Sauce</list2><list3>Gravadlax Sauce</list3><list3>Yoghurt (garlic and lemon)</list3><list2>Starch</list2><list3>Bread</list3><list3>Cous cous (almonds, pom, orange)</list3><list3>Flatbread</list3><list3>Garlic Bread</list3><list3>Nachos</list3><list3>New Potatoes</list3><list3>Potato Salad (tamarind)</list3><list2>Dessert c</list2><list3>Apricot Compote</list3><list3>Banana Bread</list3><list3>Banana, yoghurt, honey bowl</list3><list3>Blueberry spelt cake</list3><list3>Key Lime Pie</list3><list3>Plum Compote</list3><list3>Rhubarb Crumble</list3><list3>Shortbread</list3><list2>Dessert other</list2><list3>Ice Cream</list3><list1>Dinner</list1><list2>Dessert c</list2><list3>Carrot Cake</list3><list3>Cherry, pistachio and coconut cake</list3><list3>Lemon Drizzle Cake</list3><list3>Orange marsala steam puddings</list3><list3>Peanut Butter Brownies</list3><list3>Rhubarb Spice Cake</list3><list3>Sticky Toffee Pudding</list3><list3>Strawberries and cream</list3><list3>White Chocolate Blondies</list3><list2>Sauce</list2><list3>Red Pepper Salsa</list3><list2>Core</list2><list3>BBQ Chicken</list3><list3>Chicken Tagine</list3><list3>Chicken with goats cheese & roast tomatoes</list3><list3>Chilli</list3><list3>Fajitas (chicken)</list3><list3>Goulash</list3><list3>Haloumi skewers</list3><list3>Lamb Curry (madras)</list3><list3>Lasagna (Rosie's)</list3><list3>Roast Spiced Chicken Thighs</list3><list3>Spring Green Risotto</list3><list3>Stuffed Aubergine with feta and olives</list3><list3>Vegetable Pasta</list3><list3>Veggie Chilli</list3><list3>Zeni Chicken</list3><list2>Starch</list2><list3>Fun Rice (tomato & spring onions)</list3><list3>Potato Wedges</list3><list3>Rice</list3><list2>Dessert other</list2><list3>Chocolate Sauce</list3><list3>Sticky Toffee Sauce</list3><list2>Veg</list2><list3>Butternut and tahini dip</list3><list3>Carrots (roast with cumin and mustard seeds)</list3><list3>Corn on the cob</list3><list3>Courgettes (butter and garlic)</list3><list3>Garlic mushrooms</list3><list3>Slaw</list3><list2>Other</list2><list3>Fajitas (garnishes)</list3><h1>Breakfast</h1><div><h2>Core</h2><div><div class='recipe'><h3>Bacon</h3><p><i>Serves 10</p></i><table><tbody><tr><td>bacon</td><td>600</td><td>g</td></tr></table></tbody><p>Pre-heat oven to 180C
+Line baking trays with baking paper
+Lay out bacon
+Put into the oven</p></div><div class='recipe'><h3>Boiled Eggs</h3><p><i>Serves 1</p></i><table><tbody><tr><td>eggs</td><td>1</td><td>null</td></tr></table></tbody><p></p></div><div class='recipe'><h3>Fried Eggs</h3><p><i>Serves 5</p></i><table><tbody><tr><td>eggs</td><td>5</td><td>null</td></tr></table></tbody><p>Fry eggs in a pan</p></div><div class='recipe'><h3>Pancakes</h3><p><i>Serves 6</p></i><table><tbody><tr><td>flour</td><td>135</td><td>g</td></tr><tr><td>baking powder</td><td>1</td><td>tsp</td></tr><tr><td>sugar</td><td>25</td><td>g</td></tr><tr><td>milk (full fat)</td><td>130</td><td>ml</td></tr><tr><td>eggs</td><td>1</td><td>null</td></tr><tr><td>butter</td><td>20</td><td>g</td></tr><tr><td>maple syrup</td><td>120</td><td>ml</td></tr><tr><td>bananas</td><td>3</td><td>null</td></tr><tr><td>bacon</td><td>600</td><td>g</td></tr><tr><td>blueberries</td><td>200</td><td>g</td></tr></table></tbody><p>Lightly beat the egg
+Melt the butter and leave to cool slightly
+Mix the flour, baking powder and caster sugar with a pinch of salt into a large bowl. In a separate bowl or jug, lightly whisk together the milk and egg, then whisk in the melted butter.
+Pour the milk mixture into the flour mixture and, using a fork, beat until you have a smooth batter. Any lumps will soon disappear with a little mixing. Let the batter stand for a few minutes.
+Heat a frying pan over a medium heat and add a knob of butter or some oil. When it's melted, add a ladle of batter per pancake. It will seem very thick but this is how it should be. Wait until the top of the pancake begins to bubble, then turn it over and cook until both sides are golden brown and the pancake has risen to about 1cm (½in) thick.
+Repeat until all the batter is used up. Keep the pancakes warm in a low oven
+Chop bananas and pour maple syrup into jugs and put on tables.</p></div><div class='recipe'><h3>Scrambled Eggs</h3><p><i>Serves 1</p></i><table><tbody><tr><td>eggs</td><td>2</td><td>null</td></tr><tr><td>butter</td><td>3</td><td>g</td></tr><tr><td>chives</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Scramble eggs in pan</p></div><div class='recipe'><h3>Standard Breakfast</h3><p><i>Serves 1</p></i><table><tbody><tr><td>milk</td><td>0.4</td><td>pints</td></tr><tr><td>porridge oats</td><td>40</td><td>g</td></tr><tr><td>bread</td><td>0.08</td><td>loaves</td></tr></table></tbody><p></p></div></div></div><h1>Snack</h1><div><h2>Core</h2><div><div class='recipe'><h3>Flapjack (nick jones)</h3><p><i>Serves 32</p></i><table><tbody><tr><td>porridge oats</td><td>1000</td><td>g</td></tr><tr><td>margerine</td><td>500</td><td>g</td></tr><tr><td>golden syrup</td><td>500</td><td>g</td></tr></table></tbody><p>Place tin of golden syup in bowl of hot water to warm up
+Heat oven to 180C
+Grease baking tray
+Melt butter in a large saucepan over a gentle heat
+Add sugar and stir well
+Add golden syrup and continue to stir until fully mixed
+Remove from heat and slowly add oats while continuing to stir
+Spoon into the baking tray and press flat with spatula
+Bake for 15 mins</p></div><div class='recipe'><h3>Flapjack (seedy)</h3><p><i>Serves 10</p></i><table><tbody><tr><td>porridge oats</td><td>150</td><td>g</td></tr><tr><td>sunflower seeds</td><td>50</td><td>g</td></tr><tr><td>pumpkin seeds</td><td>50</td><td>g</td></tr><tr><td>dessicated coconut</td><td>25</td><td>g</td></tr><tr><td>flour</td><td>25</td><td>g</td></tr><tr><td>margerine</td><td>100</td><td>g</td></tr><tr><td>golden syrup</td><td>100</td><td>g</td></tr><tr><td>sugar (brown)</td><td>75</td><td>g</td></tr><tr><td>dried apricots</td><td>75</td><td>g</td></tr><tr><td>vanilla essence</td><td>1</td><td>tsp</td></tr></table></tbody><p>Preheat oven to 160C
+Chop the apricots using a food processor.
+Line a shallow tray with baking paper
+Oats, seeds, coconut and flour into a large bowl and mix together
+Marge and golden syrup into a saucepan and cook until both have melted and combined
+Add sugar, chopped apricots and vanilla extract to the saucepan and mix well
+Mix wet and dry ingredients and stir until combined
+Pour the mixture into a tin and cook for 20-25 minutes</p></div></div></div><h1>Lunch</h1><div><h2>Core</h2><div><div class='recipe'><h3>Aubergine and Chickpea Stew</h3><p><i>Serves 4</p></i><table><tbody><tr><td>aubergines</td><td>350</td><td>g</td></tr><tr><td>onions</td><td>150</td><td>g</td></tr><tr><td>garlic</td><td>0.1</td><td>bulbs</td></tr><tr><td>tinned tomatoes (whole)</td><td>800</td><td>g</td></tr><tr><td>chickpeas (tinned)</td><td>350</td><td>g</td></tr><tr><td>pomegranate molasses</td><td>15</td><td>ml</td></tr><tr><td>allspice</td><td>0.5</td><td>tsp</td></tr><tr><td>sugar</td><td>5</td><td>g</td></tr><tr><td>parsley (flat leaf)</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Preheat grill. Place the aubergine on a baking sheet lined with foil. Drizzle with 2 tablespoons olive oil and toss to coat. Spread aubergine in a single layer. Fry, flipping once, until aubergine ant is charred, about 8 minutes. 
+In a large pot, heat remaining 2 tablespoons olive oil over medium-high heat. Add onion and cook, stirring occasionally, until tender, about 5 minutes.
+Add garlic and cook for 1 minute.
+Add tomatoes with juice to pot, crushing with your hands as you add them, and 3/4 cup water. Add aubergine, chickpeas, pomegranate molasses, sugar, salt and allspice. Stir and bring to a boil. Reduce heat to medium-low and simmer, stirring occasionally, for 40 minutes.
+Top aubergine stew with parsley
+</p></div><div class='recipe'><h3>Butternut & Sweet Potato Soup</h3><p><i>Serves 4</p></i><table><tbody><tr><td>butternut squash</td><td>1000</td><td>g</td></tr><tr><td>sweet potato</td><td>400</td><td>g</td></tr><tr><td>cumin (ground)</td><td>4</td><td>tsp</td></tr><tr><td>onions</td><td>200</td><td>g</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>vegetable stock</td><td>500</td><td>ml</td></tr><tr><td>creme fraiche</td><td>250</td><td>ml</td></tr><tr><td>double cream</td><td>100</td><td>ml</td></tr></table></tbody><p>Heat oven to 180C
+Chop and peel butternut and sweet potato into chunks (roughly 1 inch or smaller)
+Mix with oil, salt and cumin, then roast for 30-45 mins until starting to char at the edges
+Meanwhile, chop onions and garlic and then sweat in oil. Add some cumin to the onions.
+Once the veg has finished roasting, put into the saucepan with onions and add vegetable stock, cream and some creme fraiche
+Blend using robocop
+Keep adding creme fraiche until texture is thin enough
+Put saucepan back on heat until the bell rings</p></div><div class='recipe'><h3>Carrot Soup with Toasted Chickpeas</h3><p><i>Serves 4</p></i><table><tbody><tr><td>carrots</td><td>1000</td><td>g</td></tr><tr><td>onions</td><td>250</td><td>g</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr><tr><td>coriander (ground)</td><td>0.25</td><td>tsp</td></tr><tr><td>cumin (ground)</td><td>0.5</td><td>tsp</td></tr><tr><td>paprika</td><td>0.5</td><td>tsp</td></tr><tr><td>vegetable stock</td><td>1000</td><td>ml</td></tr><tr><td>chickpeas (tinned)</td><td>400</td><td>g</td></tr><tr><td>tahini</td><td>25</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>creme fraiche</td><td>30</td><td>ml</td></tr><tr><td>parsley (curly leaf)</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Chop carrots and onions (smaller the better)
+Fry some oil in a saucepan. Once hot, add the carrots, onions, garlic & spices. Season with salt. Let them sautee until the onion starts to brown.
+Once brown, add the vegetable stock, and leave to simmer for 30 minutes.
+Toss chickpeas in salt, cumin and oil. Spread over a baking tray and cook at 220C for 10-15 minutes (until brown)
+Juice lemons, mix with tahini, creme fraiche and some water to thin.
+Serve with tahini mix and chickpeas on the table</p></div><div class='recipe'><h3>Filled Peppers (feta + pine nuts)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>red pepper</td><td>4</td><td></td></tr><tr><td>cous cous</td><td>300</td><td>g</td></tr><tr><td>feta</td><td>50</td><td>g</td></tr><tr><td>pine nuts</td><td>20</td><td>g</td></tr><tr><td>raisins</td><td>20</td><td>g</td></tr><tr><td>lemons</td><td>0.5</td><td>null</td></tr></table></tbody><p>Chop the peppers in half and take out the seeds
+Part-roast red peppers for 15 mins
+Meanwhile, make cous cous with toasted nuts, lemon zest and raisins
+Take peppers out of the oven and fill with cous cous (add feta on the top)
+Roast again for about 15 mins</p></div><div class='recipe'><h3>Filled Peppers (leek and chorizo)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>red pepper</td><td>2</td><td></td></tr><tr><td>leeks</td><td>500</td><td>g</td></tr><tr><td>cherry tomatoes</td><td>300</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>basil</td><td>0.2</td><td>bunches</td></tr><tr><td>chorizo</td><td>100</td><td>g</td></tr></table></tbody><p>Sweat leeks in oil with some butter, split and add chorizo to meaty leeks.
+Halve peppers and remove seeds. Roast with some oil and salt for 15 minutes until partly cooked
+Meanwhile chop tomatoes and mix with leeks, crushed garlic and lemon zest.
+Spoon leek mixture into peppers and roast for a further 15 minutes.
+Sprinkle with torn basil and serve</p></div><div class='recipe'><h3>Filled Peppers (leek and tomato)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>red pepper</td><td>4</td><td></td></tr><tr><td>leeks</td><td>500</td><td>g</td></tr><tr><td>cherry tomatoes</td><td>300</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>basil</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Sweat leeks in oil with some butter
+Halve peppers and remove seeds. Roast with some oil and salt for 15 minutes until partly cooked
+Meanwhile chop tomatoes and mix with leeks, crushed garlic and lemon zest.
+Spoon leek mixture into peppers and roast for a further 15 minutes.
+Sprinkle with torn basil and serve</p></div><div class='recipe'><h3>Gravadlax</h3><p><i>Serves 10</p></i><table><tbody><tr><td>salmon</td><td>1000</td><td>g</td></tr><tr><td>peppercorns</td><td>2</td><td>tsp</td></tr><tr><td>sugar</td><td>70</td><td>g</td></tr><tr><td>salt</td><td>50</td><td>g</td></tr><tr><td>dill</td><td>0.3</td><td>bunches</td></tr></table></tbody><p>Put in fridge under weight and sealed, turn each night, leave for 3 days</p></div><div class='recipe'><h3>Leek, butter bean and chorizo gratin</h3><p><i>Serves 6</p></i><table><tbody><tr><td>chorizo</td><td>125</td><td>g</td></tr><tr><td>leeks</td><td>1000</td><td>g</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>sherry</td><td>100</td><td>ml</td></tr><tr><td>butter beans</td><td>600</td><td>g</td></tr><tr><td>vegetable stock</td><td>100</td><td>ml</td></tr><tr><td>bread</td><td>0.2</td><td>loaves</td></tr><tr><td>parmezan</td><td>100</td><td>g</td></tr><tr><td>sun dried tomato</td><td>0.2</td><td>jar</td></tr><tr><td>basil</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Heat oven to 200C/fan 180C/gas 6.
+Heat the oil, fry the chorizo for a few mins until slightly crisp, then scoop out, leaving the oil behind. 
+Add the leeks and half the garlic; cook for 5 mins until soft.
+Pour in the sherry, beans and stock. Season (inc. paprika), then bubble for 5 mins.
+Meanwhile, blitz the bread to coarse crumbs with the remaining garlic, some paprika and some cayenne.
+Tip the leek mixture into an ovenproof dish, stir in the chorizo and scatter over the crumbs.
+Bake for 10 mins until golden, then serve with torn basil leaves.
+VEGGIE VERSION - identical but without chorizo and with extra tomatoes</p></div><div class='recipe'><h3>Shakshuka</h3><p><i>Serves 4</p></i><table><tbody><tr><td>onions</td><td>250</td><td>g</td></tr><tr><td>potatoes</td><td>100</td><td>g</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr><tr><td>red pepper</td><td>1</td><td></td></tr><tr><td>cumin (ground)</td><td>1</td><td>tsp</td></tr><tr><td>cayenne pepper</td><td>1</td><td>tsp</td></tr><tr><td>paprika</td><td>2</td><td>tsp</td></tr><tr><td>chopped tomatoes</td><td>600</td><td>g</td></tr><tr><td>sugar</td><td>10</td><td>g</td></tr><tr><td>lemons</td><td>0.5</td><td>null</td></tr><tr><td>eggs</td><td>6</td><td>null</td></tr><tr><td>coriander (fresh)</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Boil the potatoes in a separate pan
+Crush the garlic and juice the lemons
+Fry onions until soft, then add spices
+Add peppers and fry until soft
+Add tinned tomatoes (sieve about half out of the juice so there's less liquid)
+Add garlic, lemon, sugar, salt, pepper and potatoes
+Leave to cook for a couple of hours
+Pour the sauce into oven trays. Make divots in the sauce and break in the eggs. Season the eggs lightly, then cover and put into the oven. 
+Cook for about 45 minutes until they're just set. Sprinkle with coriander and serve.</p></div><div class='recipe'><h3>Sweet Potato Skins</h3><p><i>Serves 4</p></i><table><tbody><tr><td>sweet potato</td><td>800</td><td>g</td></tr><tr><td>sun dried tomato</td><td>0.2</td><td>jar</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>pecans</td><td>50</td><td>g</td></tr><tr><td>cheddar</td><td>100</td><td>g</td></tr><tr><td>parsley (curly leaf)</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Preheat oven to 180. Poke holes in the sweet potatoes with a fork and bake for 30-40 minutes, or until the potatoes are very soft. Slice the top off the garlic so the cloves are open and put in the oven alongside.
+Remove from oven, and let the sweet potatoes cool until you can handle them (10-15 minutes)
+Slice the sweet potatoes in half. Scoop out the sweet potato flesh, leaving some in the skin. Take the garlic out of its skin and chop up.
+Mix tomatoes, parsley, nuts, garlic and potato flesh and put into the skins. Top with cheese.
+Put back into the oven for 10 mins / until cheese is melted/</p></div><div class='recipe'><h3>Veg Shepherds pie</h3><p><i>Serves 5</p></i><table><tbody><tr><td>onions</td><td>600</td><td>g</td></tr><tr><td>red pepper</td><td>3</td><td></td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>paprika</td><td>2</td><td>tsp</td></tr><tr><td>chopped tomatoes</td><td>800</td><td>g</td></tr><tr><td>tomato puree</td><td>30</td><td>g</td></tr><tr><td>carrots</td><td>600</td><td>g</td></tr><tr><td>vegetable stock</td><td>600</td><td>ml</td></tr><tr><td>sweet potato</td><td>800</td><td>g</td></tr><tr><td>margerine</td><td>30</td><td>g</td></tr><tr><td>thyme</td><td>0.1</td><td>bunches</td></tr><tr><td>oregano</td><td>1</td><td>tsp</td></tr></table></tbody><p>Fry onions, add spices.
+Add rest of veg (except beans) and fry for 10 mins
+Add stock (and/or wine/water)
+Leave to cook on the hob for half an hour / until the carrots are softening
+Peel and roast sweet potatoes with thyme and oregano.
+Cream with margerine.
+Put veg into a tin, with sweet potato mash on top.
+Roast for 30-40 mins then serve with cheese on tables.</p></div></div><h2>Veg</h2><div><div class='recipe'><h3>Asparagus salad</h3><p><i>Serves 12</p></i><table><tbody><tr><td>asparagus</td><td>500</td><td>g</td></tr><tr><td>manchego</td><td>200</td><td>g</td></tr><tr><td>flaked almonds</td><td>50</td><td>g</td></tr></table></tbody><p>Boil asparagus for 5-10 minutes until slightly soft.
+Toast the flaked almonds
+Put in griddle pan with oil, some butter and salt for 5-10 mins.
+Meanwhile, chop manchego into strips
+Assemble and serve
+</p></div><div class='recipe'><h3>Aubergine roast with turmeric yoghurt</h3><p><i>Serves 4</p></i><table><tbody><tr><td>aubergines</td><td>500</td><td>g</td></tr><tr><td>natural yoghurt</td><td>50</td><td>g</td></tr><tr><td>turmeric</td><td>0.5</td><td>tsp</td></tr><tr><td>limes</td><td>0.5</td><td></td></tr><tr><td>garlic</td><td>0.1</td><td>bulbs</td></tr><tr><td>pommegranate seeds</td><td>10</td><td>g</td></tr><tr><td>pine nuts</td><td>10</td><td>g</td></tr><tr><td>parsley (curly leaf)</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Slice aubergine and mix with oil and salt. Roast until browned.
+Mix turmeric, lime juice, garlic and yoghurt
+Serve on a platter with pommegranate seeds, pine nuts, parsley and yoghurt.</p></div><div class='recipe'><h3>Baba Ganoush</h3><p><i>Serves 6</p></i><table><tbody><tr><td>aubergines</td><td>600</td><td>g</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>tahini</td><td>15</td><td>g</td></tr><tr><td>parsley (flat leaf)</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Prick the aubergines with a fork. Grill the aubergines until the skin is charred and blacked and the flesh feels soft when you press it
+Crush the garlic, juice the lemon and finely chop the parsley
+When cool enough to handle, cut the aubergines in half and scoop out the flesh. Mix the soft flesh with the remaining ingredients.</p></div><div class='recipe'><h3>Broccoli Slaw</h3><p><i>Serves 16</p></i><table><tbody><tr><td>broccoli</td><td>2</td><td>heads</td></tr><tr><td>dried cranberries</td><td>80</td><td>g</td></tr><tr><td>red onions</td><td>70</td><td>g</td></tr><tr><td>buttermilk</td><td>140</td><td>ml</td></tr><tr><td>mayonnaise</td><td>100</td><td>g</td></tr><tr><td>cider vinegar</td><td>40</td><td>ml</td></tr><tr><td>sugar</td><td>20</td><td>g</td></tr></table></tbody><p>Chop broccoli thinly
+Chop red onion and add to other ingredients to make the dressing
+Serve with cranberries</p></div><div class='recipe'><h3>Butternut (with beet and tahini)</h3><p><i>Serves 6</p></i><table><tbody><tr><td>butternut squash</td><td>1000</td><td>g</td></tr><tr><td>red onions</td><td>300</td><td>g</td></tr><tr><td>beetroot</td><td>200</td><td>g</td></tr><tr><td>tahini</td><td>50</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>garlic</td><td>0.1</td><td>bulbs</td></tr><tr><td>za'atar</td><td>2</td><td>tsp</td></tr><tr><td>parsley (curly leaf)</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Chop the veg
+Roast separately until cooked
+Mix and top with dressing (tahini,lemon juice,garlic,za'atar) and parsley</p></div><div class='recipe'><h3>Carrots (feta and pine nuts)</h3><p><i>Serves 8</p></i><table><tbody><tr><td>carrots</td><td>800</td><td>g</td></tr><tr><td>feta</td><td>70</td><td>g</td></tr><tr><td>pine nuts</td><td>20</td><td>g</td></tr><tr><td>cumin (ground)</td><td>3</td><td>tsp</td></tr><tr><td>parsley (curly leaf)</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Chop carrots, toss in olive oil, salt, pepper and cumin and roast for 50 minutes at 180
+Meanwhile, dry-fry the pine nuts.
+Crumble the feta, and finely chop the parsley
+When the carrots are cooked, top with pine nuts, feta, cumin and parsley and serve </p></div><div class='recipe'><h3>Chickpea and Lentil salad</h3><p><i>Serves 6</p></i><table><tbody><tr><td>green lentils</td><td>200</td><td>g</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr><tr><td>sage</td><td>0.2</td><td>bunches</td></tr><tr><td>coriander (ground)</td><td>2</td><td>tsp</td></tr><tr><td>cumin (ground)</td><td>2</td><td>tsp</td></tr><tr><td>tahini</td><td>30</td><td>g</td></tr><tr><td>lemons</td><td>2</td><td>null</td></tr><tr><td>feta</td><td>30</td><td>g</td></tr><tr><td>red onions</td><td>70</td><td>g</td></tr><tr><td>aubergines</td><td>100</td><td>g</td></tr><tr><td>parsley (flat leaf)</td><td>0.5</td><td>bunches</td></tr></table></tbody><p>Put lentils, half the garlic (as full cloves), sage and some olive oil into a pot, with double the volume of cold water (as lentils)
+Let the water come to a simmer (not boiling) and turn down to cook until tender (25-40 mins).
+Let the lentils cool before draining, discard the sage and garlic.
+Chop the aubergine into small cubes and fry with salt and some cumin, then drain on kitchen roll.
+Make a tahini dressing with coriander and cumin (crush rest of garlic and put in as a paste). Can add a little water to thin if required.
+Chop onions into thin slices (arcs).
+Drain chickpeas and mix with lentils and aubergine, then top with onions, feta and parsley.</p></div><div class='recipe'><h3>Green Beans (garlic and chilli flakes)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>green beans</td><td>300</td><td>g</td></tr><tr><td>garlic</td><td>0.05</td><td>bulbs</td></tr><tr><td>chilli flakes</td><td>0.2</td><td>tsp</td></tr></table></tbody><p>Boil green beans in water, then fry in oil with garlic and chilli flakes</p></div><div class='recipe'><h3>Green Salad (cucumber and green pepper)</h3><p><i>Serves 8</p></i><table><tbody><tr><td>lettuce</td><td>1</td><td>null</td></tr><tr><td>green pepper</td><td>0.2</td><td>null</td></tr><tr><td>cucumber</td><td>0.25</td><td>null</td></tr><tr><td>mustard (dijon)</td><td>1</td><td>tsp</td></tr><tr><td>white wine vinegar</td><td>50</td><td>ml</td></tr><tr><td>olive oil</td><td>50</td><td>ml</td></tr></table></tbody><p></p></div><div class='recipe'><h3>Green Salad (cucumber and walnuts)</h3><p><i>Serves 8</p></i><table><tbody><tr><td>lettuce</td><td>1</td><td>null</td></tr><tr><td>spring onions</td><td>20</td><td>g</td></tr><tr><td>cucumber</td><td>0.25</td><td>null</td></tr><tr><td>walnuts</td><td>30</td><td>g</td></tr><tr><td>mustard (dijon)</td><td>1</td><td>tsp</td></tr><tr><td>white wine vinegar</td><td>50</td><td>ml</td></tr><tr><td>olive oil</td><td>50</td><td>ml</td></tr></table></tbody><p></p></div><div class='recipe'><h3>Pickled Cucumbers</h3><p><i>Serves 8</p></i><table><tbody><tr><td>cucumber</td><td>1</td><td>null</td></tr><tr><td>white wine vinegar</td><td>100</td><td>ml</td></tr><tr><td>sugar</td><td>15</td><td>g</td></tr><tr><td>salt</td><td>6</td><td>g</td></tr><tr><td>parsley (curly leaf)</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Wash the cucumber and cut or slice as thin as possible
+Mix the vinegar, sugar, salt and pepper except the parsley and place the cucumber slices in the marinade for a minimum of 15 min.
+Sprinkle with parsley and serve.
+</p></div><div class='recipe'><h3>Salad (beetroot, spinach and goat's cheese)</h3><p><i>Serves 8</p></i><table><tbody><tr><td>beetroot</td><td>300</td><td>g</td></tr><tr><td>spinach</td><td>210</td><td>g</td></tr><tr><td>goat's cheese</td><td>200</td><td>g</td></tr></table></tbody><p>Put in a bowl (beetroot, then spinach, then goat's cheese)
+Dress with a simple oil and white wine vinegar dressing</p></div><div class='recipe'><h3>Salad (beetroot, spinach, tomatoes and goat's cheese)</h3><p><i>Serves 6</p></i><table><tbody><tr><td>beetroot</td><td>100</td><td>g</td></tr><tr><td>spinach</td><td>250</td><td>g</td></tr><tr><td>goat's cheese</td><td>120</td><td>g</td></tr><tr><td>cherry tomatoes</td><td>50</td><td>g</td></tr><tr><td>balsamic vinegar</td><td>50</td><td>ml</td></tr><tr><td>olive oil</td><td>50</td><td>ml</td></tr></table></tbody><p>Put in a bowl (beetroot, then spinach, then goat's cheese)
+Dress with a simple oil and white wine vinegar dressing</p></div><div class='recipe'><h3>Sweet Potato (with pecans and feta)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>sweet potato</td><td>600</td><td>g</td></tr><tr><td>feta</td><td>70</td><td>g</td></tr><tr><td>pecans</td><td>20</td><td>g</td></tr><tr><td>maple syrup</td><td>20</td><td>ml</td></tr><tr><td>parsley (curly leaf)</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Cook sweet potato with maple syrup, toast pecans, then mix all together and serve</p></div><div class='recipe'><h3>Sweet potato with cherries and goat's cheese</h3><p><i>Serves 4</p></i><table><tbody><tr><td>sweet potato</td><td>600</td><td>g</td></tr><tr><td>maple syrup</td><td>20</td><td>ml</td></tr><tr><td>dried cherries</td><td>20</td><td>g</td></tr><tr><td>goat's cheese</td><td>40</td><td>g</td></tr><tr><td>pecans</td><td>20</td><td>g</td></tr><tr><td>parsley (curly leaf)</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Roast sweet potato with salt and maple syrup.
+Chop pecans and goat's cheese
+Serve with rest of ingredients</p></div><div class='recipe'><h3>Turkish Cauliflower</h3><p><i>Serves 4</p></i><table><tbody><tr><td>cauliflower</td><td>400</td><td>g</td></tr><tr><td>greek yoghurt</td><td>25</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>sumac</td><td>1</td><td>tsp</td></tr></table></tbody><p>Chop cauliflower into florets and roast at 200C for about 30-40 mins (until slightly blackened).
+Mix yoghurt with sumac, lemon juice and garlic and drizzle over cauliflower.</p></div></div><h2>Sauce</h2><div><div class='recipe'><h3>Gravadlax Sauce</h3><p><i>Serves 6</p></i><table><tbody><tr><td>creme fraiche</td><td>200</td><td>ml</td></tr><tr><td>mustard (dijon)</td><td>3</td><td>tsp</td></tr><tr><td>cider vinegar</td><td>5</td><td>ml</td></tr><tr><td>sugar</td><td>5</td><td>g</td></tr><tr><td>dill</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Mix all the ingredients and season to taste</p></div><div class='recipe'><h3>Yoghurt (garlic and lemon)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>greek yoghurt</td><td>100</td><td>g</td></tr><tr><td>lemons</td><td>0.3</td><td>null</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr></table></tbody><p>Crush garlic, juice lemon, mix with yoghurt and add salt</p></div></div><h2>Starch</h2><div><div class='recipe'><h3>Bread</h3><p><i>Serves 8</p></i><table><tbody><tr><td>bread</td><td>1</td><td>loaves</td></tr><tr><td>butter</td><td>150</td><td>g</td></tr></table></tbody><p>Heat in oven, serve with butter</p></div><div class='recipe'><h3>Cous cous (almonds, pom, orange)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>cous cous</td><td>120</td><td>g</td></tr><tr><td>flaked almonds</td><td>10</td><td>g</td></tr><tr><td>pommegranate seeds</td><td>20</td><td>g</td></tr><tr><td>oranges</td><td>0.5</td><td>null</td></tr></table></tbody><p>Toast flaked almonds
+Grate zest from orange
+Make cous cous in boiling water or stock
+Add almonds, pommegranate seeds and orange zest to the cous cous and serve</p></div><div class='recipe'><h3>Flatbread</h3><p><i>Serves 8</p></i><table><tbody><tr><td>self raising flour</td><td>350</td><td>g</td></tr><tr><td>natural yoghurt</td><td>350</td><td>g</td></tr><tr><td>baking powder</td><td>1</td><td>tsp</td></tr></table></tbody><p>Mix ingredients in a bowl to make a dough.
+Remember to add salt!
+Nead for 1-2 minutes so that it forms a single ball.
+Leave aside and cover for about an hour.
+Split into smaller balls and roll out into 2-3mm thick sheets.
+Fry in a very hot grill pan for 2 minutes on each side until brown.
+</p></div><div class='recipe'><h3>Garlic Bread</h3><p><i>Serves 10</p></i><table><tbody><tr><td>ciabatta</td><td>2</td><td>loaves</td></tr><tr><td>butter</td><td>160</td><td>g</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr><tr><td>parsley (flat leaf)</td><td>0.3</td><td>bunches</td></tr></table></tbody><p>Soften butter, crush garlic, mix with parsley and put into bread. Cook under a high heat for 10 minutes in foil before serving</p></div><div class='recipe'><h3>Nachos</h3><p><i>Serves 10</p></i><table><tbody><tr><td>nachos</td><td>300</td><td>g</td></tr></table></tbody><p></p></div><div class='recipe'><h3>New Potatoes</h3><p><i>Serves 6</p></i><table><tbody><tr><td>new potatoes</td><td>900</td><td>g</td></tr><tr><td>chives</td><td>0.2</td><td>bunches</td></tr><tr><td>butter</td><td>30</td><td>g</td></tr></table></tbody><p>Boil potatoes, drain, then mix with butter, chives, salt and pepper before serving</p></div><div class='recipe'><h3>Potato Salad (tamarind)</h3><p><i>Serves 6</p></i><table><tbody><tr><td>tamarind paste</td><td>1.5</td><td>tbsp</td></tr><tr><td>sugar (light muscovado)</td><td>50</td><td>g</td></tr><tr><td>cumin (ground)</td><td>3</td><td>tsp</td></tr><tr><td>ginger (fresh)</td><td>5</td><td>g</td></tr><tr><td>new potatoes</td><td>900</td><td>g</td></tr><tr><td>mayonnaise</td><td>150</td><td>g</td></tr><tr><td>natural yoghurt</td><td>100</td><td>g</td></tr></table></tbody><p>To make the dressing, put the tamarind pulp in a small pan, pour over 75ml boiling water and add the sugar, cumin and ginger. Simmer, without a lid, until the dressing thickens and becomes syrupy, about 10-15 mins. It should have a pleasant tang – add extra sugar if needed.
+While the tamarind is cooking, bring a large pan of salted water to the boil and add the potatoes. Return to the boil and cook for 15 mins until tender. Drain, then cool slightly before halving them. Transfer to a big mixing bowl and spoon over the dressing, gently stirring to make sure the potatoes are well coated. Drizzle over the yogurt, scatter over the coriander, and serve warm or at room temperature.
+</p></div></div><h2>Dessert c</h2><div><div class='recipe'><h3>Apricot Compote</h3><p><i>Serves 20</p></i><table><tbody><tr><td>greek yoghurt</td><td>2000</td><td>g</td></tr><tr><td>apricots</td><td>1500</td><td>g</td></tr><tr><td>sugar</td><td>500</td><td>g</td></tr><tr><td>flaked almonds</td><td>30</td><td>g</td></tr></table></tbody><p>Pit and halve the apricots.
+Place apricots and sugar in a nonreactive pan or bowl, stir then cover and let macerate for at least 12 hours.
+Transfer the fruit and sugar to a saucepan and bring to the boil over a medium- high head. Reduce the heat so the mixture is boiling merrily and cook for 10 minutes, stirring occasionally.
+This works best when you use the original quantities (1.5kg apricots) per batch.
+Serve with yoghurt and top with toasted almonds</p></div><div class='recipe'><h3>Banana Bread</h3><p><i>Serves 12</p></i><table><tbody><tr><td>pecans</td><td>60</td><td>g</td></tr><tr><td>glace cherries</td><td>125</td><td>g</td></tr><tr><td>flour</td><td>200</td><td>g</td></tr><tr><td>dessicated coconut</td><td>60</td><td>g</td></tr><tr><td>baking powder</td><td>1.5</td><td>tsp</td></tr><tr><td>bicarb of soda</td><td>0.5</td><td>tsp</td></tr><tr><td>eggs</td><td>2</td><td>null</td></tr><tr><td>sugar</td><td>200</td><td>g</td></tr><tr><td>margerine</td><td>110</td><td>g</td></tr><tr><td>bananas</td><td>2</td><td>null</td></tr><tr><td>almond extract</td><td>0.5</td><td>tsp</td></tr></table></tbody><p>Chop the pecans
+Mix together flour, coconut, baking powder, bicarbonate of soda, chopped pecans, cherries and a pinch of salt.
+Break eggs in a mixing bowl, and beat until light and frothy. Add sugar and marge. Beat well. Stir in mashed banana and almond. Add flour mixture, and stir just to combine. Spoon into greased 23x12cm (9x5 in) loaf tin.
+Bake at 180 C / Gas 4 for 1 hour, or until a skewer inserted in centre comes out clean. Let stand for 10 minutes, and remove from tin. Cool.</p></div><div class='recipe'><h3>Banana, yoghurt, honey bowl</h3><p><i>Serves 4</p></i><table><tbody><tr><td>greek yoghurt</td><td>500</td><td>g</td></tr><tr><td>honey</td><td>90</td><td>g</td></tr><tr><td>bananas</td><td>3</td><td>null</td></tr><tr><td>raisins</td><td>20</td><td>g</td></tr><tr><td>biscuits</td><td>50</td><td>g</td></tr></table></tbody><p>Put everything in a bowl</p></div><div class='recipe'><h3>Blueberry spelt cake</h3><p><i>Serves 8</p></i><table><tbody><tr><td>blueberries</td><td>500</td><td>g</td></tr><tr><td>elderflower cordial</td><td>80</td><td>ml</td></tr><tr><td>eggs</td><td>4</td><td>null</td></tr><tr><td>sugar</td><td>250</td><td>g</td></tr><tr><td>vanilla essence</td><td>1</td><td>tsp</td></tr><tr><td>spelt flour</td><td>125</td><td>g</td></tr><tr><td>ground almonds</td><td>125</td><td>g</td></tr><tr><td>baking powder</td><td>2</td><td>tsp</td></tr><tr><td>salt</td><td>1</td><td>g</td></tr><tr><td>butter</td><td>125</td><td>g</td></tr><tr><td>greek yoghurt</td><td>125</td><td>g</td></tr></table></tbody><p>Preheat oven to 170C
+Spread blueberries over the bottom of the tin, drizzle cordial over them and leave to macerate.
+Whisk eggs, sugar and vanilla until pale and fluffy
+Combine flour, almonds, baking powder and salt.
+Melt the butter
+Gradually add butter yoghurt, and dry ingredients to the egg-sugar, alternating between them, until the batter is smooth.
+Pour the batter over the blueberries, cook for 50-60 mins.
+Serve after it has cooled.</p></div><div class='recipe'><h3>Key Lime Pie</h3><p><i>Serves 12</p></i><table><tbody><tr><td>biscuits</td><td>240</td><td>g</td></tr><tr><td>butter</td><td>150</td><td>g</td></tr><tr><td>grape nuts</td><td>50</td><td>g</td></tr><tr><td>condensed milk</td><td>400</td><td>g</td></tr><tr><td>double cream</td><td>140</td><td>ml</td></tr><tr><td>limes</td><td>3</td><td></td></tr></table></tbody><p>Crumble the biscuits: most easily done in a food processor
+Melt the butter, mix with the biscuit crumbs and grape nuts, press flat into your pie dish (use baking paper). Refrigerate for at least 20 minutes. 
+
+Take the zest off the limes and chop finely
+Squeeze the juice of approx. 5/6 of the limes, keep the rest for something else
+Whip the cream until stiff
+Add the condensed milk, lime juice and lime zest, stir until thoroughly mixed
+Pour the mixture over the pie base, refrigerate for several hours.</p></div><div class='recipe'><h3>Plum Compote</h3><p><i>Serves 8</p></i><table><tbody><tr><td>greek yoghurt</td><td>1000</td><td>g</td></tr><tr><td>vanilla essence</td><td>1</td><td>tsp</td></tr><tr><td>plums</td><td>6</td><td>null</td></tr><tr><td>oranges</td><td>1</td><td>null</td></tr><tr><td>cinnamon</td><td>1</td><td>tsp</td></tr><tr><td>cloves</td><td>1</td><td>tsp</td></tr><tr><td>sugar (demerera)</td><td>30</td><td>g</td></tr><tr><td>marsala</td><td>100</td><td>ml</td></tr><tr><td>pecans</td><td>25</td><td>g</td></tr><tr><td>honey</td><td>80</td><td>g</td></tr></table></tbody><p>Roughly chop plums. Pluck out the stones. Pop into a warm saucepan with a good squeeze of orange.
+Add the spices and sugar. Let it bubble up.
+Keep stirring
+Leave in marsala overnight
+
+Reheat to burn off marsala and then serve warm with pecans</p></div><div class='recipe'><h3>Rhubarb Crumble</h3><p><i>Serves 6</p></i><table><tbody><tr><td>rhubarb</td><td>900</td><td>g</td></tr><tr><td>sugar</td><td>110</td><td>g</td></tr><tr><td>ginger (fresh)</td><td>5</td><td>g</td></tr><tr><td>flaked almonds</td><td>110</td><td>g</td></tr><tr><td>margerine</td><td>75</td><td>g</td></tr><tr><td>self raising flour</td><td>175</td><td>g</td></tr><tr><td>cinnamon</td><td>2</td><td>tsp</td></tr><tr><td>ginger (ground)</td><td>1</td><td>tsp</td></tr><tr><td>sugar (demerera)</td><td>110</td><td>g</td></tr></table></tbody><p>Nb: Normal sugar is for the rhubarb, demerera sugar is for the crumble.
+Wash rhubarb, chop into 2cm ish chunks. Toss in a bowl with sugar and grate the ginger.
+Cook on a hob for 20-30 mins until soft.
+Put the rest of the ingredients into a bowl and mix until its a crumble.
+Put the rhubarb in the bottom of the tin, and cover with crumble. Bake for 30-40 mins at 180C</p></div><div class='recipe'><h3>Shortbread</h3><p><i>Serves 4</p></i><table><tbody><tr><td>butter</td><td>125</td><td>g</td></tr><tr><td>sugar</td><td>55</td><td>g</td></tr><tr><td>flour</td><td>180</td><td>g</td></tr></table></tbody><p>Heat the oven to 190C
+Beat the butter and the sugar together until smooth.
+Stir in the flour to get a smooth paste. Turn on to a work surface and gently roll out until the paste is 1cm/½in thick.
+Cut into fingers. Place onto a baking tray. Sprinkle with caster sugar and chill in the fridge for 20 minutes.
+Bake in the oven for 15-20 minutes, or until pale golden-brown. Set aside to cool on a 
+wire rack.</p></div></div><h2>Dessert other</h2><div><div class='recipe'><h3>Ice Cream</h3><p><i>Serves 1</p></i><table><tbody><tr><td>ice cream</td><td>120</td><td>ml</td></tr></table></tbody><p></p></div></div></div><h1>Dinner</h1><div><h2>Dessert c</h2><div><div class='recipe'><h3>Carrot Cake</h3><p><i>Serves 8</p></i><table><tbody><tr><td>sugar (light muscovado)</td><td>175</td><td>g</td></tr><tr><td>sunflower oil</td><td>175</td><td>ml</td></tr><tr><td>eggs</td><td>3</td><td>null</td></tr><tr><td>carrots</td><td>140</td><td>g</td></tr><tr><td>raisins</td><td>80</td><td>g</td></tr><tr><td>oranges</td><td>2</td><td>null</td></tr><tr><td>self raising flour</td><td>175</td><td>g</td></tr><tr><td>bicarb of soda</td><td>1</td><td>tsp</td></tr><tr><td>cinnamon</td><td>1</td><td>tsp</td></tr><tr><td>nutmeg</td><td>1</td><td>tsp</td></tr><tr><td>sugar (icing)</td><td>175</td><td>g</td></tr></table></tbody><p>Icing - juice of the oranges and icing sugar
+Cake - everything else
+
+Beat the 3 eggs. Then mix with sugar and oil. Stir in grated carrots, raisins and grated orange zest (don't use all the oranges).
+Mix in flour, bicarb, cinnamon and nutmeg. The mixture will be soft and runny.
+Pour into a tin with baking paper and bake at 180 for 50 minutes until firm and springy.
+
+Icing - beat sugar and orange juice until smooth. Then drizzle over cake.</p></div><div class='recipe'><h3>Cherry, pistachio and coconut cake</h3><p><i>Serves 20</p></i><table><tbody><tr><td>sugar</td><td>120</td><td>g</td></tr><tr><td>sugar (brown)</td><td>90</td><td>g</td></tr><tr><td>pistachios</td><td>60</td><td>g</td></tr><tr><td>ground almonds</td><td>180</td><td>g</td></tr><tr><td>dessicated coconut</td><td>45</td><td>g</td></tr><tr><td>self raising flour</td><td>50</td><td>g</td></tr><tr><td>vanilla essence</td><td>1</td><td>tsp</td></tr><tr><td>butter</td><td>150</td><td>g</td></tr><tr><td>eggs</td><td>3</td><td>null</td></tr><tr><td>cherries</td><td>200</td><td>g</td></tr></table></tbody><p>Put aside 1/6th of the sugar to use as the topping (100g for the cake, 20 for the topping).
+Also put aside 1/2 the pistachios for the topping, roughly chop them and grind the rest.
+Mix all the dry ingredients (sugar, almonds, ground pistachios, coconut, flour) and a pinch of salt. Melt the butter, and pour it in and then mix in the eggs and vanilla.
+Pour the mix into tins.
+Remove the stones from the cherries (if possible over the cake mix to collect the juice) and sprinkle over the top of the tine.
+Top with chopped pistachios mixed with sugar.
+Bake for 35-45 minutes at 190C (170 fan)</p></div><div class='recipe'><h3>Lemon Drizzle Cake</h3><p><i>Serves 8</p></i><table><tbody><tr><td>lemons</td><td>3</td><td>null</td></tr><tr><td>self raising flour</td><td>225</td><td>g</td></tr><tr><td>milk (full fat)</td><td>150</td><td>ml</td></tr><tr><td>eggs</td><td>3</td><td>null</td></tr><tr><td>sugar</td><td>355</td><td>g</td></tr><tr><td>margerine</td><td>225</td><td>g</td></tr><tr><td>baking powder</td><td>1.5</td><td>tsp</td></tr></table></tbody><p>You should use the same amount of sugar as flour and butter in the cake; set the rest aside for the drizzle.
+Zest and juice the lemons.
+Put oven on at 180C and line tins with baking paper
+Blend butter and sugar until pale and fluffy. Add eggs slowly, mixing all the time. Add a spoonful of flour if it gets curdled.
+Add the milk and blend until creamy
+Blend the flour and baking powder into the mixture
+Mix in the lemon zest
+Bake for 30 mins until golden and shrinking from the sides (clean skewer)
+Prick the cake all over
+Combine lemon juice and remaining sugar, and spoon on top of the cake. Leave to cool
+x2 fills 1 min tin</p></div><div class='recipe'><h3>Orange marsala steam puddings</h3><p><i>Serves 8</p></i><table><tbody><tr><td>golden syrup</td><td>200</td><td>g</td></tr><tr><td>clementines</td><td>2</td><td>null</td></tr><tr><td>margerine</td><td>175</td><td>g</td></tr><tr><td>sugar</td><td>175</td><td>g</td></tr><tr><td>eggs</td><td>3</td><td>null</td></tr><tr><td>self raising flour</td><td>85</td><td>g</td></tr><tr><td>breadcrumbs</td><td>85</td><td>g</td></tr><tr><td>nutmeg</td><td>0.1</td><td>tsp</td></tr><tr><td>marsala</td><td>35</td><td>ml</td></tr><tr><td>oranges</td><td>2</td><td>null</td></tr><tr><td>dried fruit</td><td>200</td><td>g</td></tr><tr><td>glace cherries</td><td>10</td><td>g</td></tr><tr><td>madeira</td><td>50</td><td>ml</td></tr></table></tbody><p>Golden Syrup - 3:5 cake:syrup (75:125)
+Oranges - 1:1 cake:syrup (1:1)
+
+Butter the inside of a 1.2-litre pudding basin. If you’re steaming the pudding on the hob, boil the kettle and have a large saucepan with a lid and a heatproof saucer ready. Cut a sheet of foil and greaseproof paper, both about 30cm long, and butter the greaseproof.
+
+Spoon 3 tbsp syrup into the bottom of the basin. Lay 5 slices of clementine or satsuma in the bottom, overlapping like petals. Beat eggs. Then, in a bowl, beat the butter and sugar until creamy, then add eggs gradually, beating all the while, until light and fluffy. Add a spoonful of flour if the mix starts to split. Tip in the breadcrumbs and the rest of the flour, fold until combined, then add all remaining ingredients and fold again. Spoon mix on top of the fruit slices. Add remaining slices of clementine or satsuma against the side of the bowl as you go.
+
+To cook on the hob, cover with greaseproof and foil and steam for 1½ hrs (see Know-how, below). To microwave, losely cover with cling film, pierce once, then cook on Medium for 12 mins. To check it’s done, poke a skewer into the pudding; it should come out clean.
+Make the syrup by heating the ingredients in a small pan. When the pudding is ready, turn out and serve drenched with syrup, or leave to cool and chill for up to 3 days. To reheat, re-cover with foil and greaseproof and steam for 30 mins, or cover with cling film and microwave on Medium for 5 mins until hot. Reheat sauce in the microwave or in a pan.</p></div><div class='recipe'><h3>Peanut Butter Brownies</h3><p><i>Serves 10</p></i><table><tbody><tr><td>peanut butter</td><td>225</td><td>g</td></tr><tr><td>dark chocolate</td><td>200</td><td>g</td></tr><tr><td>sugar (brown)</td><td>280</td><td>g</td></tr><tr><td>eggs</td><td>3</td><td>null</td></tr><tr><td>self raising flour</td><td>100</td><td>g</td></tr><tr><td>ice cream</td><td>700</td><td>ml</td></tr></table></tbody><p>Set aside 50g each of the peanut butter and chocolate. Heat oven to 180C/160C fan/gas 4 and line a 20cm square baking tin with baking parchment. Gently melt remaining peanut butter, chocolate and all the sugar in a pan, stirring occasionally, until the sugar has just about melted. Turn off heat and use a wooden spoon to beat in the eggs one by one. Stir in the flour and scrape into the tin.
+Melt reserved peanut butter in the microwave on High for 45 secs, or in a pan, until runny, then drizzle over the brownie. Bake for 30-35 mins until it has a crust, but the middle still seems slightly uncooked.
+Melt reserved chocolate, drizzle over the brownie, then cool in the tin before cutting into squares.</p></div><div class='recipe'><h3>Rhubarb Spice Cake</h3><p><i>Serves 10</p></i><table><tbody><tr><td>margerine</td><td>140</td><td>g</td></tr><tr><td>self raising flour</td><td>300</td><td>g</td></tr><tr><td>cinnamon</td><td>1</td><td>tsp</td></tr><tr><td>nutmeg</td><td>1</td><td>tsp</td></tr><tr><td>ginger (ground)</td><td>1</td><td>tsp</td></tr><tr><td>sugar (dark muscovado)</td><td>100</td><td>g</td></tr><tr><td>golden syrup</td><td>250</td><td>g</td></tr><tr><td>bicarb of soda</td><td>1</td><td>tsp</td></tr><tr><td>eggs</td><td>2</td><td>null</td></tr><tr><td>rhubarb</td><td>300</td><td>g</td></tr><tr><td>allspice</td><td>1</td><td>tsp</td></tr></table></tbody><p>
+Heat oven to 180C/fan 160C/gas 4 and put the kettle on. 
+ Butter and line a deep 20cm square cake tin. 
+ Sift the flour and spices into a bowl. Beat together the butter and sugar until light and fluffy in the food processor, then beat in the golden syrup.
+Beat the eggs. Dissolve the bicarbonate of soda in 200ml boiling water, then gradually pour through the spout of the processor. Pulse in the flour, then add the eggs, mixing briefly. Remove the bowl from the processor, then gently stir in the rhubarb.
+Pour the mixture into the tin and bake for 50-60 mins, until the cake feels firm to the touch and springs back when pressed. Cool in the tin for 5 mins, then turn out and cool on a wire rack.
+</p></div><div class='recipe'><h3>Sticky Toffee Pudding</h3><p><i>Serves 8</p></i><table><tbody><tr><td>butter</td><td>100</td><td>g</td></tr><tr><td>sugar (light muscovado)</td><td>175</td><td>g</td></tr><tr><td>eggs</td><td>2</td><td>null</td></tr><tr><td>self raising flour</td><td>225</td><td>g</td></tr><tr><td>baking powder</td><td>1</td><td>tsp</td></tr><tr><td>bicarb of soda</td><td>1</td><td>tsp</td></tr><tr><td>black treacle</td><td>60</td><td>g</td></tr><tr><td>milk (full fat)</td><td>275</td><td>ml</td></tr></table></tbody><p>Preheat the oven to 180C
+
+Put the butter, sugar, eggs, flour, baking powder, bicarbonate of soda and treacle into a mixing bowl. Beat using an electric handheld whisk for about 30 seconds or until combined. Pour in the milk gradually and whisk again until smooth. Pour into the prepared dish. Bake for 35�40 minutes or until well risen and springy in the centre.
+</p></div><div class='recipe'><h3>Strawberries and cream</h3><p><i>Serves 2</p></i><table><tbody><tr><td>strawberries</td><td>200</td><td>g</td></tr><tr><td>double cream</td><td>100</td><td>ml</td></tr></table></tbody><p></p></div><div class='recipe'><h3>White Chocolate Blondies</h3><p><i>Serves 10</p></i><table><tbody><tr><td>butter</td><td>225</td><td>g</td></tr><tr><td>white chocolate</td><td>200</td><td>g</td></tr><tr><td>flour</td><td>175</td><td>g</td></tr><tr><td>baking powder</td><td>0.5</td><td>tsp</td></tr><tr><td>sugar (brown)</td><td>200</td><td>g</td></tr><tr><td>sugar</td><td>200</td><td>g</td></tr><tr><td>eggs</td><td>3</td><td>null</td></tr><tr><td>vanilla essence</td><td>2</td><td>tsp</td></tr><tr><td>ice cream</td><td>700</td><td>ml</td></tr></table></tbody><p>Place the butter and half white chocolate in a bowl, suspended over a pan of gently simmering water. Stir every few mins, until the butter and chocolate have melted. Leave to cool.
+Combine flour and baking powder, with a pinch of salt.
+Whisk both sugars and eggs together until thick and foamy.
+Add vanilla to the melted chocolate and stir (don't worry if its separated). Gently fold into the sugar/egg, until most of the buttery streaks are gone. Sieve in the flour, and the remaining chocolate (as small chunks) and stir.
+Cook for 30-35 mins.
+They will sink in the middle like brownies.
+Serve with ice cream.
+Make chocolate sauce for extra tastiness</p></div></div><h2>Sauce</h2><div><div class='recipe'><h3>Red Pepper Salsa</h3><p><i>Serves 4</p></i><table><tbody><tr><td>red onions</td><td>400</td><td>g</td></tr><tr><td>red pepper</td><td>2</td><td></td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>chopped tomatoes</td><td>800</td><td>g</td></tr></table></tbody><p>Fry red onions until soft.
+Add cayenne pepper and paprika and fry for 5 more mins
+Then add peppers and cook until soft
+Then add tomato and garlic and cook until ready to eat</p></div></div><h2>Core</h2><div><div class='recipe'><h3>BBQ Chicken</h3><p><i>Serves 6</p></i><table><tbody><tr><td>chicken thighs</td><td>600</td><td>g</td></tr><tr><td>onions</td><td>50</td><td>g</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>chilli powder</td><td>1</td><td>tsp</td></tr><tr><td>olive oil</td><td>20</td><td>ml</td></tr><tr><td>sugar (brown)</td><td>100</td><td>g</td></tr><tr><td>balsamic vinegar</td><td>80</td><td>ml</td></tr><tr><td>ketchup</td><td>200</td><td>ml</td></tr><tr><td>worcestershire sauce</td><td>4</td><td>tsp</td></tr><tr><td>mustard (dijon)</td><td>2</td><td>tsp</td></tr></table></tbody><p>Blitz onion, garlic and chilli with enough olive oil to make a paste. Mix everything else (except rosemary), add salt and pepper. Marinade chicken.
+Leave the sugar until the end, then add to taste
+Roast chicken with rosemary (under foil), then blast at the end to crisp up</p></div><div class='recipe'><h3>Chicken Tagine</h3><p><i>Serves 16</p></i><table><tbody><tr><td>chicken thighs</td><td>5000</td><td>g</td></tr><tr><td>onions</td><td>1200</td><td>g</td></tr><tr><td>sweet potato</td><td>900</td><td>g</td></tr><tr><td>carrots</td><td>600</td><td>g</td></tr><tr><td>preserved lemons</td><td>50</td><td>g</td></tr><tr><td>black olives</td><td>100</td><td>g</td></tr><tr><td>cumin (ground)</td><td>8</td><td>tsp</td></tr><tr><td>coriander (ground)</td><td>4</td><td>tsp</td></tr><tr><td>turmeric</td><td>12</td><td>tsp</td></tr><tr><td>garlic-ginger paste</td><td>0.4</td><td>jars</td></tr><tr><td>lemons</td><td>2</td><td>null</td></tr><tr><td>red pepper</td><td>5</td><td></td></tr><tr><td>orange pepper</td><td>5</td><td>null</td></tr></table></tbody><p>Marinade chicken in half of the spice mix (+ ginger/garlic paste, lemon zest and juice and olive oil) for a few hours
+Fry onions until soft, then add the remaining spices. Fry for another 5 mins or so.
+Take the pips out of the preserved lemons, and cut them into chunks (about 8 per lemon)
+Add all the other ingredients, mix them up.
+Put in the oven for 90 mins
+VEGGIE: use peppers instead of chicken (no marinade required)</p></div><div class='recipe'><h3>Chicken with goats cheese & roast tomatoes</h3><p><i>Serves 8</p></i><table><tbody><tr><td>chicken thighs</td><td>1000</td><td>g</td></tr><tr><td>goat's cheese</td><td>220</td><td>g</td></tr><tr><td>lemons</td><td>5</td><td>null</td></tr><tr><td>garlic</td><td>0.5</td><td>bulbs</td></tr><tr><td>oregano</td><td>3</td><td>tsp</td></tr><tr><td>white wine vinegar</td><td>500</td><td>ml</td></tr><tr><td>cherry tomatoes</td><td>400</td><td>g</td></tr><tr><td>thyme</td><td>0.4</td><td>bunches</td></tr></table></tbody><p>Marinade chicken in lemon juice & zest, garlic, white wine vinegar and oregano.
+Stuff goat's cheese under the skin of the thighs
+Roast with thyme and cherry tomatoes</p></div><div class='recipe'><h3>Chilli</h3><p><i>Serves 8</p></i><table><tbody><tr><td>onions</td><td>600</td><td>g</td></tr><tr><td>red pepper</td><td>2</td><td></td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>chilli powder</td><td>1</td><td>tsp</td></tr><tr><td>paprika</td><td>2</td><td>tsp</td></tr><tr><td>cayenne pepper</td><td>2</td><td>tsp</td></tr><tr><td>beef mince</td><td>800</td><td>g</td></tr><tr><td>beef stock</td><td>1000</td><td>ml</td></tr><tr><td>chopped tomatoes</td><td>800</td><td>g</td></tr><tr><td>tomato puree</td><td>30</td><td>g</td></tr><tr><td>kidney beans</td><td>400</td><td>g</td></tr><tr><td>borlotti beans</td><td>400</td><td>g</td></tr><tr><td>cannellini beans</td><td>400</td><td>g</td></tr><tr><td>carrots</td><td>400</td><td>g</td></tr><tr><td>vegetable stock</td><td>1000</td><td>ml</td></tr><tr><td>sour cream</td><td>500</td><td>ml</td></tr><tr><td>coriander (fresh)</td><td>0.1</td><td>bunches</td></tr><tr><td>cheddar</td><td>300</td><td>g</td></tr><tr><td>spring onions</td><td>60</td><td>g</td></tr></table></tbody><p>Fry onions, add spices.
+Brown mince
+Add rest of veg (except beans) and fry for 10 mins
+Add stock (and/or wine/water)
+Leave to cook for as long as you can
+add beans about 30 mins before serving
+Serve with sour cream, coriander, grated cheese and chopped spring onions</p></div><div class='recipe'><h3>Fajitas (chicken)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>chicken breast</td><td>300</td><td>g</td></tr><tr><td>limes</td><td>1</td><td></td></tr><tr><td>oranges</td><td>0.8</td><td>null</td></tr><tr><td>chilli powder</td><td>1</td><td>tsp</td></tr><tr><td>cumin (ground)</td><td>1</td><td>tsp</td></tr><tr><td>garlic</td><td>0.7</td><td>bulbs</td></tr><tr><td>worcestershire sauce</td><td>2</td><td>tsp</td></tr><tr><td>coriander (fresh)</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Chop chicken into small cubes
+Marinade chicken in lime juice, lemon juice, chilli powder, cumin, garlic, coriander and worcestershire sauce
+Roast chicken in an oven</p></div><div class='recipe'><h3>Goulash</h3><p><i>Serves 5</p></i><table><tbody><tr><td>beef</td><td>600</td><td>g</td></tr><tr><td>paprika</td><td>8</td><td>tsp</td></tr><tr><td>caraway seeds</td><td>1</td><td>tsp</td></tr><tr><td>flour</td><td>20</td><td>g</td></tr><tr><td>lard</td><td>25</td><td>g</td></tr><tr><td>onions</td><td>400</td><td>g</td></tr><tr><td>green pepper</td><td>2</td><td>null</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>leeks</td><td>400</td><td>g</td></tr><tr><td>yellow pepper</td><td>1</td><td>null</td></tr><tr><td>beef stock</td><td>500</td><td>ml</td></tr><tr><td>vegetable stock</td><td>500</td><td>ml</td></tr><tr><td>sour cream</td><td>100</td><td>ml</td></tr><tr><td>chives</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Cut the beef into large chunks. Mix the paprika, flour, salt and caraway seeds together in a bowl then add the beef and toss to coat. Heat the oven to 140C.
+Melt the lard (or butter) and brown the meat
+Fry onions and green pepper, adding the fat from the meat for flavour. Cook until soft. Stir in remaining flour/spice mixture in.
+Put onion/pepper and beef into an oven dish, add the lemon juice and beef stock, and add some water to cover the meat (as little as possible). Cover with foil and put in the oven. You may need to remove the lid to allow it to reduce
+Cook for as long as you can (at least 3 hours)
+Season to taste
+VEGGIES: Same as meat but fry all the vegetables (leeks and yellow peppers are veggie only)
+Serve with sour cream</p></div><div class='recipe'><h3>Haloumi skewers</h3><p><i>Serves 4</p></i><table><tbody><tr><td>red onions</td><td>100</td><td>g</td></tr><tr><td>halloumi</td><td>250</td><td>g</td></tr><tr><td>cherry tomatoes</td><td>30</td><td>g</td></tr><tr><td>limes</td><td>2</td><td></td></tr><tr><td>mint</td><td>0.1</td><td>bunches</td></tr></table></tbody><p>Marinade halloumi in whatever the meat is going in
+put onto skewers with red onions and cherry tomatoes</p></div><div class='recipe'><h3>Lamb Curry (madras)</h3><p><i>Serves 7</p></i><table><tbody><tr><td>onions</td><td>800</td><td>g</td></tr><tr><td>madras curry paste</td><td>100</td><td>g</td></tr><tr><td>tinned tomatoes (whole)</td><td>1600</td><td>g</td></tr><tr><td>bouillon powder</td><td>5</td><td>tsp</td></tr><tr><td>red lentils</td><td>100</td><td>g</td></tr><tr><td>chickpeas (tinned)</td><td>800</td><td>g</td></tr><tr><td>ginger (fresh)</td><td>10</td><td>g</td></tr><tr><td>cumin (ground)</td><td>3</td><td>tsp</td></tr><tr><td>cinnamon sticks</td><td>1</td><td>null</td></tr><tr><td>lamb</td><td>1000</td><td>g</td></tr><tr><td>spinach</td><td>100</td><td>g</td></tr></table></tbody><p>Chop onion (and lamb if required)
+Put all the ingredients into a low temperature oven (except the rice) - this includes the liquid from the chickpeas
+Fill the chickpea tin with water, and add to the tray until the meat is covered
+Stir well
+Cook for at least 3 hours
+Make / heat rice and serve
+
+VEG: same without lamb and with spinach at the end</p></div><div class='recipe'><h3>Lasagna (Rosie's)</h3><p><i>Serves 6</p></i><table><tbody><tr><td>milk (full fat)</td><td>1200</td><td>ml</td></tr><tr><td>butter</td><td>100</td><td>g</td></tr><tr><td>cornflour</td><td>100</td><td>g</td></tr><tr><td>cheddar</td><td>100</td><td>g</td></tr><tr><td>tomatoes (fresh)</td><td>500</td><td>g</td></tr><tr><td>basil</td><td>0.5</td><td>bunches</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr><tr><td>chopped tomatoes</td><td>400</td><td>g</td></tr><tr><td>rocket</td><td>300</td><td>g</td></tr><tr><td>parmezan</td><td>300</td><td>g</td></tr><tr><td>lasagna sheets</td><td>500</td><td>g</td></tr></table></tbody><p>Preheat oven to 200C
+Make cheese sauce: put milk butter and flour in a pan and heat, whisking until thickened and smooth. Simmer for 1 minute. Take off the heat, season and add grated cheddar.
+Roast tomatoes: slice tomatoes and roast with oil and salt for about 20 mins
+Cool, stirring occassionally to stop a skin forming
+Make pesto: blend basil with some olive oil and crushed garlic to make a pesto
+Assemble lasagna: sauce, pasta, sauce, chopped tomatoes, rocket, pasta, sauce, roasted tomatoes, pesto, pasta, sauce, parmezan</p></div><div class='recipe'><h3>Roast Spiced Chicken Thighs</h3><p><i>Serves 4</p></i><table><tbody><tr><td>chicken thighs</td><td>400</td><td>g</td></tr><tr><td>limes</td><td>1</td><td></td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>oranges</td><td>0.5</td><td>null</td></tr><tr><td>chilli powder</td><td>1</td><td>tsp</td></tr><tr><td>cumin (ground)</td><td>1</td><td>tsp</td></tr><tr><td>garlic-ginger paste</td><td>0.2</td><td>jars</td></tr><tr><td>worcestershire sauce</td><td>2</td><td>tsp</td></tr><tr><td>coriander (fresh)</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Marinade chicken in lime juice, lemon juice, spices, garlic ginger paste, coriander and worcestershire sauce
+Roast chicken in an oven</p></div><div class='recipe'><h3>Spring Green Risotto</h3><p><i>Serves 5</p></i><table><tbody><tr><td>onions</td><td>450</td><td>g</td></tr><tr><td>chorizo</td><td>200</td><td>g</td></tr><tr><td>asparagus</td><td>100</td><td>g</td></tr><tr><td>green beans</td><td>100</td><td>g</td></tr><tr><td>frozen peas</td><td>100</td><td>g</td></tr><tr><td>rocket</td><td>80</td><td>g</td></tr><tr><td>butter</td><td>120</td><td>g</td></tr><tr><td>risotto rice</td><td>400</td><td>g</td></tr><tr><td>vegetable stock</td><td>800</td><td>ml</td></tr><tr><td>white wine</td><td>100</td><td>ml</td></tr><tr><td>grana padano</td><td>80</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr><tr><td>bread</td><td>0.1</td><td>loaves</td></tr><tr><td>parsley (curly leaf)</td><td>0.2</td><td>bunches</td></tr></table></tbody><p>Boil half the asparagus in very little water until soft
+Blend them (still in their water) to create a gloop
+Zest and juice the lemons
+Meanwhile fry onions in oil (split for meat vs veggie - one pot with chorizo)
+Add risotto rice and fry until clear / for about 5 mins
+Add asparagus gloop and lemon juice
+Add white wine, stock, bit by bit, to keep it cooking
+Then,once rice is nearly cooked, add vegetables (chopped),cheese and butter
+Toast breadcrumbs and make gremolata with garlic, lemon zest and parsley</p></div><div class='recipe'><h3>Stuffed Aubergine with feta and olives</h3><p><i>Serves 4</p></i><table><tbody><tr><td>aubergines</td><td>500</td><td>g</td></tr><tr><td>onions</td><td>80</td><td>g</td></tr><tr><td>garlic</td><td>0.1</td><td>bulbs</td></tr><tr><td>sun dried tomato</td><td>0.1</td><td>jar</td></tr><tr><td>black olives</td><td>30</td><td>g</td></tr><tr><td>basil</td><td>0.2</td><td>bunches</td></tr><tr><td>pine nuts</td><td>30</td><td>g</td></tr><tr><td>feta</td><td>20</td><td>g</td></tr></table></tbody><p>Heat over to 200C
+Slice aubergines in half and score. Brush with oil, season and bake (covered in foil) for 20 minutes. Remember you're going to add feta and olives so not too much salt.
+Chop sun dried tomatoes and olives into small pieces
+Toast pine nuts lightly, then chop finely
+Fry onions in oil until soft. Mix with garlic, tomatoes. pine nuts and olives.
+When aubergines are done, take out of the oven and put the onion mixture into the scores, and on top.
+Top with feta and bake again for another 10-15 minutes.
+Add basil and serve</p></div><div class='recipe'><h3>Vegetable Pasta</h3><p><i>Serves 4</p></i><table><tbody><tr><td>sweet potato</td><td>150</td><td>g</td></tr><tr><td>mushrooms</td><td>120</td><td>g</td></tr><tr><td>cherry tomatoes</td><td>60</td><td>g</td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>passata</td><td>300</td><td>g</td></tr><tr><td>marscapone</td><td>70</td><td>g</td></tr><tr><td>spinach</td><td>70</td><td>g</td></tr><tr><td>paprika</td><td>2</td><td>tsp</td></tr><tr><td>cumin (ground)</td><td>1</td><td>tsp</td></tr><tr><td>basil</td><td>0.2</td><td>bunches</td></tr><tr><td>oregano</td><td>2</td><td>tsp</td></tr><tr><td>pasta</td><td>340</td><td>g</td></tr><tr><td>cheddar</td><td>80</td><td>g</td></tr></table></tbody><p>Chop sweet potato into chunks and roast with a few cumin seeds until soft (30-50 mins)
+Slice mushrooms, halve cherry tomatoes, peel and crush garlic, wash spinach
+Grate cheddar and put into bowls to go to table
+Boil water for the pasta
+Fry onions in oil-butter mixture until soft. Add paprika and fry for a further 5 minutes to infuse. Add mushrooms.
+Meanwhile, add pasta to the pan.
+Once the mushroom is cooked, add cherry tomatoes to the mushrooms and cook for another 5 minutes or so. Then add passata and simmer for 10-15 minutes until it has thickened.
+Add garlic, salt, pepper, marscapone and sweet potato and simmer for 5 minutes until combined.
+Add herbs and spinach, cook until spinach is wilted, then serve with cheese on tables.</p></div><div class='recipe'><h3>Veggie Chilli</h3><p><i>Serves 8</p></i><table><tbody><tr><td>onions</td><td>600</td><td>g</td></tr><tr><td>red pepper</td><td>2</td><td></td></tr><tr><td>garlic</td><td>0.2</td><td>bulbs</td></tr><tr><td>chilli powder</td><td>1</td><td>tsp</td></tr><tr><td>paprika</td><td>2</td><td>tsp</td></tr><tr><td>cayenne pepper</td><td>2</td><td>tsp</td></tr><tr><td>chopped tomatoes</td><td>800</td><td>g</td></tr><tr><td>tomato puree</td><td>30</td><td>g</td></tr><tr><td>kidney beans</td><td>400</td><td>g</td></tr><tr><td>borlotti beans</td><td>400</td><td>g</td></tr><tr><td>cannellini beans</td><td>400</td><td>g</td></tr><tr><td>carrots</td><td>400</td><td>g</td></tr><tr><td>vegetable stock</td><td>1000</td><td>ml</td></tr><tr><td>sour cream</td><td>500</td><td>ml</td></tr><tr><td>coriander (fresh)</td><td>0.1</td><td>bunches</td></tr><tr><td>cheddar</td><td>300</td><td>g</td></tr><tr><td>spring onions</td><td>60</td><td>g</td></tr></table></tbody><p>Fry onions, add spices.
+Add rest of veg (except beans) and fry for 10 mins
+Add stock (and/or wine/water)
+Leave to cook for as long as you can
+add beans about 30 mins before serving
+Serve with sour cream, coriander, grated cheese and chopped spring onions</p></div><div class='recipe'><h3>Zeni Chicken</h3><p><i>Serves 4</p></i><table><tbody><tr><td>chicken thighs</td><td>800</td><td>g</td></tr><tr><td>tomatoes (fresh)</td><td>250</td><td>g</td></tr><tr><td>onions</td><td>500</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>black vinegar</td><td>60</td><td>ml</td></tr><tr><td>white wine vinegar</td><td>100</td><td>ml</td></tr><tr><td>dark soy sauce</td><td>100</td><td>ml</td></tr><tr><td>carrots</td><td>400</td><td>g</td></tr><tr><td>garlic-ginger paste</td><td>0.2</td><td>jars</td></tr><tr><td>tofu</td><td>100</td><td>g</td></tr><tr><td>sweet potato</td><td>200</td><td>g</td></tr><tr><td>orange pepper</td><td>0.5</td><td>null</td></tr></table></tbody><p>Black pepper - with NO salt
+Marinade chicken in soy, garlic/ginger paste and spices.
+Put the chicken into the oven dish. Mix all the ingredients together and pour over the chicken. Cover tightly with tinfoil and put in the oven at 200ºC for 1 hour. Remove the foil, brush the sauce over the chicken and put back in the oven uncovered for another hour.
+The chicken should be brown and succulent.
+Season with black pepper (but no salt)
+VEGGIE: use tofu instead of chicken
+</p></div></div><h2>Starch</h2><div><div class='recipe'><h3>Fun Rice (tomato & spring onions)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>rice</td><td>280</td><td>g</td></tr><tr><td>tomato puree</td><td>25</td><td>g</td></tr><tr><td>spring onions</td><td>40</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>paprika</td><td>0.5</td><td>tsp</td></tr></table></tbody><p>Boil rice in large pan
+Sieve if required
+Add tomato puree, chopped spring onions, lemon juice and paprika</p></div><div class='recipe'><h3>Potato Wedges</h3><p><i>Serves 4</p></i><table><tbody><tr><td>potatoes</td><td>1000</td><td>g</td></tr></table></tbody><p>Chop into wedges, Part-boil for 10 mins to soften.
+Then cover in salt, pepper, paprika, oil and bake.</p></div><div class='recipe'><h3>Rice</h3><p><i>Serves 1</p></i><table><tbody><tr><td>rice</td><td>40</td><td>g</td></tr></table></tbody><p>Boil rice in water</p></div></div><h2>Dessert other</h2><div><div class='recipe'><h3>Chocolate Sauce</h3><p><i>Serves 3</p></i><table><tbody><tr><td>dark chocolate</td><td>50</td><td>g</td></tr><tr><td>butter</td><td>25</td><td>g</td></tr><tr><td>double cream</td><td>125</td><td>ml</td></tr><tr><td>sugar</td><td>20</td><td>g</td></tr></table></tbody><p>Heat chocolate and butter in double boiler until melted.
+Heat the cream and sugar separately until combined. Then stir in chocolate-mix and serve.</p></div><div class='recipe'><h3>Sticky Toffee Sauce</h3><p><i>Serves 8</p></i><table><tbody><tr><td>butter</td><td>100</td><td>g</td></tr><tr><td>sugar (light muscovado)</td><td>125</td><td>g</td></tr><tr><td>black treacle</td><td>20</td><td>g</td></tr><tr><td>double cream</td><td>300</td><td>ml</td></tr><tr><td>vanilla essence</td><td>1</td><td>tsp</td></tr></table></tbody><p>Put all the ingredients into a saucepan and stir over a low heat until the sugar has dissolved and the butter has melted. Bring to the boil, stirring for a minute.
+Then serve over the pudding</p></div></div><h2>Veg</h2><div><div class='recipe'><h3>Butternut and tahini dip</h3><p><i>Serves 8</p></i><table><tbody><tr><td>butternut squash</td><td>700</td><td>g</td></tr><tr><td>tahini</td><td>60</td><td>g</td></tr><tr><td>honey</td><td>10</td><td>g</td></tr><tr><td>hazelnuts</td><td>20</td><td>g</td></tr><tr><td>lemons</td><td>0.2</td><td>null</td></tr></table></tbody><p>roast and salt hazelnuts, then roughly chop (either by hand or in the mixer)
+Peel and scrape the seeds from the squash and cut into chunks (about an inch square)
+Put the squash with some salt, pepper and cumin into a saucepan on a low heat. Remove the lid every 10 minutes or so to stir, and cook until the desired texture.
+Remove from the heat and add the tahini and honey. Add some water if required to get the correct consistency, and potentially lemon juice.
+Sprinkle the hazelnuts over the dip and serve.</p></div><div class='recipe'><h3>Carrots (roast with cumin and mustard seeds)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>carrots</td><td>400</td><td>g</td></tr><tr><td>honey</td><td>20</td><td>g</td></tr><tr><td>cumin seeds</td><td>1</td><td>tsp</td></tr><tr><td>mustard seeds</td><td>1</td><td>tsp</td></tr></table></tbody><p>Put all the ingredients into a roasting tray and roast for an hour / 90 minutes</p></div><div class='recipe'><h3>Corn on the cob</h3><p><i>Serves 6</p></i><table><tbody><tr><td>corn</td><td>2</td><td>null</td></tr></table></tbody><p>chop up, salt and roast.
+Serve with butter (can add chilli paste)</p></div><div class='recipe'><h3>Courgettes (butter and garlic)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>butter</td><td>20</td><td>g</td></tr><tr><td>courgettes</td><td>400</td><td>g</td></tr><tr><td>garlic</td><td>0.3</td><td>bulbs</td></tr></table></tbody><p>Whisk together butter, garlic and lemon juice (can add oregano or basil); season with salt and pepper, to taste. Brush courgette slices with butter mixture.
+Fry in their butter until just beginnnig to char</p></div><div class='recipe'><h3>Garlic mushrooms</h3><p><i>Serves 12</p></i><table><tbody><tr><td>button mushrooms</td><td>1000</td><td>g</td></tr><tr><td>garlic</td><td>1</td><td>bulbs</td></tr><tr><td>chilli flakes</td><td>2</td><td>tsp</td></tr><tr><td>parsley (flat leaf)</td><td>0.5</td><td>bunches</td></tr></table></tbody><p>Roast mushrooms in a tin with oil and salt.
+Chop garlic finely and cook in oil alongside chilli flakes slowly until golden (20 mins or so).
+Take mushrooms out of the oven and pour garlic/chilli oil over them, top with chopped parsley.</p></div><div class='recipe'><h3>Slaw</h3><p><i>Serves 4</p></i><table><tbody><tr><td>carrots</td><td>100</td><td>g</td></tr><tr><td>beetroot</td><td>100</td><td>g</td></tr><tr><td>red cabbage</td><td>100</td><td>g</td></tr><tr><td>mayonnaise</td><td>150</td><td>g</td></tr><tr><td>greek yoghurt</td><td>100</td><td>g</td></tr><tr><td>lemons</td><td>1</td><td>null</td></tr><tr><td>cider vinegar</td><td>20</td><td>ml</td></tr></table></tbody><p>Julienne all the veg, mix the dressing (lemon juice), and combine. Add a little sugar to taste if required. Let it sit for a couple of hours before serving to soften.</p></div></div><h2>Other</h2><div><div class='recipe'><h3>Fajitas (garnishes)</h3><p><i>Serves 4</p></i><table><tbody><tr><td>wraps</td><td>8</td><td></td></tr><tr><td>lettuce</td><td>0.3</td><td>null</td></tr><tr><td>spring onions</td><td>10</td><td>g</td></tr><tr><td>cheddar</td><td>160</td><td>g</td></tr><tr><td>sour cream</td><td>200</td><td>ml</td></tr></table></tbody><p>Grate cheese, chop spring onions
+Serve with wraps, lettuce and sour cream</p></div></div></div>

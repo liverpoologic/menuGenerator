@@ -215,7 +215,7 @@ tr.sub {
   color:var(--dark-grey)
 }
 
-.filterTextInput:placeholder:{
+.filterTextInput:placeholder{
   color:var(--dark-grey)
 }
 
@@ -416,10 +416,12 @@ color: var(--dark-blue);
 .modal-content .removeListItem{
   color:var(--dark-purple);
   background-color:var(--light-grey) !important;
+  width: auto;
 }
 
 .modal-content button{
-  background-color: var(--dark-purple)
+  background-color: var(--dark-purple);
+  width:inherit;
 }
 
 .modal-content .recipeTitle {
@@ -503,6 +505,7 @@ h4 {
       position: relative;
       z-index:2;
       border:var(--dark-blue) 1px dotted;
+      overflow:auto;
 }
 
 .shoppingTable {
@@ -525,8 +528,8 @@ h4 {
   width: 40px
 }
 .shoppingTable table tr td:nth-child(3){
-  width: 80px */
-}
+  width: 80px
+} */
 
 
 .shoppingTable th {
@@ -536,6 +539,12 @@ h4 {
     text-align: left;
     background-color: #103F9C;
     color: white;
+}
+
+.moreInfoBox{
+  float: left;
+margin-left: 300px;
+position: fixed;
 }
 
 pbr {
@@ -754,7 +763,8 @@ notes {
     display:block;
     padding:3px 0;
     font-size: 10px;
-    font-style: italic
+    font-style: italic;
+    margin-bottom:6px;
 }
 
 .removeLineBtn {
@@ -803,7 +813,7 @@ width:460px;
 }
 
 .editMenuRecipe{
-width: 485px;
+width: 420px;
 background-color: white;
 color: var(--dark-blue);
 font-weight: bold;
@@ -827,5 +837,14 @@ table button {
 margin-top: -53px;
 z-index: 500;
 position: fixed;
-right: 80px;
+left: 790px;
+}
+
+.secretTable{
+  background-color:inherit;
+  padding:0;
+  margin:0
+}
+.secretTable td {
+  padding-left:0;
 }

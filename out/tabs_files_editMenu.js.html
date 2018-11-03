@@ -1,4 +1,32 @@
-// TODO: make comments box show specials above it. Make into a proper modal which clears on submit
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <title>JSDoc: Source: tabs/files/editMenu.js</title>
+
+    <script src="scripts/prettify/prettify.js"> </script>
+    <script src="scripts/prettify/lang-css.js"> </script>
+    <!--[if lt IE 9]>
+      <script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script>
+    <![endif]-->
+    <link type="text/css" rel="stylesheet" href="styles/prettify-tomorrow.css">
+    <link type="text/css" rel="stylesheet" href="styles/jsdoc-default.css">
+</head>
+
+<body>
+
+<div id="main">
+
+    <h1 class="page-title">Source: tabs/files/editMenu.js</h1>
+
+    
+
+
+
+    
+    <section>
+        <article>
+            <pre class="prettyprint source linenums"><code>// TODO: make comments box show specials above it. Make into a proper modal which clears on submit
 
 module.exports = function(DATA) {
    var d = DATA.dict;
@@ -64,17 +92,14 @@ module.exports = function(DATA) {
    function CreatePageEls(parentDiv) {
       els.btnDiv = u.CreateEl('div').parent(parentDiv).className('editButtonDiv').end();
 
+      els.addRecipeBtn = u.CreateEl('button').parent(els.btnDiv).id('addRecipeToMenu_btn').innerText('Add Recipe').end();
       els.multiplyUpBtn = u.CreateEl('button').parent(els.btnDiv).id('multiplyUp_btn').innerText('Multiply Up').end();
       els.editMealsBtn = u.CreateEl('button').parent(els.btnDiv).id('editMealsEditMenu_btn').innerText('Edit Meals').end();
 
-      els.subBox = u.CreateEl('div').parent(parentDiv).end();
-
-      els.menuDiv = u.CreateEl('div').className('editMenu').style('width:430px; float:left').parent(els.subBox).end();
-      els.addRecipeDiv = u.CreateEl('div').style('width:300px; margin:0; float:right').parent(els.subBox).end();
+      els.menuDiv = u.CreateEl('div').className('editMenu').parent(parentDiv).end();
 
       CreateCommentsModal();
       CreateMultiplyUpModal();
-      CreateAddRecipeDiv();
    }
 
    function CreateCommentsModal() {
@@ -108,37 +133,6 @@ module.exports = function(DATA) {
       els.multiplyUpModal = ourEls;
    }
 
-   function CreateAddRecipeDiv() {
-
-      els.filterDiv = u.CreateEl('div').parent(els.addRecipeDiv).end();
-
-      CreateFilterControl();
-
-
-   }
-
-   function CreateFilterControl() {
-
-      var filterConfig = [{
-            enum: 'recipeTypeEnum',
-            id: 'recipeType',
-            title: 'Recipe Type'
-         },
-         {
-            enum: 'mealTypeEnum',
-            id: 'mealType',
-            title: 'Meal Type'
-         },
-         {
-            enum: 'morvEnum',
-            id: 'morv',
-            title: 'Morv'
-         }
-      ]
-
-
-   }
-
    function RefreshPage(EV) {
       if (EV.detail.type === 'config') {
          // call function to create filter checkboxes in the 'add recipe' modal
@@ -161,11 +155,11 @@ module.exports = function(DATA) {
       // populate newEnum
       let newEnum = [];
       newEnum[0] = "All";
-      for (let i = 0; i < sourceEnum.length; i++) {
+      for (let i = 0; i &lt; sourceEnum.length; i++) {
          newEnum[i + 1] = sourceEnum[i];
       }
       // create checkboxes
-      for (let i = 0; i < newEnum.length; i++) {
+      for (let i = 0; i &lt; newEnum.length; i++) {
          let checklist = u.ID(divID);
          let checkbox = u.CreateElement("input", checklist, `${checkboxID}${i}`);
          let checkboxLabel = u.CreateElement("label", checklist, "", "filterLabel", newEnum[i]);
@@ -176,11 +170,11 @@ module.exports = function(DATA) {
       // check everything on an 'all' box
       u.ID(`${checkboxID}0`).addEventListener("change", function() {
          if (this.checked) {
-            for (let i = 1; i < newEnum.length; i++) {
+            for (let i = 1; i &lt; newEnum.length; i++) {
                u.ID(`${checkboxID}${i}`).checked = true;
             }
          } else {
-            for (let i = 1; i < newEnum.length; i++) {
+            for (let i = 1; i &lt; newEnum.length; i++) {
                u.ID(`${checkboxID}${i}`).checked = false;
             }
          }
@@ -193,7 +187,7 @@ module.exports = function(DATA) {
     */
    function CreateFilterArray(filterArray, checkboxID) {
       let result = [];
-      for (let i = 1; i < filterArray.length; i++) {
+      for (let i = 1; i &lt; filterArray.length; i++) {
          if (u.ID(`${checkboxID}${i}`).checked === true) {
             result.push(filterArray[i]);
          }
@@ -210,7 +204,7 @@ module.exports = function(DATA) {
       let filteredMorvArray = CreateFilterArray(morvFilter, "morvCheckbox");
 
       // check if mealType is correct
-      for (let i = 0; i < oldRecipeKeys.length; i++) {
+      for (let i = 0; i &lt; oldRecipeKeys.length; i++) {
          if (typeof d.recipes[oldRecipeKeys[i]] === "function") {
             continue;
          }
@@ -219,14 +213,14 @@ module.exports = function(DATA) {
          let morv = d.recipes[oldRecipeKeys[i]].morv;
 
          let filteredMorv = null;
-         for (let j = 0; j < morv.length; j++) {
+         for (let j = 0; j &lt; morv.length; j++) {
             if (filteredMorvArray.indexOf(morv[j]) > -1) { // check whether morv is present in morv array. If yes, filteredMorv = true
                filteredMorv = true;
             }
          }
          if (
-            filteredMealTypeArray.indexOf(mealType) > -1 && // if recipe fulfils all three criteria, add to filteredRecipeKeys
-            filteredRecipeTypeArray.indexOf(recipeType) > -1 &&
+            filteredMealTypeArray.indexOf(mealType) > -1 &amp;&amp; // if recipe fulfils all three criteria, add to filteredRecipeKeys
+            filteredRecipeTypeArray.indexOf(recipeType) > -1 &amp;&amp;
             filteredMorv === true
          ) {
             filteredRecipeKeys.push(oldRecipeKeys[i]);
@@ -246,13 +240,13 @@ module.exports = function(DATA) {
     * @param {string} checkboxID this is the ID of each checkbox (followed by a number)
     */
    function ClearFilters(filterEnum, checkboxID) {
-      for (let i = 0; i < filterEnum.length; i++) {
+      for (let i = 0; i &lt; filterEnum.length; i++) {
          u.ID(`${checkboxID}${i}`).checked = true;
       }
    }
    /** create select meal dropdown from menu (in edit menu > add recipe) */
    function RefreshAddRecipeModal() {
-      // create meal enum & dropdown
+      // create meal enum &amp; dropdown
       let menuTitle = u.ID('selectEditMenu').value;
       u.ID("addRecipeToMenuTitle").innerText = 'Add Recipe - ' + menuTitle;
       let menu = d.menus[menuTitle];
@@ -262,7 +256,7 @@ module.exports = function(DATA) {
          mealEnum.push(`${day} ${meal.mealType}`);
       });
       let values = [];
-      for (let i = 0; i < mealEnum.length; i++) {
+      for (let i = 0; i &lt; mealEnum.length; i++) {
          values[i] = i;
       }
       u.CreateDropdown("selectMealForMenu", mealEnum, false, values, 'Meal');
@@ -305,7 +299,7 @@ module.exports = function(DATA) {
       console.log('refresh edit menu');
       let menuTitle = DATA.els.edit.selectMenu.value;
       els.menuDiv.innerHTML = "";
-      let editBtnIDs = ["multiplyUp_btn", "editMealsEditMenu_btn"];
+      let editBtnIDs = ["addRecipeToMenu_btn", "multiplyUp_btn", "editMealsEditMenu_btn"];
       if (menuTitle === "_default") { // clears page (i.c.enums. edit buttons) if no menu is selected and ends function
          u.HideElements(editBtnIDs);
          return "menuTitle not selected";
@@ -318,7 +312,7 @@ module.exports = function(DATA) {
          u.HideElements(editBtnIDs);
          return "menuTitle not selected";
       }
-      for (let i = 0; i < menu.meals.length; i++) {
+      for (let i = 0; i &lt; menu.meals.length; i++) {
          // generate and display meal title c.enums.g. Friday Dinner
          let meal = d.menus.getMeal(menuTitle, i);
          let mealTitleBar = u.CreateEl('div').parent(els.menuDiv).className('mealTitleBar').end();
@@ -420,4 +414,26 @@ module.exports = function(DATA) {
    return {
       generator: generator
    };
-}
+}</code></pre>
+        </article>
+    </section>
+
+
+
+
+</div>
+
+<nav>
+    <h2><a href="index.html">Home</a></h2><h3>Global</h3><ul><li><a href="global.html#CompareMeal">CompareMeal</a></li><li><a href="global.html#CompareRecipe">CompareRecipe</a></li></ul>
+</nav>
+
+<br class="clear">
+
+<footer>
+    Documentation generated by <a href="https://github.com/jsdoc3/jsdoc">JSDoc 3.5.5</a> on Sat Nov 03 2018 13:11:44 GMT+0000 (GMT Standard Time)
+</footer>
+
+<script> prettyPrint(); </script>
+<script src="scripts/linenumber.js"> </script>
+</body>
+</html>

@@ -1,5 +1,4 @@
 var DATA = require("../data");
-var params = require('./params.js');
 var u = require("../utilities")(DATA);
 var tabs = require('../tabs')(DATA);
 var FWK = require('../framework')(DATA);
@@ -8,58 +7,68 @@ const ipc = require('electron').ipcRenderer;
 var remote = require('electron').remote;
 
 module.exports = function() {
+   window.data = DATA;
    var d = DATA.dict;
    var c = DATA.config;
 
-   //makes d and c accessible from the console
-   window.debug = {
-      d: d,
-      c: c
-   };
+   window.export_recipes = function() {
 
-   window.debug.export_recipes = function() {
+      function getUcString(str) {
+         return str.charAt(0).toUpperCase() + str.slice(1);
+      }
 
       var grpdRecipes = u.GroupBy(d.recipes, 'mealType');
       Object.keys(grpdRecipes).forEach(mealType => {
          let grp = grpdRecipes[mealType];
          grpdRecipes[mealType] = u.GroupBy(grp, 'recipeType');
       });
-      var markdown = u.ObjToArr(grpdRecipes)
+      var ToC = u.ObjToArr(grpdRecipes)
+         .sort(x => c.enums.mealTypeEnum.indexOf(x.key))
+         .map(mealTypeGrp => {
+            var recipeTypeContents = u.ObjToArr(mealTypeGrp.val)
+               .map(recipeTypeGrp => {
+                  var recipeList = u.ObjToArr(recipeTypeGrp.val).sort((a, b) => u.Compare(a.key, b.key)).map(recipe => {
+                     return `<list3>${recipe.key}</list3>`;
+                  }).join("");
+                  return `<list2>${getUcString(recipeTypeGrp.key)}</list2>${recipeList}`;
+               }).join("");
+            return `<list1>${getUcString(mealTypeGrp.key)}</list1>${recipeTypeContents}`;
+         }).join("");
+
+      var htmlContent = u.ObjToArr(grpdRecipes)
          .sort(x => c.enums.mealTypeEnum.indexOf(x.key))
          .map(mealTypeGrp => {
 
             var recipeTypeContents = u.ObjToArr(mealTypeGrp.val)
-               //   .sort(x => c.enums.recipeTypeEnum.indexOf(x.key))
                .map(recipeTypeGrp => {
                   var recipeList = u.ObjToArr(recipeTypeGrp.val).sort((a, b) => u.Compare(a.key, b.key)).map(recipe => {
                      let ingTable = recipe.val.ingredients.map(ingredient => {
-                        return [ingredient.foodName, ingredient.quantity, d.foods[ingredient.foodName].unit].join("|");
-                     }).join("\n");
-                     return `### ${recipe.key}\n*Serves ${recipe.val.serves}*\n - | - | - \n----|----|----\n${ingTable}\n${recipe.val.method}`
-                  }).join("\n\n");
-                  return `## ${recipeTypeGrp.key}\n${recipeList}`;
-               }).join("\n");
-
-            return `# ${mealTypeGrp.key}\n${recipeTypeContents}`;
-
-         }).join("\n");
+                        return `<tr><td>${ingredient.foodName}</td><td>${ingredient.quantity}</td><td>${d.foods[ingredient.foodName].unit}</td></tr>`;
+                     }).join("");
+                     return `<div class='recipe'><h3>${recipe.key}</h3><p><i>Serves ${recipe.val.serves}</p></i><table><tbody>${ingTable}</table></tbody><p>${recipe.val.method}</p></div>`;
+                  }).join("");
+                  return `<h2>${getUcString(recipeTypeGrp.key)}</h2><div>${recipeList}</div>`;
+               }).join("");
+            return `<h1>${getUcString(mealTypeGrp.key)}</h1><div>${recipeTypeContents}</div>`;
+         }).join("");
       let fs = require('fs');
-      fs.writeFileSync('./resources/recipe_book.md', markdown);
-      console.log(markdown)
-   }
+      var css = fs.readFileSync('./src/markdown/markdown.css', 'utf8');
+      var html = `<style>${css}</style><h1>Table Of Contents</h1>${ToC}${htmlContent}`;
+      fs.writeFileSync('./resources/recipe_book.html', html);
+      console.log(html);
+   };
 
    //initialise fontawesome
    require("../../node_modules/@fortawesome/fontawesome-free/js/all.js");
 
    var isTest = remote.getGlobal('sharedObject').testMode;
 
-   FWK.navigation.Initialise(params.tabList, isTest);
+   FWK.navigation.Initialise(DATA.params.tabList, isTest);
    FWK.dropdowns.Initialise();
 
-   //for each tab, call the generator() function
-   console.log(tabs);
-   params.tabList.forEach(tab => {
-      console.log(tab.id);
+   // for each tab, call the generator() function
+
+   DATA.params.tabList.forEach(tab => {
       tabs[tab.id].generator();
    });
 
@@ -83,16 +92,6 @@ module.exports = function() {
    };
    // // create listeners for each tab button
 
-
-   var VtabList = document.getElementsByClassName("vtablinks");
-   for (let i = 0; i < VtabList.length; i++) {
-      let btnID = VtabList[i].id;
-      let tabID = btnID.slice(-1);
-      u.ID(btnID).addEventListener("click", function() {
-         u.OpenVTab(tabID);
-      });
-   }
-
    // // when you change the filepath, write to e
    // u.ID("filepath").addEventListener("change", function () {
    //     Config.filepath = u.ID("filepath").value;
@@ -112,7 +111,7 @@ module.exports = function() {
    // });
    //
    // // listener to support keyboard shortcuts
-   document.addEventListener("keydown", shortcuts);
+   // document.addEventListener("keydown", shortcuts);
 
 
 };

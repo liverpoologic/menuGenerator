@@ -8,9 +8,11 @@ module.exports = function(DATA) {
 
 
    function generator() {
-      addFood.generator();
-      addRecipe.generator();
-      addMenu.generator();
+      var els = {};
+      els.addFood = addFood.generator();
+      els.addRecipe = addRecipe.generator();
+      els.addMenu = addMenu.generator();
+      return els;
    }
 
    return {

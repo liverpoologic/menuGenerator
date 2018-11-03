@@ -5,28 +5,23 @@ module.exports = function(DATA) {
    var d = DATA.dict;
    var c = DATA.config
    var u = require("../../utilities")(DATA);
+   const els = DATA.els.edit.people;
 
-   var ELS;
-
-   function generator(hTabEls) {
+   function generator() {
 
       var tabcontent = u.ID('people_tab_content');
-      ELS = CreatePageEls(tabcontent);
-      ELS.selectMenu = hTabEls.selectMenu;
-      ELS.selectMenu.addEventListener("change", CreatePeopleList);
+      CreatePageEls(tabcontent);
+      DATA.els.edit.selectMenu.addEventListener("change", CreatePeopleList);
 
       //event listener to load people list page when menu is selected
-      ELS.saveBtn.addEventListener('click', saveAllergens);
+      els.saveBtn.addEventListener('click', saveAllergens);
 
-      ELS.plusButton.addEventListener("click", addAllergenRow);
+      els.plusButton.addEventListener("click", addAllergenRow);
 
       //  window.addEventListener('update', UpdateListener);
-
    }
 
    function CreatePageEls(parentDiv) {
-      console.log('creating people page els')
-      var els = {};
       els.peopleDiv = u.CreateEl('div').parent(parentDiv).style('display:none').end();
       els.peopleTable = u.CreateEl('table').parent(els.peopleDiv).className('ingredientTable').style('margin-top:15px').id('specialsTable').end();
       els.peopleTableHeader = u.CreateEl('tr').parent(els.peopleTable).end();
@@ -65,24 +60,22 @@ module.exports = function(DATA) {
 
       u.Br(els.peopleDiv);
       els.saveBtn = u.CreateEl('button').parent(els.peopleDiv).innerText('Save').end();
-
-      return els;
    }
 
    function CreatePeopleList(event) {
       RefreshAllergenTable(event.target.value);
-      if (ELS.selectMenu.value != '_default') {
-         ELS.peopleDiv.style = 'display:block'
+      if (DATA.els.edit.selectMenu.value != '_default') {
+         els.peopleDiv.style = 'display:block'
       } else {
-         ELS.peopleDiv.style = 'display:none'
+         els.peopleDiv.style = 'display:none'
       }
    }
 
    function RefreshAllergenTable(menuTitle) {
 
       //clear everything that isn't the header row or the last 'plus' row
-      for (var i = 1; i < ELS.peopleTable.rows.length - 1;) {
-         ELS.peopleTable.deleteRow(i);
+      for (var i = 1; i < els.peopleTable.rows.length - 1;) {
+         els.peopleTable.deleteRow(i);
       }
 
       var specials = d.menus[menuTitle].specials;
@@ -100,10 +93,10 @@ module.exports = function(DATA) {
 
    function addAllergenRow(personName, specialData, rowIndex) {
       if (typeof personName != 'string') personName = undefined;
-      var i = ELS.peopleTable.rows.length;
+      var i = els.peopleTable.rows.length;
 
       rowIndex = rowIndex ? rowIndex : i - 1;
-      var newRow = ELS.peopleTable.insertRow(rowIndex);
+      var newRow = els.peopleTable.insertRow(rowIndex);
 
       var inputConfig = [{
             elementType: 'input',
@@ -134,11 +127,11 @@ module.exports = function(DATA) {
             className: 'removeLineBtn'
          }
       ];
-      let els = {};
+      let ourEls = {};
       inputConfig.forEach((obj, ind) => {
          let inputId = obj.id ? `${obj.id}${i-1}` : undefined;
          let cell = u.CreateEl('td').parent(newRow).className('cellWithInput').end();
-         els[obj.key] = u.CreateEl(obj.elementType).id(inputId).className(obj.className).type(obj.type).parent(cell).end();
+         ourEls[obj.key] = u.CreateEl(obj.elementType).id(inputId).className(obj.className).type(obj.type).parent(cell).end();
          if (obj.type === 'tags') {
             var valArray = [];
             try {
@@ -146,37 +139,36 @@ module.exports = function(DATA) {
             } catch (e) {
 
             }
-            tagsInput(els[obj.key], obj.dropdownSource, 'populate', ',', valArray);
+            tagsInput(ourEls[obj.key], obj.dropdownSource, 'populate', ',', valArray);
          } else if (obj.elementType === 'button') {
-            u.Icon('minus', els[obj.key])
+            u.Icon('minus', ourEls[obj.key])
          }
       });
 
-      els.person.setAttribute('list', 'specialPeople');
-      if (personName) els.person.setAttribute('value', personName);
+      ourEls.person.setAttribute('list', 'specialPeople');
+      if (personName) ourEls.person.setAttribute('value', personName);
 
       //TODO: fix this!
       var defaultVal = 'M or V';
 
-      console.log(els.morv.id);
-      u.CreateDropdown(els.morv.id, ["m", "v"], false, undefined, 'M or V');
+      u.CreateDropdown(ourEls.morv.id, ["m", "v"], false, undefined, 'M or V');
 
       if (specialData) {
-         els.morv.value = specialData.morv;
+         ourEls.morv.value = specialData.morv;
       }
 
-      els.person.addEventListener('change', selectPersonName);
+      ourEls.person.addEventListener('change', selectPersonName);
 
-      els.minus.addEventListener('click', deleteAllergenRow);
+      ourEls.minus.addEventListener('click', deleteAllergenRow);
    }
 
    function deleteAllergenRow() {
-      let table = ELS.peopleTable;
+      let table = els.peopleTable;
       let i = u.GetNumber(event.target.id);
 
       //remove from dict obj if it exists
-      var menuTitle = ELS.selectMenu.value;
-      var key = ELS.peopleTable.rows[i].cells[0].value;
+      var menuTitle = DATA.els.edit.selectMenu.value;
+      var key = els.peopleTable.rows[i].cells[0].value;
       if (key && d.menus[menuTitle].specials) {
          if (d.menus[menuTitle].specials[key]) {
             delete d.menus[menuTitle].specials[key];
@@ -201,8 +193,8 @@ module.exports = function(DATA) {
    }
 
    function saveAllergens() {
-      var menuTitle = ELS.selectMenu.value;
-      let table = ELS.peopleTable;
+      var menuTitle = DATA.els.edit.selectMenu.value;
+      let table = els.peopleTable;
       var rowcount = table.rows.length;
 
       for (let i = 1; i < rowcount; i++) {
@@ -232,7 +224,7 @@ module.exports = function(DATA) {
 
       if (specialNames.indexOf(name) >= 0) {
          var specialData = specialsEnum[name];
-         ELS.peopleTable.deleteRow(i);
+         els.peopleTable.deleteRow(i);
          addAllergenRow(name, specialData, i);
       }
    }

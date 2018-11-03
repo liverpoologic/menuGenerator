@@ -1,5 +1,4 @@
 var DATA = require("../data");
-var params = require('./params.js');
 var u = require("../utilities")(DATA);
 var tabs = require('../tabs')(DATA);
 var FWK = require('../framework')(DATA);

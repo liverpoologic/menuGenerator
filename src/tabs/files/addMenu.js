@@ -3,11 +3,12 @@ module.exports = function(DATA) {
    var c = DATA.config
    var e = c.enums;
    var u = require("../../utilities")(DATA);
+   const els = DATA.els.create.addMenu;
 
    function generator() {
 
       var tabcontent = u.ID('addMenu_tab_content');
-      var els = CreatePageEls(tabcontent)
+      CreatePageEls(tabcontent)
 
       els.addEmptyMenu.addEventListener("click", function() {
          AddEmptyMenu(els)
@@ -20,11 +21,10 @@ module.exports = function(DATA) {
       els.addMealModal.addMealButton.addEventListener("click", function() {
          AddMealBtn(els.addMealModal)
       });
+      return els;
    }
 
    function CreatePageEls(parentDiv) {
-      var els = {};
-
       els.subBox = u.CreateEl('div').parent(parentDiv).style('height:70px; width:430px;').end();
       els.menuTitle = u.CreateEl('input').type('text').placeholder('Menu Title').parent(els.subBox).end();
       u.Br(els.subBox);
@@ -45,34 +45,32 @@ module.exports = function(DATA) {
       els.addEmptyMenu = u.CreateEl('button').parent(els.left).innerText('Add Empty Menu').style('width:inherit').end();
       els.addWeekendMenu = u.CreateEl('button').parent(els.right).innerText('Add Standard Weekend Menu').style('width:inherit').end();
 
-      els.addMealModal = CreateAddMealModalEls();
-
-      return els;
+      CreateAddMealModalEls();
    }
 
    function CreateAddMealModalEls() {
-      var els = {};
+      let ourEls = {};
 
-      els.modal = u.CreateEl('div').id('Add Meals Modal').className('modal').parent(u.ID('modals')).end();
-      els.modalContent = u.CreateEl('div').className('modal-content animate').parent(els.modal).end();
-      els.titleContainer = u.CreateEl('div').className('container').style('padding-bottom:0px').parent(els.modalContent).end();
-      els.title = u.CreateEl('text').className('modal-title').innerText('Add Meals to: ').parent(els.titleContainer).end();
-      els.menuTitle = u.CreateEl('text').className('modal-title').parent(els.titleContainer).end();
+      ourEls.modal = u.CreateEl('div').id('add_meals_modal').className('modal').parent(u.ID('modals')).end();
+      ourEls.modalContent = u.CreateEl('div').className('modal-content animate').parent(ourEls.modal).end();
+      ourEls.titleContainer = u.CreateEl('div').className('container').style('padding-bottom:0px').parent(ourEls.modalContent).end();
+      ourEls.title = u.CreateEl('text').className('modal-title').innerText('Add Meals to: ').parent(ourEls.titleContainer).end();
+      ourEls.menuTitle = u.CreateEl('text').className('modal-title').parent(ourEls.titleContainer).end();
 
-      els.flexContainer = u.CreateEl('div').className('flex-container').style('width:600px; padding:0').parent(els.modalContent).end();
-      els.left = u.CreateEl('div').className('container').style('width:228px').parent(els.flexContainer).end();
-      els.right = u.CreateEl('div').className('container').style('width:308px').parent(els.flexContainer).end();
+      ourEls.flexContainer = u.CreateEl('div').className('flex-container').style('width:600px; padding:0').parent(ourEls.modalContent).end();
+      ourEls.left = u.CreateEl('div').className('container').style('width:228px').parent(ourEls.flexContainer).end();
+      ourEls.right = u.CreateEl('div').className('container').style('width:308px').parent(ourEls.flexContainer).end();
 
-      els.selectDay = u.CreateEl('select').id('selectDayForAddMeals').parent(els.left).end();
-      u.Br(els.left);
-      els.selectMealType = u.CreateEl('select').id('selectMealTypeForAddMeals').parent(els.left).end();
-      u.Br(els.left);
-      u.Br(els.left);
-      els.addMealButton = u.CreateEl('button').innerText('Add Meal').parent(els.left).end();
+      ourEls.selectDay = u.CreateEl('select').id('selectDayForAddMeals').parent(ourEls.left).end();
+      u.Br(ourEls.left);
+      ourEls.selectMealType = u.CreateEl('select').id('selectMealTypeForAddMeals').parent(ourEls.left).end();
+      u.Br(ourEls.left);
+      u.Br(ourEls.left);
+      ourEls.addMealButton = u.CreateEl('button').innerText('Add Meal').parent(ourEls.left).end();
 
-      els.currentMealList = u.CreateEl('container').style('width:50%').parent(els.right).end();
+      ourEls.currentMealList = u.CreateEl('container').style('width:50%').parent(ourEls.right).end();
 
-      return els;
+      els.addMealModal = ourEls;
    }
 
    function AddEmptyMenu(els) { //when you press 'add empty menu' button on the add menu screen
@@ -108,8 +106,7 @@ module.exports = function(DATA) {
       u.ClearVals(els);
    }
 
-   function RefreshAddMealModal(els, menuTitle) { // creates and shows the modal 'add meal', calls 'CreateMealList' to make the right hand panel
-
+   function RefreshAddMealModal(menuTitle) { // creates and shows the modal 'add meal', calls 'CreateMealList' to make the right hand panel
       let startDate = new Date(d.menus[menuTitle].startDate);
       let endDate = new Date(d.menus[menuTitle].endDate);
       if (endDate < startDate) {

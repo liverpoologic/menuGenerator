@@ -8,7 +8,7 @@ module.exports = function(DATA) {
    });
 
    function generator() {
-      var els = {};
+      let els = DATA.els.edit;
       //create pageTitle and select menu dropdowns
       var parentDiv = u.ID('edit_tab_content_div');
       u.ID('edit_page_title').innerText = 'Select Menu'
@@ -20,7 +20,7 @@ module.exports = function(DATA) {
 
       vtabs.forEach(vtab => {
          u.ID(`${vtab}_tab_content`).style = 'margin-top:118px';
-         tabs[vtab].generator(els);
+         tabs[vtab].generator();
       });
 
       els.selectMenu.addEventListener('change', function() {
@@ -29,7 +29,6 @@ module.exports = function(DATA) {
             div.style = event.target.value == '_default' ? 'display:none' : 'display:block';
          });
       });
-
    }
 
    return {
