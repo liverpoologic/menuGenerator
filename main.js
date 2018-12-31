@@ -21,10 +21,6 @@ require('electron-context-menu')({
    }]
 });
 
-app.on('ready', () => {
-   mainWindow = new BrowserWindow();
-});
-
 function createWindow() {
    // Create the browser window.
    mainWindow = new BrowserWindow({

@@ -3,20 +3,27 @@ module.exports = function(DATA) {
    var c = DATA.config;
    var u = require("../../utilities")(DATA);
    var addRecipe = require('./addRecipe.js')(DATA);
+   var s = DATA.state;
+   var els = DATA.els.admin;
 
    function generator() {
 
-      window.addEventListener('update', RefreshAllTables)
-
-      // // create event listener for 'save changes' button to support t2 > 'edit recipe' functionality
-      // u.ID("editRecipe_btn").addEventListener("click", SaveChangesRecipe);
+      window.addEventListener('update', RefreshAllTables);
+      window.addEventListener('open_tab', OpenTab);
 
       CreateTable(1);
       CreateTable(2);
       CreateTable(3);
       CreateTable(4);
+      els.selectAdminEnum.addEventListener("change", RefreshEnumTable);
 
-      u.ID("selectAdminEnum").addEventListener("change", RefreshEnumTable);
+      els.edit_recipe_modal = u.CreateModalFramework('edit_existing_recipe', 'Edit Recipe', 'recipeTitle');
+      els.edit_recipe_modal.modalContent.style.width = '900px';
+      els.edit_recipe_modal_els = addRecipe.CreatePageEls(els.edit_recipe_modal.content, 'edit');
+      els.edit_recipe_modal_els.save_btn.addEventListener('click', function() {
+         addRecipe.AddRecipeBtn('editModal_');
+         els.edit_recipe_modal.modal.style.display = 'none';
+      });
 
    }
 
@@ -25,10 +32,27 @@ module.exports = function(DATA) {
       if (EV.detail.global) {
          if (EV.detail.type === 'config') {
             RefreshEnumTable();
+         } else {
+            if (s.htab == 'admin') {
+               s.adminBehind = false;
+               CreateTableContents(1);
+               CreateTableContents(2);
+               CreateTableContents(3);
+            } else {
+               s.adminBehind = true;
+            }
          }
-         // CreateTableContents(1);
-         // CreateTableContents(2);
-         // CreateTableContents(3);
+      }
+   }
+
+   function OpenTab(EV) {
+      console.log('open tab');
+      if (EV.detail.htab == 'admin' && s.adminBehind) {
+         console.log('creating table contents');
+         CreateTableContents(1);
+         CreateTableContents(2);
+         CreateTableContents(3);
+         s.adminBehind = false;
       }
    }
 
@@ -80,8 +104,8 @@ module.exports = function(DATA) {
             else CreateFilterRow(3, ["longText", null, null, null], ['Menu Title']);
             break;
          case 4:
-            u.CreateEl('select').id('selectAdminEnum').parent(parentDiv).end();
-            u.CreateEl('div').id('enumTableDiv').parent(parentDiv).end();
+            els.selectAdminEnum = u.CreateEl('select').id('selectAdminEnum').parent(parentDiv).end();
+            els.enumTableDiv = u.CreateEl('div').parent(parentDiv).end();
             break;
       }
 
@@ -182,36 +206,13 @@ module.exports = function(DATA) {
             u.ID(`t2TableKey${j}`).addEventListener("click", function() {
                let recipe = d.recipes[u.ID(`t2TableKey${j}`).innerText];
                let recipeTitle = u.ID(`t2TableKey${j}`).innerText;
-               u.SetValues([
-                  ["recipeTitle", recipeTitle],
-                  ["selectRecipeMealType", recipe.mealType],
-                  ["selectRecipeType", recipe.recipeType],
-                  ["recipeServes", recipe.serves],
-                  ["recipeMethod", recipe.method]
-               ]);
-               u.ID("AddRecipePageTitle").innerText = "Edit Recipe"; // change 'add recipe' to 'edit recipe' at top of addRecipe tab
-               if (recipe.morv.length > 1) {
-                  u.ID("recipeMorv").value = "v / b";
-               } // if morv is ["v","b"] display "v / b"
-               else {
-                  u.ID("recipeMorv").value = recipe.morv;
-               }
-               u.ClearTable("ingredientTable", 1);
-               // loop to add ingredients
-               recipe.ingredients.forEach((ingredient, i) => {
-                  var food = d.foods[ingredient.foodName]
-                  addRecipe.AddIngredientsRow();
-                  u.SetValues([
-                     [`selectIngredientFood${i}`, ingredient.foodName],
-                     [`ingredientQuantitySmall${i}`, ingredient.quantity],
-                     [`selectIngredientMorv${i}`, ingredient.morv]
-                  ]);
-                  u.ID(`ingredientUnitDisplay${i}`).innerText = food.unit;
-               });
-               // open the AddRecipe tab and show 'save changes' button = editRecipe_btn
-               u.HideElements("addRecipe_btn");
-               u.ShowElements("editRecipe_btn", "inline");
-               u.OpenHTab("addRecipe");
+               addRecipe.PopulateValues(Object.assign(recipe, {
+                  recipeTitle: recipeTitle
+               }), els.edit_recipe_modal_els);
+               els.edit_recipe_modal.recipeTitle.innerText = recipeTitle;
+
+               els.edit_recipe_modal.modal.style.display = 'block';
+
             });
          } else if (dictID === 3) {
             let filter = Filter(rowItem, key, dictID, [
@@ -260,6 +261,24 @@ module.exports = function(DATA) {
                      else return recipe.ingredients.map(ing => ing.foodName).indexOf(keyToDelete) > -1
                   }).map(r => `- ${r}`).join("\n")
                   window.alert(`You cannot delete this food, it is being used in recipes:\n${recipesWithThisFood}.\nPlease edit these recipe(s) and then try again`)
+                  return;
+               }
+            }
+            if (dictID === 2) {
+               var usedIn = [];
+               u.GetKeysExFns(d.menus).forEach(menuTitle => {
+                  d.menus[menuTitle].meals.forEach(meal => {
+                     meal.recipes.forEach(recipe => {
+                        if (recipe.recipeTitle === keyToDelete) {
+                           usedIn.push(menuTitle);
+                        }
+                     });
+                  });
+               });
+
+               if (usedIn.length > 0) {
+                  let menus = usedIn.map(x => `- ${x}`).join("\n");
+                  window.alert(`You cannot delete this food, it is being used in menus:\n${menus}.\nPlease edit these menus(s) and then try again`);
                   return;
                }
             }
@@ -392,37 +411,57 @@ module.exports = function(DATA) {
 
    /** displays elements of an enum */
    function RefreshEnumTable() {
-      u.ID("enumTableDiv").innerHTML = "";
-      let enumName = u.ID("selectAdminEnum").value ? u.ID("selectAdminEnum").value : '_default';
+      els.enumTableDiv.innerHTML = "";
+      let enumName = els.selectAdminEnum.value;
       let enumObj = c.enums[enumName];
       if (enumName === "_default") {
          return false;
       }
-      u.CreateElement("table", u.ID("enumTableDiv"), "enumTable");
+      els.enumTable = u.CreateEl('table').className('ingredientTable').parent(els.enumTableDiv).end();
 
       if (enumName === 'specialsEnum') {
          enumObj = Object.keys(enumObj);
       }
 
-      for (let i = 0; i < enumObj.length; i++) {
-         u.CreateRow("enumTable", "td", [enumObj[i], "⇧", "⇩", "×"], [`enumObj${i}`, `enumObjUp${i}`, `enumObjDown${i}`, `enumObjDelete${i}`], [200, 15, 15, 15], "px");
-         u.ID(`enumObj${i}`).addEventListener("click", EditEnumName);
-         u.ID(`enumObjUp${i}`).addEventListener("click", MoveEnumObj);
-         u.ID(`enumObjDown${i}`).addEventListener("click", MoveEnumObj);
-         u.ID(`enumObjDelete${i}`).addEventListener("click", DeleteEnumObj);
-      }
-      u.CreateElement("button", u.ID("enumTableDiv"), "addEnumItem", "", "add new item");
-      u.ID("addEnumItem").addEventListener("click", AddEnumItem);
+      enumObj.forEach((o, i) => {
+         let newRow = els.enumTable.insertRow();
+         newRow.row_index = i;
+
+         let name = u.CreateEl('td').innerText(o).parent(newRow).end();
+
+         let up = u.CreateEl('td').parent(newRow).end();
+         let upBtn = u.CreateEl('button').parent(up).className('ingredientTableButton').end();
+         u.Icon('chevron-up', upBtn);
+
+         let down = u.CreateEl('td').parent(newRow).end();
+         let downBtn = u.CreateEl('button').parent(down).className('ingredientTableButton').end();
+         u.Icon('chevron-down', downBtn);
+
+         let del = u.CreateEl('td').parent(newRow).end();
+         let deleteBtn = u.CreateEl('button').parent(del).className('removeIngredient').end();
+         u.Icon('minus', deleteBtn);
+
+         name.addEventListener('click', EditEnumName)
+         upBtn.addEventListener('click', function(e) {
+            MoveEnumObj(e, 'up')
+         });
+         downBtn.addEventListener('click', function(e) {
+            MoveEnumObj(e, 'down')
+         });
+         deleteBtn.addEventListener('click', DeleteEnumObj);
+      });
+      // u.CreateElement("button", els.enumTableDiv, "addEnumItem", "", "add new item");
+      // u.ID("addEnumItem").addEventListener("click", AddEnumItem);
    }
 
    /** allows user to add an item to an enum */
    function AddEnumItem() {
-      let enumName = u.ID("selectAdminEnum").value;
+      let enumName = els.selectAdminEnum.value;
       c.enums[enumName].push("");
       c.write();
    }
 
-   /** allows user to edit the food name in t1Table */
+   /** allows user to edit the enum name */
    function EditEnumName() {
       let j = u.GetNumber(event.target.id);
       let cell = u.ID(`enumObj${j}`);
@@ -439,10 +478,10 @@ module.exports = function(DATA) {
    function ChangeEnumName(oldValue) {
       let j = u.GetNumber(event.target.id);
       let newValue = u.ID(`enumObjInput${j}`).value;
-      let enumObj = c.enums[u.ID("selectAdminEnum").value];
+      let enumObj = c.enums[els.selectAdminEnum.value];
       delete enumObj[j];
       enumObj[j] = newValue;
-      if (u.ID("selectAdminEnum").value === "foodTypeEnum") { // if you are changing food-type-enum, change types of food in d.foods
+      if (els.selectAdminEnum.value === "foodTypeEnum") { // if you are changing food-type-enum, change types of food in d.foods
          let foodKeys = Object.keys(d.foods);
          for (let i = 0; i < foodKeys.length; i++) {
             let foodName = foodKeys[i];
@@ -454,7 +493,7 @@ module.exports = function(DATA) {
             }
          }
       }
-      if (u.ID("selectAdminEnum").value === "shopEnum") { // if you are changing shopping-enum, change types of shop in d.foods
+      if (els.selectAdminEnum.value === "shopEnum") { // if you are changing shopping-enum, change types of shop in d.foods
          let foodKeys = Object.keys(d.foods);
          for (let i = 0; i < foodKeys.length; i++) {
             let foodName = foodKeys[i];
@@ -472,26 +511,20 @@ module.exports = function(DATA) {
    }
 
    /** moves an enum up or down */
-   function MoveEnumObj() {
-      let i = u.GetNumber(event.target.id);
-      let enumName = u.ID("selectAdminEnum").value;
+   function MoveEnumObj(ev, direction) {
+      let i = ev.target.parent.parent.row_index;
+      let enumName = els.selectAdminEnum.value;
       let j;
-      if (event.target.id.charAt(7) === "U") {
-         j = i - 1;
-      } else {
-         j = i + 1;
-      }
+      j = direction === 'up' ? i - 1 : i + 1
       if (j < -1 || j > c.enums.length) return false;
       u.Swap(c.enums[enumName], i, j);
-      d.write();
       c.write();
    }
 
    function DeleteEnumObj() {
-      let i = u.GetNumber(event.target.id);
-      let enumName = u.ID("selectAdminEnum").value;
+      let i = event.target.parent.parent.row_index;
+      let enumName = els.selectAdminEnum.value;
       c.enums[enumName].splice(i, 1);
-      d.write();
       c.write();
    }
 

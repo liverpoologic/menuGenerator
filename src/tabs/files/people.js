@@ -18,7 +18,7 @@ module.exports = function(DATA) {
 
       els.plusButton.addEventListener("click", addAllergenRow);
 
-      //  window.addEventListener('update', UpdateListener);
+      // window.addEventListener('update', UpdateListener);
    }
 
    function CreatePageEls(parentDiv) {
@@ -72,6 +72,8 @@ module.exports = function(DATA) {
    }
 
    function RefreshAllergenTable(menuTitle) {
+
+      if (menuTitle == '_default') return;
 
       //clear everything that isn't the header row or the last 'plus' row
       for (var i = 1; i < els.peopleTable.rows.length - 1;) {

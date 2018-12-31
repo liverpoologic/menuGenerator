@@ -153,7 +153,7 @@ Dict.menus = {
          return mealID;
       }
    },
-   addRecipe(menuTitle, mealID, recipeTitle, morv) {
+   addRecipe(menuTitle, mealID, recipeTitle, morv, specialCount) {
       if (typeof menuTitle != "string") {
          console.log(`invalid input: ${menuTitle} not a string`);
       } else if (typeof mealID != "number") {
@@ -176,6 +176,7 @@ Dict.menus = {
          let newRecipe = {
             recipeTitle: recipeTitle,
             morv: morv, // inherits morv from input (user chooses morv for this instance of the recipe)
+            specialCount: specialCount
          };
          if (meal.recipes.length === 0) { // if there are no existing recipes. newRecipe is recipe[0]
             meal.recipes[0] = newRecipe;

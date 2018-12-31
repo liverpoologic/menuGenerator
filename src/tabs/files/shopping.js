@@ -15,11 +15,9 @@ module.exports = function(DATA) {
       CreatePageEls(tabcontent);
 
       DATA.els.edit.selectMenu.addEventListener("change", RefreshLists);
-      DATA.els.edit.printMenu.addEventListener("click", PrintShopping);
 
       window.addEventListener('update', UpdateListener);
 
-      return els;
    }
 
    function CreatePageEls(parentDiv) {
@@ -81,10 +79,10 @@ module.exports = function(DATA) {
 
    /** prints the shopping list as shown on shopping tab */
    function PrintShopping() {
-      let menuTitle = u.ID("selectMenuForShopping").value.replace("/", "-");
-      let filePath = u.ID("filepath").value;
+      let menuTitle = DATA.els.edit.selectMenu.value;
+      let filePath = 'C:/Users/Lisa Karlin/Documents/Menus';
       let rand = (Math.random() * 1000).toFixed(0);
-      if (menuTitle === "Menu") {
+      if (menuTitle === "_default") {
          alert("menu not selected - please select menu");
          return false;
       } else if (filePath === "") {
@@ -92,55 +90,71 @@ module.exports = function(DATA) {
          u.ShowElements("settingsModal", "block");
          return false;
       }
-      u.ShowElements("PrintShopping", "block");
-      GeneratePrintShopping();
+      u.ShowElements("print_shopping", "block");
+      GeneratePrintShopping(menuTitle);
       u.HideElements("mainApp");
-      ipc.send('print-to-pdf', `${filePath}/${menuTitle}_shopping_${rand}.pdf`);
+      let sanitisedMenuTitle = menuTitle.replace(/\//g, "-");
+      ipc.send('print-to-pdf', `${filePath}/${sanitisedMenuTitle}_shopping_${rand}.pdf`);
       return true;
    }
 
    /** Generates the 'print shopping' div with detail from current shopping tables */
-   function GeneratePrintShopping() {
-      let shoppingDiv = u.ID("PrintShopping");
+   function GeneratePrintShopping(menuTitle) {
+      let shoppingDiv = u.ID("print_shopping");
       shoppingDiv.innerHTML = "";
-      let menuTitle = u.ID("selectMenuForShopping").value;
+
+      let isFirst = true;
       c.enums.shopEnum.forEach((shop, i) => {
-         let shoppingTable = u.ID(`shoppingtable${shop}`);
-         if (shoppingTable.innerHTML === "") {
+         let shoppingTable = els.tables[i];
+         //check if table is empty
+         if (shoppingTable.rows.length < 1) {
             return;
-         } //check if table is empty
-         let printShoppingListTitle = u.CreateElement("h2", shoppingDiv, `printShoppingTitle${i}`, "printShoppingList", `${menuTitle} - ${shop}`);
-         // create array with list of foods from shopping table with row number as a property
-         let foodList = [];
-         for (let j = 0; j < shoppingTable.rows.length; j++) {
-            let foodName = u.ID(`${shop}row${j}col0`).innerText;
-            foodList[foodName] = {
-               foodName: foodName,
-               rowNumber: j
-            };
          }
-         let foodListKeys = Object.keys(foodList);
-         foodListKeys.sort();
-         if (foodListKeys.length > 10) {
-            foodListKeys.sort(u.CompareFoodType);
+
+         // create title for this shop
+         let printShoppingListTitle = u.CreateEl('h2').parent(shoppingDiv).className('printShoppingList').innerText(`${shop} (${menuTitle})`).end();
+
+         //if its the first shop, give it the first class as well
+         if (isFirst) {
+            isFirst = false;
+            printShoppingListTitle.className = 'printShoppingListFirst';
          }
-         // print shopping list
-         let printShoppingTable = u.CreateElement("table", shoppingDiv, `printshoppingtable${shop}`, "printShoppingTable");
-         let rowNumber = 0;
-         foodListKeys.forEach((foodName, k) => {
-            if (foodListKeys.length > 10 && k > 0 && d.foods[foodName].foodType !== d.foods[foodListKeys[k - 1]].foodType) {
-               let printShoppingTableRow = u.ID(`printshoppingtable${shop}`).insertRow(rowNumber);
-               printShoppingTableRow.innerHTML = "<td colspan=3 style='background-color:grey'></td>";
-               rowNumber++;
-            }
-            let HTML = [];
-            let tableRowNumber = foodList[foodName].rowNumber;
-            for (let x = 0; x < 3; x++) {
-               HTML[x] = u.ID(`${shop}row${tableRowNumber}col${x}`).innerText;
-            }
-            u.CreateRow(`printshoppingtable${shop}`, "td", HTML, "", [200, 50, 50], "px");
-            rowNumber++;
-         });
+
+         // create table for the list
+         let printShoppingListTable = u.CreateEl('table').parent(shoppingDiv).className('printShoppingTable').innerHTML(shoppingTable.innerHTML).end();
+
+         // // create array with list of foods from shopping table with row number as a property
+         // let foodList = [];
+         // // go through each row and column
+         // for (let j = 0; j < shoppingTable.rows.length; j++) {
+         //    let foodName = u.ID(`${shop}row${j}col0`).innerText;
+         //    foodList[foodName] = {
+         //       foodName: foodName,
+         //       rowNumber: j
+         //    };
+         // }
+         // let foodListKeys = Object.keys(foodList);
+         // foodListKeys.sort();
+         // if (foodListKeys.length > 10) {
+         //    foodListKeys.sort(u.CompareFoodType);
+         // }
+         // // print shopping list
+         // let printShoppingTable = u.CreateElement("table", shoppingDiv, `printshoppingtable${shop}`, "printShoppingTable");
+         // let rowNumber = 0;
+         // foodListKeys.forEach((foodName, k) => {
+         //    if (foodListKeys.length > 10 && k > 0 && d.foods[foodName].foodType !== d.foods[foodListKeys[k - 1]].foodType) {
+         //       let printShoppingTableRow = u.ID(`printshoppingtable${shop}`).insertRow(rowNumber);
+         //       printShoppingTableRow.innerHTML = "<td colspan=3 style='background-color:grey'></td>";
+         //       rowNumber++;
+         //    }
+         //    let HTML = [];
+         //    let tableRowNumber = foodList[foodName].rowNumber;
+         //    for (let x = 0; x < 3; x++) {
+         //       HTML[x] = u.ID(`${shop}row${tableRowNumber}col${x}`).innerText;
+         //    }
+         //    u.CreateRow(`printshoppingtable${shop}`, "td", HTML, "", [200, 50, 50], "px");
+         //    rowNumber++;
+         // });
          if (i === 1) {
             let essentialsNote = u.CreateElement("p", shoppingDiv, "", "essentialsNote", "Don't forget to buy essentials: olive oil, milton, tea/coffee, tupperware, cocoa, biscuits");
          }
@@ -179,6 +193,7 @@ module.exports = function(DATA) {
                      quantity: qLarge,
                      unit: food.unit,
                      shop: food.shop,
+                     foodType: food.foodType,
                      recipes: [{
                         meal: meal,
                         recipeTitle: menuRecipe.recipeTitle,
@@ -192,10 +207,28 @@ module.exports = function(DATA) {
 
       c.enums.shopEnum.forEach((shop, i) => {
          //create the table
-         Object.keys(indexedIngredients).sort().forEach(foodName => {
+         let lastFoodType;
+         Object.keys(indexedIngredients).sort(u.CompareFoodType).forEach(foodName => {
             let food = indexedIngredients[foodName];
-            if (food.shop == shop) {
+            if (food.shop === shop) {
+
+               // check that its the same type
+               if (lastFoodType != food.foodType) {
+                  if (lastFoodType) {
+                     //add extra break row (only if last food type exists - i.e. not at the top of the table)
+                     let breakRow = u.CreateEl('tr').parent(els.tables[i]).className('breakRow').end();
+                     for (let i = 0; i < 3; i++) {
+                        u.CreateEl('td').parent(breakRow).end();
+                     }
+
+                  }
+
+                  // update last food type
+                  lastFoodType = food.foodType;
+
+               }
                let thisRow = u.CreateEl('tr').parent(els.tables[i]).end();
+
                // work out display unit
                let display = u.DisplayIngredient(null, food.quantity, food.unit);
                [foodName, display[1], display[2]].forEach((ea, x) => {
@@ -266,6 +299,7 @@ module.exports = function(DATA) {
 
    return {
       generator: generator,
+      PrintShopping: PrintShopping,
       ShowShoppingDiv: ShowShoppingDiv
    };
 }

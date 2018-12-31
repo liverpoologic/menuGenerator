@@ -1,6 +1,7 @@
 module.exports = function(DATA) {
 
    var u = require("../../utilities")(DATA);
+   var s = DATA.state;
 
    function Initialise(tabList, isTest) {
       var mainApp = u.ID('mainApp');
@@ -14,6 +15,20 @@ module.exports = function(DATA) {
          var div = u.CreateEl('div').parent(mainApp).className('htabcontent').id(`${tabConfig.id}_tab_content`).end();
          div.style.display = 'none';
          btn.addEventListener('click', function() {
+            s.htab = tabConfig.id;
+            s.vtab = null;
+            tabConfig.vtabs.forEach(vtab => {
+               if (u.ID(`${vtab.id}_tab_btn`).className.indexOf('active') > -1) {
+                  s.vtab = vtab.id;
+               }
+            });
+            var open_tab = new CustomEvent('open_tab', {
+               detail: {
+                  htab: tabConfig.id,
+                  id: tabConfig.id
+               }
+            });
+            window.dispatchEvent(open_tab);
             u.OpenHTab(tabConfig.id);
          });
 
@@ -32,6 +47,14 @@ module.exports = function(DATA) {
             var v_div = u.CreateEl('div').parent(div).className('vtabcontent').id(`${vTabConfig.id}_tab_content`).end();
             v_div.style.display = 'none';
             btn.addEventListener('click', function() {
+               s.vtab = vTabConfig.id;
+               var open_tab = new CustomEvent('open_tab', {
+                  detail: {
+                     id: vTabConfig.id,
+                     htab: tabConfig.id
+                  }
+               });
+               window.dispatchEvent(open_tab);
                window.scrollTo(0, 0);
                u.OpenVTab(tabConfig, vTabConfig);
             });
@@ -44,8 +67,8 @@ module.exports = function(DATA) {
 
       // create event listener for 'settings' button
       settingsbtn.addEventListener("click", function() {
-         u.ID("filepath").value = DATA.config.filepath;
-         u.ShowElements("settingsModal", "block");
+         //   u.ID("filepath").value = DATA.config.filepath;
+         //   u.ShowElements("settingsModal", "block");
       });
 
    }

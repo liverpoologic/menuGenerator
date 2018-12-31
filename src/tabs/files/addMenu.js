@@ -76,8 +76,9 @@ module.exports = function(DATA) {
    function AddEmptyMenu(els) { //when you press 'add empty menu' button on the add menu screen
       let title = els.menuTitle.value;
       d.menus.addMenu(title, els.startDate.value, els.endDate.value);
+      console.log(els.startDate.value);
       d.write();
-      RefreshAddMealModal(els, title);
+      RefreshAddMealModal(title);
       u.ClearVals(els);
    }
 
@@ -107,6 +108,8 @@ module.exports = function(DATA) {
    }
 
    function RefreshAddMealModal(menuTitle) { // creates and shows the modal 'add meal', calls 'CreateMealList' to make the right hand panel
+      console.log(d.menus);
+      console.log(menuTitle);
       let startDate = new Date(d.menus[menuTitle].startDate);
       let endDate = new Date(d.menus[menuTitle].endDate);
       if (endDate < startDate) {

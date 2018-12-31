@@ -359,6 +359,10 @@ color: var(--dark-blue);
     font-size: 16px;
     font-weight: bold;
     margin: 3px;
+  }
+
+.viewMealTitle{
+    display:inline-block;
 }
 
 .recipeTitle {
@@ -402,7 +406,7 @@ color: var(--dark-blue);
     width: 600px;
 }
 
-.modal-content select, .modal-content input{
+.modal-content select, .modal-content input, .modal-content textarea{
   color:var(--dark-grey);
   background-color:white;
 }
@@ -604,57 +608,88 @@ table input, table select {
 /* media print stylesheet */
 
 @media print {
-    table {
-        background-color: grey
-    }
-    .printMenu {
+
+    #print_menu {
         font-family: Arial, Helvetica, sans-serif;
     }
-    .firstPrintMealTitle{
+
+    .firstMealTitle{
       display: block;
-      page-break-after: avoid;
       font-size: 25px;
       font-weight: bold;
       color: rgb(60, 83, 153);
     }
-    .printMealTitle {
+
+    .viewMealTitle {
         page-break-before: always;
         display: block;
-        page-break-after: avoid;
         font-size: 25px;
         font-weight: bold;
         color: rgb(60, 83, 153);
     }
-    .printDessertRecipeTitle {
-        page-break-before: always;
+
+    .wrapDiv{
+      page-break-inside:avoid;
+    }
+
+    .wrapDiv.dessert{
+      page-break-before:always;
+    }
+
+    .recipeDiv {
         display: block;
     }
-    .printRecipeDiv {
-        page-break-before: avoid;
-        page-break-inside: avoid;
+
+    .ingredientTable {
+        /* page-break-inside: avoid; */
         display: block;
     }
-    .printIngredientTable {
-        page-break-inside: avoid;
+    .method {
+        /* page-break-inside: avoid; */
         display: block;
     }
-    .printMethod {
-        page-break-inside: avoid;
+    .recipeTitle {
         display: block;
     }
-    .printRecipeTitle {
-        page-break-after: avoid;
-        display: block;
+
+    .summaryDiv {
+      page-break-before:always;
     }
+
+    .summaryDiv h3{
+      margin-top: 40px;
+      margin-bottom: 0px;    }
+
+    .summaryDiv h4{
+      margin-bottom:3px;
+    }
+
+    .summaryDiv .divider{
+      border-top: 0.5px solid var(--dark-grey);
+      width:120px;
+      height:6px;
+    }
+
     .printShoppingList {
         page-break-before: always;
         display: block;
         font-family: Arial, Helvetica, sans-serif;
     }
+    .printShoppingListFirst{
+      page-break-before: never;
+      display: block;
+      font-family: Arial, Helvetica, sans-serif;
+    }
     .essentialsNote {
         font-family: Arial, Helvetica, sans-serif;
         font-size: 12px
     }
+}
+
+.summaryDiv .divider{
+  border-top: 0.5px solid var(--dark-grey);
+  width:120px;
+  height:10px;
 }
 
 .printShoppingTable {
@@ -747,9 +782,12 @@ td > .tags-input input{
         font-weight: bold;
 }
 .comments-textarea{
-  height:100px;
-  width:-webkit-fill-available;
-  font-family:sans-serif;
+  height: 100px;
+width: -webkit-fill-available;
+font-family: sans-serif;
+border: 0;
+padding: 7px;
+margin: 5px 0;
 }
 .modal-title{
    font-size: 16px;
@@ -819,13 +857,40 @@ width:460px;
 .editMenuRecipe{
 width: 420px;
 background-color: white;
-color: var(--dark-blue);
 font-weight: bold;
 font-size: 12px;
 padding: 6px 8px;
 margin: 4px 0;
 display: inline-block;
 }
+.editMenuRecipe.drag:hover{
+  color:white !important;
+  cursor: pointer;
+
+}
+
+.editMenuRecipe.default{
+  color:var(--mid-blue);
+}
+.editMenuRecipe.core{
+  color:var(--dark-blue);
+}.editMenuRecipe.dessert{
+  color:var(--dark-green);
+}.editMenuRecipe.special{
+  color:var(--dark-grey);
+}
+
+.editMenuRecipe.drag.default:hover{
+  background-color:var(--mid-blue);
+}.editMenuRecipe.drag.core:hover{
+  background-color:var(--dark-blue);
+}.editMenuRecipe.drag.dessert:hover{
+  background-color:var(--dark-green);
+}.editMenuRecipe.drag.special:hover{
+  background-color:var(--dark-grey);
+}
+
+
 
 .editMenuRecipe button{
   padding:0;
@@ -835,11 +900,14 @@ display: inline-block;
 table button {
   background-color:inherit;
 }
+.modal-content table button {
+  background-color:inherit;
+}
 
 .ingredientSearchDiv{
   height: 50px;
 margin-top: -53px;
-z-index: 500;
+z-index: 300;
 position: fixed;
 left: 790px;
 }
@@ -873,4 +941,16 @@ left: 790px;
 }
 
 .recipeToAdd{
+}
+
+.breakRow {
+  height:30px;
+}
+
+.breakRow:hover{
+  background-color:white;
+}
+
+.breakRow > td {
+  border-bottom:0;
 }

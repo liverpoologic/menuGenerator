@@ -46,44 +46,11 @@ module.exports = function(DATA) {
       els.multiplyUpBtn.addEventListener('click', ShowMultiplyUpModal);
       els.multiplyUpModal.save.addEventListener('click', MultiplyUp);
 
-      // u.ID("addRecipeApplyFilters").addEventListener("click", ApplyFilters); // apply filters button in add recipe modal
-      // u.ID("addRecipeClearFilters").addEventListener("click", ClearFiltersBtn); // clear filters button in add recipe modal
-      // u.ID("addRecipeToMenu_submit").addEventListener("click", AddRecipeToMenu); // add recipes to menu (submit button)
-      // u.ID("selectEditMenu").addEventListener("change", RefreshEditMenu); // reload menu when new menuTitle is selected
-      //
-      // u.ID("addRecipeToMenu_btn").addEventListener("click", function() { // show add recipe modal and refresh contents when button is clicked
-      //    RefreshAddRecipeModal();
-      //    u.ShowElements("addRecipeToMenu", "block");
-      // });
-      // u.ID("editMealsEditMenu_btn").addEventListener("click",
-      //    function() { // show 'edit meals' modal by calling addMenu code when button is clicked
-      //       addMenu.CreateAddMealModal(u.ID("selectEditMenu").value);
-      //       u.ShowElements("addMealsToMenu", "block");
-      //    });
-      // u.ID("addRecipeCancel_btn").addEventListener("click", function() { // hide add recipe modal when cancel button is pressed
-      //    u.HideElements('addRecipeToMenu');
-      // });
-      // u.ID("multiplyUpCancel_btn").addEventListener("click", function() { // hide multiply up modal when cancel button is pressed
-      //    u.HideElements("multiplyUp");
-      // });
-      // u.ID("close_addMeals_modal_btn").addEventListener("click", function() { // hide close meals when cancel button is pressed
-      //    u.HideElements("addMealsToMenu");
-      // });
-      //
-      // u.ID("selectRecipeForMenu").addEventListener("change", function() { // auto-select morv for recipes
-      //    let recipeName = u.ID("selectRecipeForMenu").value;
-      //    if (recipeName === "_default") {
-      //       return "no recipe selected";
-      //    } else {
-      //       u.ID("selectMorvForMenu").value = d.recipes[recipeName].morv;
-      //    }
-      // });
-      //
       window.addEventListener('update', RefreshPage);
    }
 
    function CreatePageEls(parentDiv) {
-      els.btnDiv = u.CreateEl('div').parent(parentDiv).className('editButtonDiv').end();
+      els.btnDiv = u.CreateEl('div').parent(parentDiv).className('showOnVtab editButtonDiv').end();
 
       els.multiplyUpBtn = u.CreateEl('button').parent(els.btnDiv).id('multiplyUp_btn').innerText('Multiply Up').end();
       els.editMealsBtn = u.CreateEl('button').parent(els.btnDiv).id('editMealsEditMenu_btn').innerText('Edit Meals').end();
@@ -92,28 +59,39 @@ module.exports = function(DATA) {
 
       els.menuDiv = u.CreateEl('div').className('editMenu').style('width:430px; float:left').parent(els.subBox).end();
 
-      els.addRecipeDiv = u.CreateEl('div').style('width:360px; position:fixed; margin-left: 460px;').parent(els.subBox).end();
+      els.addRecipeDiv = u.CreateEl('div').className('showOnVtab').style('width:360px; position:fixed; margin-left: 460px; display:none').parent(els.subBox).end();
 
       els.morvSelectionModal = u.CreateModalFramework('select morv', 'Adding Recipe', 'recipeTitle')
       els.morvSelectionModal.selectMorv = u.CreateEl('select').id('selectMorvForAddRecipe').parent(els.morvSelectionModal.content).end();
+      els.morvSelectionModal.inputSpecialCount = u.CreateEl('input').type('number').parent(els.morvSelectionModal.content).style('display:none; margin-left: 10px').end();
+      els.morvSelectionModal.selectMorv.addEventListener('change', function(ev) {
+         els.morvSelectionModal.inputSpecialCount.style.display = ev.target.value == 'sp' ? 'inline-block' : 'none';
+      });
+
       u.Br(els.morvSelectionModal.content);
       els.morvSelectionModal.addBtn = u.CreateEl('button').innerText('Add').parent(els.morvSelectionModal.content).end();
 
       els.morvSelectionModal.addBtn.addEventListener('click', AddRecipeToMenu);
 
-      CreateCommentsModal();
+      CreateEditRecipeModal();
       CreateMultiplyUpModal();
       CreateAddRecipeDiv();
    }
 
-   function CreateCommentsModal() {
-      let ourEls = u.CreateModalFramework('comments modal', 'Add Comments to', 'recipeTitle')
+   function CreateEditRecipeModal() {
+      let ourEls = u.CreateModalFramework('edit recipe modal', 'Edit Recipe', 'recipeTitle')
 
+      ourEls.selectMorv = u.CreateEl('select').id('selectMorvForEditRecipe').parent(ourEls.content).style('display:inline-block').end();
+      ourEls.inputSpecialCount = u.CreateEl('input').type('number').parent(ourEls.content).style('display:none; margin-left: 10px').end();
       ourEls.comments = u.CreateEl('textarea').parent(ourEls.content).className('comments-textarea').end();
-      u.Br(ourEls.content);
-      ourEls.saveBtn = u.CreateEl('button').parent(ourEls.content).innerText('Save Comments').end();
 
-      els.commentsModal = ourEls;
+      ourEls.selectMorv.addEventListener('change', function(ev) {
+         ourEls.inputSpecialCount.style.display = ev.target.value == 'sp' ? 'inline-block' : 'none';
+      });
+      u.Br(ourEls.content);
+      ourEls.saveBtn = u.CreateEl('button').parent(ourEls.content).innerText('Save').end();
+
+      els.editRecipeModal = ourEls;
    }
 
    function CreateMultiplyUpModal() {
@@ -196,7 +174,10 @@ module.exports = function(DATA) {
             });
          } else {
             els.filters[f.id].input = u.CreateEl('input').type('text').placeholder(f.title).style('width:321px; margin: 4px 0 0 22px;').value(s.recipeFilters[f.id]).parent(thisDiv).end();
-            els.filters[f.id].input.addEventListener('change', RefreshRecipes);
+            els.filters[f.id].input.addEventListener('change', function() {
+               s.recipeFilters[f.id] = els.filters[f.id].input.value;
+               RefreshRecipes();
+            });
          }
          els.filters[f.id].clear = u.CreateEl('button').className('insideCellBtn').style('margin-top:7px').parent(thisDiv).end();
          u.Icon('times', els.filters[f.id].clear);
@@ -245,6 +226,7 @@ module.exports = function(DATA) {
 
    function RefreshRecipes() {
       console.log('refreshing recipes');
+      console.log(d);
       els.recipeDiv.innerHTML = "";
       let maxRecipes = 10;
       let recipesDisplayed = 0;
@@ -258,7 +240,6 @@ module.exports = function(DATA) {
          let recipeTitle = recipeList[i];
          let recipe = d.recipes[recipeTitle];
          let isFiltered = false;
-         console.log('check 1')
          for (let j = 0; j < filterConfig.length; j++) {
             let f = filterConfig[j];
             if (f._enum) {
@@ -277,9 +258,9 @@ module.exports = function(DATA) {
             }
          }
          if (!isFiltered) {
-            let recipeDiv = u.CreateEl('div').style('width:304px').className('editMenuRecipe').parent(els.recipeDiv).innerText(recipeTitle).end();
-            //GET COLOR
-            recipeDiv.style.color = c.enums.recipeTypeColours[recipe.recipeType];
+            let recipeDiv = u.CreateEl('div').style('width:304px').parent(els.recipeDiv).innerText(recipeTitle).end();
+
+            recipeDiv.className = 'editMenuRecipe drag ' + GetRecipeColorClass(recipe);
             recipeDiv.draggable = true;
             recipeDiv.addEventListener('dragstart', function(ev) {
                ev.dataTransfer.effectAllowed = 'move';
@@ -289,6 +270,20 @@ module.exports = function(DATA) {
             recipesDisplayed++;
          }
       }
+      u.Br(els.recipeDiv);
+      let dot_dot_dot = u.Icon('ellipsis-h', els.recipeDiv);
+      dot_dot_dot.style.float = 'right';
+      dot_dot_dot.style.margin = '4px 20px'
+   }
+
+   function GetRecipeColorClass(recipe, menuRecipe) {
+      if (menuRecipe && menuRecipe.morv == 'sp') {
+         return 'special';
+      } else if (recipe.recipeType === 'core') {
+         return 'core';
+      } else if (recipe.recipeType === 'dessert') {
+         return 'dessert';
+      } else return 'default'
    }
 
    function ShowMultiplyUpModal() {
@@ -337,9 +332,10 @@ module.exports = function(DATA) {
       let mealID = ev.target.meal_id;
       let menuTitle = DATA.els.edit.selectMenu.value;
       let recipeTitle = els.morvSelectionModal.recipeTitle.innerText;
+      let specialCount = els.morvSelectionModal.inputSpecialCount.value;
       let morv = els.morvSelectionModal.selectMorv.value;
 
-      d.menus.addRecipe(menuTitle, mealID, recipeTitle, morv);
+      d.menus.addRecipe(menuTitle, mealID, recipeTitle, morv, specialCount);
       d.write();
 
       els.morvSelectionModal.selectMorv.value = 'b';
@@ -382,25 +378,21 @@ module.exports = function(DATA) {
 
          meal.recipes.forEach((menuRecipe, j) => {
             let recipe = d.recipes[menuRecipe.recipeTitle];
-            let editRecipeTitleDiv = u.CreateElement("div", mealDiv, `editRecipeTitleDiv${i}${j}`, "editMenuRecipe");
+            let editRecipeTitleDiv = u.CreateElement("div", mealDiv, `editRecipeTitleDiv${i}${j}`, "editMenuRecipe " + GetRecipeColorClass(recipe, menuRecipe));
             let recipeTitle = u.CreateElement("text", editRecipeTitleDiv, `editRecipeTitle${i}${j}`);
             if (!recipe) {
-               recipeTitle.innerText = `Missing Recipe: ${menuRecipe.recipeTitle}`
+               recipeTitle.innerText = `Missing Recipe: ${menuRecipe.recipeTitle}`;
             } else {
 
                if (menuRecipe.morv === "b") {
                   recipeTitle.innerText = `${menuRecipe.recipeTitle}`;
+               } else if (menuRecipe.morv === 'sp' && menuRecipe.specialCount > 0) {
+
+                  recipeTitle.innerText = `${menuRecipe.recipeTitle} - ${menuRecipe.morv}  ${menuRecipe.specialCount}`;
                } else {
                   recipeTitle.innerText = `${menuRecipe.recipeTitle} - ${menuRecipe.morv}`;
                }
 
-               //give place to input specials numbers if its a special morv
-               if (menuRecipe.morv === 'sp') {
-                  console.log('recipe morv is sp');
-                  CreateSpecialInput(menuTitle, i, j, mealDiv);
-               }
-
-               editRecipeTitleDiv.style.color = c.enums.recipeTypeColours[recipe.recipeType]
             }
             let deleteRecipeFromMenu = u.CreateElement("button", editRecipeTitleDiv, `editDeleteRecipe${i}${j}`, "removeListItem");
             u.Icon('times', deleteRecipeFromMenu);
@@ -413,19 +405,25 @@ module.exports = function(DATA) {
             u.Icon('pen', editRecipeComments);
             editRecipeComments.style = 'margin-right:5px'
             editRecipeComments.addEventListener("click", function() {
-               els.commentsModal.recipeTitle.innerText = menuRecipe.recipeTitle;
-
+               els.editRecipeModal.recipeTitle.innerText = menuRecipe.recipeTitle;
                var currentComments = d.menus.getRecipe(menuTitle, i, j).comments;
-               els.commentsModal.comments.value = currentComments ? currentComments : "";
+               els.editRecipeModal.comments.value = currentComments ? currentComments : "";
+               els.editRecipeModal.selectMorv.value = menuRecipe.morv;
+               if (menuRecipe.morv == 'sp') {
+                  els.editRecipeModal.inputSpecialCount.style.display = 'inline-block';
+               }
+               els.editRecipeModal.inputSpecialCount.value = menuRecipe.specialCount ? menuRecipe.specialCount : 0
 
-               els.commentsModal.modal.style.display = 'block';
-               els.commentsModal.saveBtn.addEventListener('click', SaveComments);
+               els.editRecipeModal.modal.style.display = 'block';
+               els.editRecipeModal.saveBtn.addEventListener('click', SaveEditRecipe);
 
-               function SaveComments(e) {
-                  els.commentsModal.modal.style.display = 'none';
-                  d.menus.addComments(menuTitle, i, j, els.commentsModal.comments.value);
+               function SaveEditRecipe(e) {
+                  els.editRecipeModal.modal.style.display = 'none';
+                  d.menus.addComments(menuTitle, i, j, els.editRecipeModal.comments.value);
+                  d.menus[menuTitle].meals[i].recipes[j].morv = els.editRecipeModal.selectMorv.value;
+                  d.menus[menuTitle].meals[i].recipes[j].specialCount = els.editRecipeModal.inputSpecialCount.value;
                   d.write();
-                  e.target.removeEventListener('click', SaveComments);
+                  e.target.removeEventListener('click', SaveEditRecipe);
                }
             });
 
@@ -450,20 +448,6 @@ module.exports = function(DATA) {
             d.menus.addNumbersModifier(menuTitle, i, u.ID(`meateaters${i}`).value, u.ID(`vegetarians${i}`).value);
             d.write();
          });
-      });
-   }
-
-   function CreateSpecialInput(menuTitle, mealIndex, recipeIndex, div) {
-      console.log('create special input');
-      let specialInput = u.CreateEl('input').id(`editSpecialNumbers${mealIndex}}${recipeIndex}`).className('specialCountInput').type('number').parent(div).end();
-      let currentValue = d.menus.getRecipe(menuTitle, mealIndex, recipeIndex).specialCount;
-      if (currentValue) {
-         specialInput.value = currentValue;
-      }
-      specialInput.addEventListener('change', function() {
-         console.log('special has been input!');
-         d.menus.getRecipe(menuTitle, mealIndex, recipeIndex).specialCount = parseInt(specialInput.value);
-         d.write();
       });
    }
 

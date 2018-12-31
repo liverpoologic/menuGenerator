@@ -1,0 +1,26 @@
+{
+  "parserOptions": {
+    "ecmaVersion": 2018,
+    "ecmaFeatures": {
+      "jsx": true
+    },
+    "sourceType": "module"
+  },
+
+  "env": {
+    "es6": true,
+    "node": true
+  },
+  "globals": {
+    "window": false,
+    "alert":false,
+    "CustomEvent":false,
+    "event":false,
+    "document":false,
+  },
+
+  "rules": {
+    "no-trailing-spaces": "error",
+    "no-undef": "error",
+  }
+}

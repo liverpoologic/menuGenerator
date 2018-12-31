@@ -6,7 +6,6 @@ module.exports = function(DATA) {
    var addRecipe = require('./addRecipe.js')(DATA);
    var addMenu = require('./addMenu.js')(DATA);
 
-
    function generator() {
       var els = {};
       els.addFood = addFood.generator();

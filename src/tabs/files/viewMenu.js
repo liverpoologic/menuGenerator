@@ -21,18 +21,16 @@ module.exports = function(DATA) {
       var tabcontent = u.ID('viewMenu_tab_content');
       CreatePageEls(tabcontent);
 
-      DATA.els.edit.selectMenu.addEventListener("change", RefreshViewMenu);
+      DATA.els.edit.selectMenu.addEventListener("change", RefreshMenu);
 
       window.addEventListener('update', RefreshPage);
-
-      console.log('hello viewMenu');
-
-      return els;
+      // for debug
+      window.printMenu = PrintMenu;
    }
 
    function CreatePageEls(parentDiv) {
 
-      els.menuMorvCounts = u.CreateEl('notes').style('float:left; margin-top:5px').parent(parentDiv).end()
+      els.menuMorvCounts = u.CreateEl('notes').className('summary').style('float:left; margin-top:5px').parent(parentDiv).end();
 
       els.viewMenuDiv = u.CreateEl('div').style('width:400px; margin:30px 0 0 0').parent(parentDiv).end();
    }
@@ -40,30 +38,39 @@ module.exports = function(DATA) {
    function RefreshPage(EV) {
       if (EV.detail.type === 'dict') {
          //refresh list of recipes
-         RefreshViewMenu()
+         // RefreshMenu()
       }
    }
 
    /** Refresh view menu (triggered when menu is selected) */
-   function RefreshViewMenu() {
-      els.viewMenuDiv.innerHTML = ""; //clear the div
+   function RefreshMenu({
+      isPrint
+   }) {
+      let displayOnLoad = isPrint ? 'block' : 'none';
+      let printPrefix = isPrint ? 'print_' : '';
+
+      const parentDiv = isPrint ? u.ID('print_menu') : els.viewMenuDiv;
+      parentDiv.innerHTML = ""; //clear the div
       let menuTitle = DATA.els.edit.selectMenu.value;
       let menu = d.menus.getMenu(menuTitle);
       if (menuTitle === "Menu" || !menu) {
          return "no action required";
       }
 
-
       menu.meals.forEach((meal, i) => {
          let day = c.enums.weekday[new Date(meal.date).getDay()];
-         let mealTitle = u.CreateElement("h3", els.viewMenuDiv, `mealTitle${i}`, "", `${day} ${meal.mealType}`, "inline-block");
 
-         if (Object.keys(meal.recipes).length > 0) { // if there is a recipe in the meal, print the recipes and hide/show buttons
+         let mealTitle = u.CreateEl('h3').className('viewMealTitle').parent(parentDiv).id(`${printPrefix}mealTitle${i}`).innerText(`${day} ${meal.mealType}`).end();
+         if (isPrint && i === 0) {
+            mealTitle.className = 'firstMealTitle';
+         }
 
-            let showMealBtn = u.CreateEl('button').className('mealbtn').id(`showMealBtn${i}`).parent(els.viewMenuDiv).style('display:inline').end();
+         if (Object.keys(meal.recipes).length > 0 && !isPrint) { // if there is a recipe in the meal AND we're not in print mode, print the recipes and hide/show buttons
+
+            let showMealBtn = u.CreateEl('button').className('mealbtn').id(`showMealBtn${i}`).parent(parentDiv).style('display:inline').end();
             u.Icon('plus', showMealBtn);
 
-            let hideMealBtn = u.CreateEl('button').className('mealbtn').id(`hideMealBtn${i}`).parent(els.viewMenuDiv).style('display:none').end();
+            let hideMealBtn = u.CreateEl('button').className('mealbtn').id(`hideMealBtn${i}`).parent(parentDiv).style('display:none').end();
             u.Icon('minus', hideMealBtn);
 
             showMealBtn.addEventListener("click", function() {
@@ -76,63 +83,70 @@ module.exports = function(DATA) {
                u.ShowElements(`showMealBtn${i}`, "inline");
             });
          }
-         u.Br(els.viewMenuDiv);
-         let mealDiv = u.CreateElement("div", els.viewMenuDiv, `mealDiv${i}`, "mealDiv", "", "none");
+
+         if (!isPrint) u.Br(parentDiv);
+         let mealDiv = u.CreateElement("div", parentDiv, `${printPrefix}mealDiv${i}`, "mealDiv", "", displayOnLoad);
          let mCount = meal.modifier ? Number(menu.meateaters) + Number(meal.modifier.meateaters) : menu.meateaters;
          let vCount = meal.modifier ? Number(menu.vegetarians) + Number(meal.modifier.vegetarians) : menu.vegetarians;
          let mealNumbersText = `M: ${mCount} V: ${vCount}`;
-         let mealNumbers = u.CreateEl('notes').innerText(mealNumbersText).parent(mealDiv).end();
+         let mealNumbers = u.CreateEl('notes').className('summary').innerText(mealNumbersText).parent(mealDiv).end();
 
          // adds recipe
          meal.recipes.forEach((menuRecipe, j) => {
             var recipe = d.recipes[menuRecipe.recipeTitle];
+            let recipeWrapDiv = u.CreateEl('div').parent(mealDiv).className(`wrapDiv ${recipe.recipeType}`).end();
+
             if (!recipe) {
-               u.CreateEl('h4').innerText(`Missing Recipe: ${menuRecipe.recipeTitle}`).parent(mealDiv).end();
+               u.CreateEl('h4').innerText(`Missing Recipe: ${menuRecipe.recipeTitle}`).parent(recipeWrapDiv).end();
                //break out of this loop and move onto the next recipe
                return;
             }
-            let recipeTitle = u.CreateElement("h4", mealDiv, `recipeTitle${i}${j}`, "", `${menuRecipe.recipeTitle} - ${menuRecipe.morv}`, "inline-block");
+            let recipeTitle = u.CreateElement("h4", recipeWrapDiv, `${printPrefix}recipeTitle${i}${j}`, "", `${menuRecipe.recipeTitle} - ${menuRecipe.morv}`, "inline-block");
             if (menuRecipe.morv === "b") {
                recipeTitle.innerText = `${menuRecipe.recipeTitle}`;
             } else if (menuRecipe.morv === "sp") {
-               recipeTitle.innerText = `${menuRecipe.recipeTitle} (${menuRecipe.morv}: ${menuRecipe.specialCount})`;
+               let specialCount = menuRecipe.specialCount ? menuRecipe.specialCount : "";
+               recipeTitle.innerText = `${menuRecipe.recipeTitle} (${menuRecipe.morv}: ${specialCount})`;
             }
 
             // adds + and - buttons
-            let showRecipeBtn = u.CreateEl('button').className('recipebtn').id(`showRecipeBtn${i}${j}`).parent(mealDiv).style('display:inline').end();
-            u.Icon('plus', showRecipeBtn);
-            let hideRecipeBtn = u.CreateEl('button').className('recipebtn').id(`hideRecipeBtn${i}${j}`).parent(mealDiv).style('display:none').end();
-            u.Icon('minus', hideRecipeBtn);
+            if (!isPrint) {
+               let showRecipeBtn = u.CreateEl('button').className('recipebtn').id(`showRecipeBtn${i}${j}`).parent(recipeWrapDiv).style('display:inline').end();
+               u.Icon('plus', showRecipeBtn);
+               let hideRecipeBtn = u.CreateEl('button').className('recipebtn').id(`hideRecipeBtn${i}${j}`).parent(recipeWrapDiv).style('display:none').end();
+               u.Icon('minus', hideRecipeBtn);
 
-            let recipeDiv = u.CreateElement("div", mealDiv, `recipeDiv${i}${j}`, "recipeDiv");
-            let lineBreak = u.CreateEl('br').id(`recipeDivLineBreak${i}${j}`).parent(mealDiv).end();
+               showRecipeBtn.addEventListener("click", function() {
+                  u.ShowElements(`recipeDiv${i}${j}`, "block");
+                  u.ShowElements(`hideRecipeBtn${i}${j}`, "inline");
+                  u.HideElements(`showRecipeBtn${i}${j}`);
+                  u.HideElements(`recipeDivLineBreak${i}${j}`);
+               });
 
-            showRecipeBtn.addEventListener("click", function() {
-               u.ShowElements(`recipeDiv${i}${j}`, "block");
-               u.ShowElements(`hideRecipeBtn${i}${j}`, "inline");
-               u.HideElements(`showRecipeBtn${i}${j}`);
-               u.HideElements(`recipeDivLineBreak${i}${j}`)
-            });
+               hideRecipeBtn.addEventListener("click", function() {
+                  u.HideElements([`recipeDiv${i}${j}`, `hideRecipeBtn${i}${j}`]);
+                  u.ShowElements(`showRecipeBtn${i}${j}`, "inline");
+                  u.ShowElements(`recipeDivLineBreak${i}${j}`, 'block');
+               });
+            }
 
-            hideRecipeBtn.addEventListener("click", function() {
-               u.HideElements([`recipeDiv${i}${j}`, `hideRecipeBtn${i}${j}`]);
-               u.ShowElements(`showRecipeBtn${i}${j}`, "inline");
-               u.ShowElements(`recipeDivLineBreak${i}${j}`, 'block')
-            });
+            let recipeDiv = u.CreateElement("div", recipeWrapDiv, `recipeDiv${i}${j}`, "recipeDiv");
+            if (!isPrint) {
+               let lineBreak = u.CreateEl('br').id(`recipeDivLineBreak${i}${j}`).parent(recipeWrapDiv).end();
+            }
 
-            let specials = u.CreateElement('notes', recipeDiv, `specials${i}${j}`);
+            let specials = u.CreateEl('notes').className('summary').parent(recipeDiv).id(`specials${i}${j}`).end();
             let specialsArr = [];
 
             if (menuRecipe.comments) {
-               let comments = u.CreateElement('notes', recipeDiv);
+               let comments = u.CreateEl('notes').className('summary').parent(recipeDiv).end();
                comments.innerHTML = menuRecipe.comments.replace(/(?:\r\n|\r|\n)/g, '<br>');
             }
 
             //create serves
             u.CreateEl('notes').parent(recipeDiv).innerText(`Original Recipe Serves ${recipe.serves}`).end();
 
-
-            let ingredientTable = u.CreateEl('table').parent(recipeDiv).id(`ingredientTable${i}${j}`).className('recipeIngredientTable').end();
+            let ingredientTable = u.CreateEl('table').parent(recipeDiv).id(`${printPrefix}ingredientTable${i}${j}`).className('recipeIngredientTable').end();
 
             var specialPeople;
             // get rid of special people who won't eat this meal
@@ -183,11 +197,12 @@ module.exports = function(DATA) {
                }
                html.unshift(ingredient.foodName);
                for (let x = 0; x < 4; x++) {
-                  ids.push(`${i}${j}${k}${x}`);
+                  ids.push(`${printPrefix}${i}${j}${k}${x}`);
                }
-               u.CreateRow(`ingredientTable${i}${j}`, "td", html, ids, [50, 10, 10, 30], "%");
-               u.ID(`${i}${j}${k}1`).style.fontSize = "11px";
+               u.CreateRow(`${printPrefix}ingredientTable${i}${j}`, "td", html, ids, [50, 10, 10, 30], "%");
+               u.ID(`${printPrefix}${i}${j}${k}1`).style.fontSize = "11px";
             });
+
             let method = u.CreateElement("p", recipeDiv);
             var methodHTML = recipe.method.replace(/(?:\r\n|\r|\n)/g, '<br><br>');
             method.innerHTML = methodHTML;
@@ -215,7 +230,7 @@ module.exports = function(DATA) {
                });
 
 
-               specialsText = Object.keys(specialsObj2).map(problemFoods => {
+               var specialsText = Object.keys(specialsObj2).map(problemFoods => {
                   var people = specialsObj2[problemFoods];
                   return `${people.length} - ${problemFoods} (${people.join(", ")})`;
                });
@@ -232,13 +247,14 @@ module.exports = function(DATA) {
 
       //create right panel
       els.menuMorvCounts.innerText = `Meateaters: ${menu.meateaters}    Vegetarians: ${menu.vegetarians}`;
+      console.log(menu);
 
    }
 
    /** onclick 'print menu' - calls 'generate print menu' */
    function PrintMenu() {
       let menuTitle = DATA.els.edit.selectMenu.value.replace("/", "-");
-      let filePath = u.ID("filepath").value;
+      let filePath = 'C:/Users/Lisa Karlin/Documents/Menus';
       let rand = (Math.random() * 1000).toFixed(0);
       if (menuTitle === "Menu") {
          alert("menu not selected - please select menu");
@@ -248,167 +264,61 @@ module.exports = function(DATA) {
          u.ShowElements("settingsModal", "block");
          return false;
       }
-      u.ShowElements("PrintMenu", "block");
-      GeneratePrintMenu();
+      u.ShowElements("print_menu", "block");
+      // call RefreshMenu with isPrint = true
+      RefreshMenu({
+         isPrint: true
+      });
+      RefreshPrintSummary();
       u.HideElements("mainApp");
       ipc.send('print-to-pdf', `${filePath}/${menuTitle}_menu_${rand}.pdf`);
    }
 
-   /** Generate menu to be printed (from view menu tab) */
-   function GeneratePrintMenu() {
-      //TODO FIX THIS AND MAKE LESS REPEATED CODE!!!
-      els.viewMenuDiv = u.ID("PrintMenu");
-      els.viewMenuDiv.innerHTML = ""; //clear the child div
-      let menuTitle = u.ID("selectViewMenu").value;
+   function RefreshPrintSummary() {
+      let menuTitle = DATA.els.edit.selectMenu.value;
       let menu = d.menus.getMenu(menuTitle);
+      if (menuTitle === "_default" || !menu) {
+         return "no action required";
+      }
+
+      let parentDiv = u.ID('print_menu');
+
+      // add a list of all the meals and each recipe
+      let summaryDiv = u.CreateEl('div').className('summaryDiv').parent(parentDiv).end();
 
       menu.meals.forEach((meal, i) => {
          let day = c.enums.weekday[new Date(meal.date).getDay()];
+         let wrapDiv = u.CreateEl('div').className('wrapDiv').parent(summaryDiv).end();
+         let mealTitle = u.CreateEl('h3').parent(wrapDiv).innerText(`${day} ${meal.mealType}`).end();
 
-         let mealTitle = u.CreateElement("h3", els.viewMenuDiv, `printMealTitle${i}`, "printMealTitle", `${day} ${meal.mealType}`, "block");
-         if (i === 0) {
-            mealTitle.className = 'firstPrintMealTitle';
-         }
+         //TODO - fix this hack
+         let mealCountText = u.ID(`mealDiv${i}`).children[0].innerText;
+         let mealCountEl = u.CreateEl('notes').parent(wrapDiv).innerText(mealCountText).end();
 
-         let mealDiv = u.CreateElement("div", els.viewMenuDiv, `printMealDiv${i}`, "printMealDiv");
-         let mCount = meal.modifier ? Number(menu.meateaters) + Number(meal.modifier.meateaters) : menu.meateaters;
-         let vCount = meal.modifier ? Number(menu.vegetarians) + Number(meal.modifier.vegetarians) : menu.vegetarians;
-         let mealNumbersText = `M: ${mCount} V: ${vCount}`;
-         let mealNumbers = u.CreateEl('notes').innerText(mealNumbersText).parent(mealDiv).end();
+         meal.recipes.forEach((recipe, j) => {
+            let actual_recipe = d.recipes[recipe.recipeTitle];
 
-         u.CreateElement("br", els.viewMenuDiv);
-
-         // adds recipe
-         meal.recipes.forEach((menuRecipe, j) => {
-            var recipe = d.recipes[menuRecipe.recipeTitle];
-
-            let recipeDiv = u.CreateElement("div", mealDiv, `printRecipeDiv${i}${j}`, "printRecipeDiv");
-            u.CreateElement("br", mealDiv);
-
-            let recipeTitle = u.CreateElement("h4", recipeDiv, `printRecipeTitle${i}${j}`, "printRecipeTitle", `${menuRecipe.recipeTitle} (${recipe.serves}) - ${menuRecipe.morv}`, "block");
-            if (menuRecipe.morv === "b") {
-               recipeTitle.innerText = `${menuRecipe.recipeTitle} (${recipe.serves})`;
-            } else if (menuRecipe.morv === "sp") {
-               recipeTitle.innerText = `${menuRecipe.recipeTitle} (${recipe.serves}) - ${menuRecipe.morv}: ${menuRecipe.specialCount}`;
+            if (actual_recipe.recipeType === 'dessert') {
+               let divider = u.CreateEl('div').parent(wrapDiv).className('divider').end();
             }
 
-            if (recipe.recipeType === "dessert c") {
-               recipeTitle.className = "printDessertRecipeTitle";
-            }
-
-            u.CreateElement("br", mealDiv);
-            let specials = u.CreateElement('notes', recipeDiv, `specials${i}${j}`);
-            u.CreateElement("br", recipeDiv);
-
-            let specialsArr = [];
-
-            let ingredientTable = u.CreateElement("table", recipeDiv, `printIngredientTable${i}${j}`, "printIngredientTable", "", "block");
-
-            var specialPeople;
-
-            // get rid of special people who won't eat this meal
-            if (menu.specials && menuRecipe.morv !== 'b') {
-               specialPeople = {};
-               Object.keys(menu.specials).forEach(personName => {
-                  var data = menu.specials[personName];
-                  if (data.morv === menuRecipe.morv) {
-                     specialPeople[personName] = data;
-                  }
-               });
-
-            } else specialPeople = menu.specials;
-
-            recipe.ingredients.forEach((ingredient, k) => {
-               let foodName = ingredient.foodName;
-               let food = d.foods[foodName];
-               let html = [];
-               let ids = [];
-               var allergens = food.allergens;
-               if (menu.specials) {
-                  Object.keys(specialPeople).forEach(personName => {
-
-                     var dietaryReq = menu.specials[personName];
-                     let allergenList = [];
-                     if (allergens && dietaryReq.allergens) {
-                        allergens.forEach(allergen => {
-                           if (dietaryReq.allergens.indexOf(allergen) >= 0) allergenList.push(foodName);
-                        });
-                     }
-                     if (dietaryReq.foods) {
-                        if (dietaryReq.foods.indexOf(foodName) >= 0) allergenList.push(foodName);
-                     }
-
-                     if (allergenList.length > 0) {
-                        specialsArr.push({
-                           personName: personName,
-                           foodName: foodName
-                        });
-                     }
-                  });
-               }
-
-               if (menu.meateaters === null) {
-                  html = [`(${ingredient.quantity})`, null, food.unit];
-               } else {
-                  var qLarge = u.CalculateQLarge(menuTitle, i, menuRecipe, ingredient);
-                  html = u.DisplayIngredient(ingredient.quantity, qLarge, food.unit);
-               }
-               html.unshift(foodName);
-               for (let x = 0; x < 4; x++) {
-                  ids.push(`print${i}${j}${k}${x}`);
-               }
-               u.CreateRow(`printIngredientTable${i}${j}`, "td", html, ids, [50, 10, 10, 30], "%");
-               u.ID(`print${i}${j}${k}1`).style.fontSize = "11px";
-            });
-            let method = u.CreateElement("p", recipeDiv, `printMethod${i}${j}`, "printMethod", "", "block");
-            method.innerHTML = recipe.method.replace(/(?:\r\n|\r|\n)/g, '<br><br>');
+            let titleText = recipe.morv == 'b' ? recipe.recipeTitle : `${recipe.recipeTitle} - ${recipe.morv}`
+            let recipeTitle = u.CreateEl('h4').parent(wrapDiv).className(actual_recipe.recipeType).innerHTML(titleText).end();
 
 
-            if (menuRecipe.comments) {
-               let comments = u.CreateElement('notes', recipeDiv);
-               comments.innerHTML = menuRecipe.comments.replace(/(?:\r\n|\r|\n)/g, '<br>')
-            }
+            let allRecipeNotes = u.ID(`recipeDiv${i}${j}`).getElementsByClassName('summary')
+            let recipeNotesText = Array.prototype.map.call(allRecipeNotes, x => x.innerText).join("<br>");
 
-            if (specialsArr.length > 0) {
+            let recipeNotesEl = u.CreateEl('notes').parent(wrapDiv).innerHTML(recipeNotesText).end();
 
-               var specialsObj1 = {};
-
-               specialsArr.forEach(obj => {
-                  if (!specialsObj1[obj.personName]) {
-                     specialsObj1[obj.personName] = [];
-                  }
-                  specialsObj1[obj.personName].push(obj.foodName);
-               });
-
-               var specialsObj2 = {};
-
-               Object.keys(specialsObj1).forEach(person => {
-                  var foodJoined = specialsObj1[person].sort().join(", ");
-                  if (!specialsObj2[foodJoined]) {
-                     specialsObj2[foodJoined] = [];
-                  }
-                  specialsObj2[foodJoined].push(person);
-               });
-
-
-               specialsText = Object.keys(specialsObj2).map(problemFoods => {
-                  var people = specialsObj2[problemFoods];
-                  return `${people.length} - ${problemFoods} (${people.join(", ")})`;
-               });
-               specialsText.splice(0, 0, 'Specials:');
-
-
-               specials.innerHTML = specialsText.join('<br>');
-
-               recipeTitle.innerText = `${recipeTitle.innerText} *`;
-            }
-         });
-      });
+         })
+      })
 
 
    }
 
    return {
-      generator: generator
+      generator: generator,
+      PrintMenu: PrintMenu
    };
-}
+};

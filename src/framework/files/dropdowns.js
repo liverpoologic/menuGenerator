@@ -15,10 +15,11 @@ module.exports = function(DATA) {
    function RefreshDropdowns(EV) {
       var d = DATA.dict;
       var c = DATA.config;
+      var menuValList;
 
       if (EV.detail.type !== 'config') {
          // Create array of menu names
-         var menuValList = u.GetKeysExFns(d.menus).sort((a, b) => {
+         menuValList = u.GetKeysExFns(d.menus).sort((a, b) => {
             return u.Compare(d.menus[a].startDate, d.menus[b].startDate);
          });
 
@@ -60,7 +61,7 @@ module.exports = function(DATA) {
                return c.enums.mealTypeEnum;
             },
             keys: false,
-            ids: ['selectRecipeMealType', 'selectMealTypeForAddMeals', 't2TableFilter1input'],
+            ids: ['create_selectRecipeMealType', 'editModal_selectRecipeMealType', 'selectMealTypeForAddMeals', 't2TableFilter1input'],
             _default: 'Meal Type',
             type: 'config'
          },
@@ -69,7 +70,7 @@ module.exports = function(DATA) {
                return c.enums.recipeTypeEnum;
             },
             keys: false,
-            ids: ['selectRecipeType', 't2TableFilter2input'],
+            ids: ['create_selectRecipeType', 'editModal_selectRecipeType', 't2TableFilter2input'],
             _default: 'Recipe Type',
             type: 'config'
          },
@@ -78,7 +79,7 @@ module.exports = function(DATA) {
                return c.enums.morvEnum;
             },
             keys: false,
-            ids: ['recipeMorv'],
+            ids: ['create_recipeMorv', 'editModal_recipeMorv'],
             _default: 'M or V',
             type: 'config'
          },
@@ -87,7 +88,7 @@ module.exports = function(DATA) {
                return c.enums.recipeMorv;
             },
             keys: false,
-            ids: ['selectMorvForAddRecipe'],
+            ids: ['selectMorvForAddRecipe', 'selectMorvForEditRecipe'],
             _default: 'morv',
             type: 'config'
          },
@@ -121,21 +122,41 @@ module.exports = function(DATA) {
          },
          {
             source: function() {
-               return d.foods
+               return d.foods;
             },
             keys: true,
-            table: 'ingredientTable',
-            idPrefix: 'selectIngredientFood',
+            table: 'editModal_ingredientTable',
+            idPrefix: 'editModal_selectIngredientFood',
             _default: 'Food',
             type: 'dict'
          },
          {
             source: function() {
-               return c.enums.morvEnum
+               return d.foods;
+            },
+            keys: true,
+            table: 'create_ingredientTable',
+            idPrefix: 'create_selectIngredientFood',
+            _default: 'Food',
+            type: 'dict'
+         },
+         {
+            source: function() {
+               return c.enums.morvEnum;
             },
             keys: false,
-            table: 'ingredientTable',
-            idPrefix: 'selectIngredientMorv',
+            table: 'create_ingredientTable',
+            idPrefix: 'create_selectIngredientMorv',
+            _default: 'M or V',
+            type: 'config'
+         },
+         {
+            source: function() {
+               return c.enums.morvEnum;
+            },
+            keys: false,
+            table: 'editModal_ingredientTable',
+            idPrefix: 'editModal_selectIngredientMorv',
             _default: 'M or V',
             type: 'config'
          },
@@ -170,10 +191,7 @@ module.exports = function(DATA) {
          }
       });
    }
-   //
-   // u.CreateDropdown(`selectIngredientFood${j}`, d.foods, true, undefined, 'Food'); // recipe > add ingredients
-   // u.CreateDropdown(`selectIngredientMorv${j}`, e.morvEnum, false, undefined, 'morv'); // recipe > morv
-   //
+
 
    function RefreshDataLists(EV) {
       var d = DATA.dict;
@@ -196,7 +214,7 @@ module.exports = function(DATA) {
          {
             id: 'specialPeople',
             sourceArr: function() {
-               return u.GetKeysExFns(c.enums.specialsEnum)
+               return u.GetKeysExFns(c.enums.specialsEnum);
             },
             type: 'config'
          }

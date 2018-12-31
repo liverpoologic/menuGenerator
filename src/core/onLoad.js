@@ -102,14 +102,13 @@ module.exports = function() {
    // u.ID("save_backup").addEventListener("click",u.SaveBackup);
    // u.ID("restore_from_backup").addEventListener("click",u.RestoreFromBackup);
    //
-   // // function to return to normal once pdf has printed
-   // ipc.on('wrote-pdf', function (event, path) {
-   //     u.HideElements("PrintMenu");
-   //     u.HideElements("PrintShopping");
-   //     u.ShowElements("mainApp", "block");
-   //     console.log(`Wrote PDF to: ${path}`);
-   // });
-   //
+   // function to return to normal once pdf has printed
+   ipc.on('wrote-pdf', function(event, path) {
+      // u.HideElements("print_menu");
+      // u.HideElements("print_shopping");
+      // u.ShowElements("mainApp", "block");
+      console.log(`Wrote PDF to: ${path}`);
+   });
    // // listener to support keyboard shortcuts
    // document.addEventListener("keydown", shortcuts);
 

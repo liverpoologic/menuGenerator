@@ -299,7 +299,6 @@ module.exports = function(DATA) {
       if (quantitySmall === null) {
          let x = 1;
       }
-
       if (unit === "g" && quantityLarge >= 1000) {
          x = `(${quantitySmall / 1000})`;
          y = customRound(parseFloat(quantityLarge / 1000));
@@ -317,9 +316,16 @@ module.exports = function(DATA) {
    }
 
    function customRound(number) {
+      if (number === 0) return 0;
       let isInRange = false;
       let changes = [];
+      let cnt = 0;
       while (isInRange == false) {
+         if (cnt > 10) {
+            console.log('error in custom round function');
+            console.log(number);
+            isInRange = true;
+         }
          if (number < 100) {
             number *= 10;
             changes.push(divTen);
@@ -329,6 +335,7 @@ module.exports = function(DATA) {
          } else {
             isInRange = true;
          }
+         cnt++
       }
 
       let ourVal = Math.round(number / 5) * 5;
