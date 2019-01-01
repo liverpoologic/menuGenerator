@@ -19,11 +19,11 @@ module.exports = function(DATA) {
       u.CreateEl('text').innerText('Export to PDF').style('margin-left:5px').parent(els.printMenu).end();
 
       els.printMenu.addEventListener("click", () => {
-         // tabs.shopping.PrintShopping();
-         // setTimeout(
-         // function() {
-         tabs.viewMenu.PrintMenu();
-         // }, 3000);
+         tabs.shopping.PrintShopping();
+         setTimeout(
+            function() {
+               tabs.viewMenu.PrintMenu();
+            }, 3000);
       });
 
       vtabs.forEach(vtab => {

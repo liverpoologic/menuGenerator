@@ -104,9 +104,9 @@ module.exports = function() {
    //
    // function to return to normal once pdf has printed
    ipc.on('wrote-pdf', function(event, path) {
-      // u.HideElements("print_menu");
-      // u.HideElements("print_shopping");
-      // u.ShowElements("mainApp", "block");
+      u.HideElements("print_menu");
+      u.HideElements("print_shopping");
+      u.ShowElements("mainApp", "block");
       console.log(`Wrote PDF to: ${path}`);
    });
    // // listener to support keyboard shortcuts
