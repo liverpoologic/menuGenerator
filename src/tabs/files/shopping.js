@@ -12,19 +12,64 @@ module.exports = function(DATA) {
 
    function generator() {
       var tabcontent = u.ID('shopping_tab_content');
+      CreateFilterModal();
       CreatePageEls(tabcontent);
 
-      DATA.els.edit.selectMenu.addEventListener("change", RefreshLists);
+      DATA.els.edit.selectMenu.addEventListener("change", function() {
+         RefreshFilterList();
+         RefreshLists();
+      });
 
       window.addEventListener('update', UpdateListener);
 
    }
 
+   function CreateFilterModal() {
+      let ourEls = u.CreateModalFramework('filter shopping modal', 'Filter Shopping List', 'menuTitle');
+
+      ourEls.filterButtonsDiv = u.CreateEl('div').parent(ourEls.content).className('filterButtonDiv').end();
+
+      els.filterModal = ourEls;
+   }
+
    function CreatePageEls(parentDiv) {
+      els.filterButton = u.CreateEl('button').parent(parentDiv).className('filterButton').end();
+      u.Icon('filter', els.filterButton);
+      els.filterButton.addEventListener('click', ShowFilterList);
+
       els.btnDiv = u.CreateEl('div').parent(parentDiv).className('editButtonDiv').end();
       els.shoppingBtnDiv = u.CreateEl('div').className('shoppingBtnDiv').parent(parentDiv).end();
       els.shoppingDiv = u.CreateEl('div').parent(parentDiv).end();
    }
+
+   function ShowFilterList() {
+      if (DATA.els.edit.selectMenu.value != '_default') {
+         els.filterModal.modal.style.display = 'block';
+      }
+   }
+
+   function RefreshFilterList() {
+      if (DATA.els.edit.selectMenu.value === '_default') return;
+
+      let menuTitle = DATA.els.edit.selectMenu.value;
+      els.filterModal.menuTitle.innerText = menuTitle;
+      els.filterModal.filterButtonsDiv.innerHTML = "";
+      els.filterModal.filterCheckboxes = [];
+
+      //get one button per meal of this menu
+      d.menus[menuTitle].meals.forEach((meal, i) => {
+         let day = c.enums.weekday[new Date(meal.date).getDay()];
+         let humanReadableTitle = `${day} ${meal.mealType}`;
+         els.filterModal.filterCheckboxes.push(
+            u.CreateEl('input').parent(els.filterModal.filterButtonsDiv).type('checkbox').innerText(humanReadableTitle).checked(true).end()
+         );
+         els.filterModal.filterCheckboxes[i].addEventListener('change', RefreshLists);
+
+         u.CreateEl('p').parent(els.filterModal.filterButtonsDiv).innerText(humanReadableTitle).end();
+         u.Br(els.filterModal.filterButtonsDiv);
+      });
+   }
+
 
    function UpdateListener(EV) {
       if (EV.detail.type === 'config') {
@@ -123,38 +168,6 @@ module.exports = function(DATA) {
          // create table for the list
          let printShoppingListTable = u.CreateEl('table').parent(shoppingDiv).className('printShoppingTable').innerHTML(shoppingTable.innerHTML).end();
 
-         // // create array with list of foods from shopping table with row number as a property
-         // let foodList = [];
-         // // go through each row and column
-         // for (let j = 0; j < shoppingTable.rows.length; j++) {
-         //    let foodName = u.ID(`${shop}row${j}col0`).innerText;
-         //    foodList[foodName] = {
-         //       foodName: foodName,
-         //       rowNumber: j
-         //    };
-         // }
-         // let foodListKeys = Object.keys(foodList);
-         // foodListKeys.sort();
-         // if (foodListKeys.length > 10) {
-         //    foodListKeys.sort(u.CompareFoodType);
-         // }
-         // // print shopping list
-         // let printShoppingTable = u.CreateElement("table", shoppingDiv, `printshoppingtable${shop}`, "printShoppingTable");
-         // let rowNumber = 0;
-         // foodListKeys.forEach((foodName, k) => {
-         //    if (foodListKeys.length > 10 && k > 0 && d.foods[foodName].foodType !== d.foods[foodListKeys[k - 1]].foodType) {
-         //       let printShoppingTableRow = u.ID(`printshoppingtable${shop}`).insertRow(rowNumber);
-         //       printShoppingTableRow.innerHTML = "<td colspan=3 style='background-color:grey'></td>";
-         //       rowNumber++;
-         //    }
-         //    let HTML = [];
-         //    let tableRowNumber = foodList[foodName].rowNumber;
-         //    for (let x = 0; x < 3; x++) {
-         //       HTML[x] = u.ID(`${shop}row${tableRowNumber}col${x}`).innerText;
-         //    }
-         //    u.CreateRow(`printshoppingtable${shop}`, "td", HTML, "", [200, 50, 50], "px");
-         //    rowNumber++;
-         // });
          if (i === 1) {
             let essentialsNote = u.CreateElement("p", shoppingDiv, "", "essentialsNote", "Don't forget to buy essentials: olive oil, milton, tea/coffee, tupperware, cocoa, biscuits");
          }
@@ -176,6 +189,8 @@ module.exports = function(DATA) {
 
       let menu = d.menus.getMenu(menuTitle);
       menu.meals.forEach((meal, meal_index) => {
+         // check if we need to ignore this meal
+         if (!els.filterModal.filterCheckboxes[meal_index].checked) return;
          meal.recipes.forEach(menuRecipe => {
             let recipe = d.recipes[menuRecipe.recipeTitle];
             recipe.ingredients.forEach(ingredient => {

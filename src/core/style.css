@@ -954,3 +954,24 @@ left: 790px;
 .breakRow > td {
   border-bottom:0;
 }
+
+.filterButton {
+  position: fixed;
+  margin-top: -42px;
+  margin-left: 312px;
+  z-index: 200;
+  height: 36px;
+  color:var(--dark-grey);
+  background-color:white;
+
+}
+
+.filterButtonDiv input {
+  display:inline-block;
+  margin: 0;
+  height: auto;
+  margin-right: 4px;
+}
+.filterButtonDiv p {
+  display:inline-block;
+}

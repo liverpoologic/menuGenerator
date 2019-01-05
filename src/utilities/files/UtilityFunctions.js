@@ -173,7 +173,7 @@ module.exports = function(DATA) {
    }
    /**Create element with dot notation: CreateEl().id('id').type('text').end() */
    function CreateEl(elType) {
-      var props = ['type', 'textContent', 'parent', 'id', 'className', 'innerText', 'innerHTML', 'display', 'value', 'style', 'placeholder'];
+      var props = ['type', 'textContent', 'parent', 'id', 'className', 'innerText', 'innerHTML', 'display', 'value', 'style', 'placeholder', 'checked'];
       var ret = {
          end: function() {
             var v = this.vals; //access this.vals object
