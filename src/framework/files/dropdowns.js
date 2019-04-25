@@ -20,7 +20,7 @@ module.exports = function(DATA) {
       if (EV.detail.type !== 'config') {
          // Create array of menu names
          menuValList = u.GetKeysExFns(d.menus).sort((a, b) => {
-            return u.Compare(d.menus[a].startDate, d.menus[b].startDate);
+            return u.Compare(new Date(d.menus[a].startDate).getTime(), new Date(d.menus[b].startDate).getTime());
          });
 
          var menuNameList = menuValList.map(menuTitle => {
